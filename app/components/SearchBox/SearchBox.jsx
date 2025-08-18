@@ -47,8 +47,19 @@ export default function SearchBox() {
   const [selectedIndex, setSelectedIndex] = useState(-1);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const inputRef = useRef(null);
+  const [loading, setLoading] = useState(false);
 
   const router = useRouter();
+
+  const [dots, setDots] = useState(".");
+
+  useEffect(() => {
+    if (!loading) return;
+    const interval = setInterval(() => {
+      setDots((prev) => (prev.length === 3 ? "." : prev + "."));
+    }, 500); // changes every 0.5s
+    return () => clearInterval(interval);
+  }, [loading]);
 
   // Fetch all professors once when the component is mounted
   useEffect(() => {
@@ -72,6 +83,7 @@ export default function SearchBox() {
 
   // Handle search input change with debouncing
   useEffect(() => {
+    setLoading(true);
     const debounceTimer = setTimeout(() => {
       if (searchTerm !== "") {
         const filteredResults = professors.filter((professor) =>
@@ -84,6 +96,7 @@ export default function SearchBox() {
       } else {
         setSearchResults([]); // Clear search results when input is empty
       }
+      setLoading(false);
     }, 300); // Debounce delay of 300ms
 
     return () => clearTimeout(debounceTimer); // Cleanup the timeout on each render
@@ -147,7 +160,7 @@ export default function SearchBox() {
           onFocus={() => setIsSearchOpen(true)} // Open search when input is focused
           onKeyDown={handleKeyDown}
         />
-        {isSearchOpen && searchResults.length > 0 && (
+        {/* {isSearchOpen && searchResults.length > 0 && (
           <SearchResults>
             {searchResults.map((result, index) =>
               result.college ? (
@@ -194,6 +207,68 @@ export default function SearchBox() {
                 Didn't find your professor? <br /> Add Now
               </Typography>
             </Link>
+          </SearchResults>
+        )} */}
+
+        {isSearchOpen && (
+          <SearchResults>
+            {loading ? (
+              <Typography
+                variant="body2"
+                sx={{ color: "grey", textAlign: "center", padding: "5px" }}
+              >
+                Searching{dots}
+              </Typography>
+            ) : (
+              <>
+                {searchResults.map((result, index) =>
+                  result.college ? (
+                    <div
+                      key={index}
+                      onClick={() => handleResultClick(result)}
+                      style={{
+                        cursor: "pointer",
+                        padding: "5px",
+                        backgroundColor:
+                          index === selectedIndex ? "lightblue" : "transparent",
+                      }}
+                    >
+                      <Typography
+                        variant="body1"
+                        sx={{ color: "black" }}
+                        style={{
+                          fontWeight:
+                            index === selectedIndex ? "bold" : "normal",
+                        }}
+                      >
+                        {result.name}
+                      </Typography>
+                      <Typography
+                        variant="body2"
+                        sx={{ fontSize: 12, color: "grey" }}
+                      >
+                        {result.college.name}, {result.college.university.name}
+                      </Typography>
+                      <Divider sx={{ mt: 1, mb: 0 }} />
+                    </div>
+                  ) : null
+                )}
+                <Link href="/addprofessor">
+                  <Typography
+                    variant="body1"
+                    sx={{
+                      cursor: "pointer",
+                      color: "blue",
+                      textAlign: "center",
+                      marginTop: "10px",
+                      fontSize: 12,
+                    }}
+                  >
+                    Didn't find your professor? <br /> Add Now
+                  </Typography>
+                </Link>
+              </>
+            )}
           </SearchResults>
         )}
       </Search>
