@@ -1,14 +1,9 @@
 import Avatar from "@mui/material/Avatar";
-import { useRouter } from "next/navigation";
-import { Rating, Skeleton } from "@mui/material";
+import { Skeleton } from "@mui/material";
 import styles from "./MostRatedProfessors.module.css";
+import Link from "next/link";
 
 export default function MostRatedProfessors({ props }) {
-  const router = useRouter();
-
-  function onButtonClick(prop) {
-    router.push(`/professor/${prop._id}`);
-  }
 
   if (!props || !props.length) {
     return (
@@ -29,9 +24,9 @@ export default function MostRatedProfessors({ props }) {
       {props.map(
         (prop, i) =>
           i < 3 && (
-            <div
-              className="homepage-avatar"
-              onClick={() => onButtonClick(prop)}
+            <Link
+              className="homepage-avatar plain-link"
+              href={`/professor/${prop._id}`}
               key={i}
             >
               <Avatar
@@ -48,7 +43,7 @@ export default function MostRatedProfessors({ props }) {
               <p className={styles.ratingCount}>
                 ({prop.feedbackCount} Rating{prop.feedbackCount !== 1 && "s"})
               </p>
-            </div>
+            </Link>
           )
       )}
     </div>

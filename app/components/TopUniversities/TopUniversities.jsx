@@ -1,15 +1,10 @@
 import Avatar from "@mui/material/Avatar";
-import { useRouter } from "next/navigation";
 import { Rating, Skeleton } from "@mui/material";
 import styles from "./TopUniversities.module.css";
+import Link from "next/link";
 
 export default function TopUniversities({ props }) {
-  const router = useRouter();
-
-  function onButtonClick(prop) {
-    router.push(`/university/${prop._id}`);
-  }
-
+  
   if (!props || !props.length) {
     return (
       <div className={styles.container}>
@@ -27,9 +22,9 @@ export default function TopUniversities({ props }) {
       {props.map(
         (prop, i) =>
           i < 3 && (
-            <div
-              className="homepage-avatar"
-              onClick={() => onButtonClick(prop)}
+            <Link
+              className="homepage-avatar plain-link"
+              href={`/university/${prop._id}`}
               key={i}
             >
               <Avatar
@@ -52,7 +47,7 @@ export default function TopUniversities({ props }) {
                   readOnly
                 />
               )}
-            </div>
+            </Link>
           )
       )}
     </div>

@@ -93,6 +93,10 @@ h3 {
   padding-bottom: 20px;
 }
 
+.plain-link{
+  all:unset
+}
+
 .professor-card,
 .university-card {
   cursor: pointer;
@@ -184,6 +188,8 @@ h3 {
 .list-item {
   min-width: "40px" !important;
 }
+
+
 
 @media screen and (max-width: 850px) {
   .menubar {
