@@ -4,3 +4,31 @@
   gap: 10px;
   justify-content: space-around;
 }
+
+.homepageAvatar {
+  all: unset;
+  text-align: -webkit-center;
+  position: relative;
+  width: 100px;
+  cursor: pointer;
+  margin: 0 auto;
+  user-select: none;
+  transition: all 0.25s ease;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.homepageAvatar p {
+  font-size: small;
+  margin-bottom: 2px;
+  font-weight: 500;
+}
+
+.homepageAvatar:active {
+  transform: scale(0.9);
+}
+
+@media (min-width: 1024px) {
+  .homepageAvatar:hover {
+    transform: scale(1.1);
+  }
+}
