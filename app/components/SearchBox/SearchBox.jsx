@@ -160,57 +160,8 @@ export default function SearchBox() {
           onFocus={() => setIsSearchOpen(true)} // Open search when input is focused
           onKeyDown={handleKeyDown}
         />
-        {/* {isSearchOpen && searchResults.length > 0 && (
-          <SearchResults>
-            {searchResults.map((result, index) =>
-              result.college ? (
-                <div
-                  key={index}
-                  onClick={() => handleResultClick(result)}
-                  style={{
-                    cursor: "pointer",
-                    padding: "5px",
-                    backgroundColor:
-                      index === selectedIndex ? "lightblue" : "transparent",
-                  }}
-                >
-                  <Typography
-                    variant="body1"
-                    sx={{ color: "black" }}
-                    style={{
-                      fontWeight: index === selectedIndex ? "bold" : "normal",
-                    }}
-                  >
-                    {result.name}
-                  </Typography>
-                  <Typography
-                    variant="body2"
-                    sx={{ fontSize: 12, color: "grey" }}
-                  >
-                    {result.college.name}, {result.college.university.name}
-                  </Typography>
-                  <Divider sx={{ mt: 1, mb: 0 }} />
-                </div>
-              ) : null
-            )}
-            <Link href="/addprofessor">
-              <Typography
-                variant="body1"
-                sx={{
-                  cursor: "pointer",
-                  color: "blue",
-                  textAlign: "center",
-                  marginTop: "10px",
-                  fontSize: 12,
-                }}
-              >
-                Didn't find your professor? <br /> Add Now
-              </Typography>
-            </Link>
-          </SearchResults>
-        )} */}
 
-        {isSearchOpen && (
+        {/* {isSearchOpen && (
           <SearchResults>
             {loading ? (
               <Typography
@@ -254,6 +205,79 @@ export default function SearchBox() {
                   ) : null
                 )}
                 <Link href="/addprofessor">
+                  <Typography
+                    variant="body1"
+                    sx={{
+                      cursor: "pointer",
+                      color: "blue",
+                      textAlign: "center",
+                      marginTop: "10px",
+                      fontSize: 12,
+                    }}
+                  >
+                    Didn't find your professor? <br /> Add Now
+                  </Typography>
+                </Link>
+              </>
+            )}
+          </SearchResults>
+        )} */}
+
+        {isSearchOpen && (
+          <SearchResults>
+            {loading ? (
+              <Typography
+                variant="body2"
+                sx={{ color: "grey", textAlign: "center", padding: "5px" }}
+              >
+                Searching{dots}
+              </Typography>
+            ) : (
+              <>
+                {searchResults.map((result, index) =>
+                  result.college ? (
+                    <Link
+                      key={index}
+                      href={`/professor/${result._id}`}
+                      style={{
+                        textDecoration: "none",
+                        color: "inherit",
+                      }}
+                    >
+                      <div
+                        style={{
+                          cursor: "pointer",
+                          padding: "5px",
+                          backgroundColor:
+                            index === selectedIndex
+                              ? "lightblue"
+                              : "transparent",
+                        }}
+                      >
+                        <Typography
+                          variant="body1"
+                          sx={{ color: "black" }}
+                          style={{
+                            fontWeight:
+                              index === selectedIndex ? "bold" : "normal",
+                          }}
+                        >
+                          {result.name}
+                        </Typography>
+                        <Typography
+                          variant="body2"
+                          sx={{ fontSize: 12, color: "grey" }}
+                        >
+                          {result.college.name},{" "}
+                          {result.college.university.name}
+                        </Typography>
+                        <Divider sx={{ mt: 1, mb: 0 }} />
+                      </div>
+                    </Link>
+                  ) : null
+                )}
+
+                <Link href="/addprofessor" style={{ textDecoration: "none" }}>
                   <Typography
                     variant="body1"
                     sx={{
