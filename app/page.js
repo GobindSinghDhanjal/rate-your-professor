@@ -12,8 +12,6 @@ export default function Home() {
   const [universities, setUniversities] = useState([]);
   const [mostRatedProfessors, setMostRatedProfessors] = useState([]);
 
-  console.log("Homepage");
-
   useEffect(() => {
     const fetchProfessors = async () => {
       try {
