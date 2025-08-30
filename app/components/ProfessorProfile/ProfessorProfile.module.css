@@ -19,6 +19,7 @@
 
 .professorDetails {
   flex: 1;
+  text-align: -webkit-center;
 }
 
 .professorDetails h2 {
@@ -34,5 +35,6 @@
   }
   .professorDetails {
     flex: 3;
+    text-align: left;
   }
 }
