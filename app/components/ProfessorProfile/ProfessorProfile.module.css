@@ -8,7 +8,7 @@
 
 .professorImage,
 .professorDetails {
-  padding: 8px;
+  padding: 8px 0;
 }
 
 .professorImage {
@@ -29,6 +29,10 @@
 @media (min-width: 768px) {
   .container {
     flex-direction: row;
+  }
+  .professorImage,
+  .professorDetails {
+    padding: 8px;
   }
   .professorImage {
     flex: 1;
