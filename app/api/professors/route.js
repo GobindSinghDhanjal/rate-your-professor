@@ -4,6 +4,7 @@ import Count from "@/app/models/Count";
 import College from "@/app/models/College";
 import University from "@/app/models/University";
 import TempProfessor from "@/app/models/TempProfessor";
+import Notification from "@/app/models/Notification";
 
 // GET request to fetch professors
 export async function GET(req, res) {
@@ -72,10 +73,6 @@ export async function POST(req, res) {
 
     // Check or create the University
     let university = await University.findOne({ name: universityName });
-    // if (!university) {
-    //   university = new University({ name: universityName });
-    //   university = await university.save();
-    // }
 
     if (!university) {
       if (!universityImageUrl) {
@@ -133,6 +130,26 @@ export async function POST(req, res) {
     }
 
     await TempProfessor.deleteOne({ _id: id });
+
+    const notificationTitle = "🎓 New Professors Added! 📚";
+    const notificationMessage = `We’ve just added the professors from ${universityName} to our site. Check out their profiles and ratings now! 🌟`;
+
+    // Check if a notification with this message exists in the last 24 hours
+    const oneDayAgo = new Date();
+    oneDayAgo.setHours(oneDayAgo.getHours() - 24);
+
+    const existingNotification = await Notification.findOne({
+      message: notificationMessage,
+      createdAt: { $gte: oneDayAgo },
+    });
+
+    if (!existingNotification) {
+      const newNotification = new Notification({
+        title: notificationTitle,
+        message: notificationMessage,
+      });
+      await newNotification.save();
+    }
 
     return new Response(JSON.stringify(newProfessor), {
       status: 201,

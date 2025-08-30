@@ -3,32 +3,6 @@ import dbConnect from "@/app/utils/dbConnect";
 import TempProfessor from "@/app/models/TempProfessor";
 import { Resend } from "resend";
 
-// DELETE a temporary professor
-export async function DELETE(req) {
-  try {
-    const body = await req.json();
-    if (body.passcode === process.env.NEXT_PUBLIC_PASSCODE) {
-      await dbConnect();
-      const tempProfessor = await TempProfessor.findById(body.id);
-
-      if (!tempProfessor) {
-        return NextResponse.json(
-          { msg: "TempProfessor not found" },
-          { status: 404 }
-        );
-      }
-
-      await TempProfessor.deleteOne({ _id: body.id });
-      return NextResponse.json({ msg: "TempProfessor removed" });
-    } else {
-      return NextResponse.json({ msg: "Incorrect passcode" }, { status: 403 });
-    }
-  } catch (err) {
-    console.error(err.message);
-    return NextResponse.json({ error: "Server Error" }, { status: 500 });
-  }
-}
-
 const resend = new Resend(process.env.RESEND_API_KEY);
 
 export async function POST(req) {
@@ -81,29 +55,28 @@ async function sendEmailNotification(professor) {
   }
 }
 
-// POST a new temporary professor
-// export async function POST(req) {
-//   try {
-//     const { name, department, gender, title, college, university, subjects } =
-//       await req.json();
-//     await dbConnect();
+// DELETE a temporary professor
+export async function DELETE(req) {
+  try {
+    const body = await req.json();
+    if (body.passcode === process.env.NEXT_PUBLIC_PASSCODE) {
+      await dbConnect();
+      const tempProfessor = await TempProfessor.findById(body.id);
 
-//     const subjectsArray = subjects.split(",");
+      if (!tempProfessor) {
+        return NextResponse.json(
+          { msg: "TempProfessor not found" },
+          { status: 404 }
+        );
+      }
 
-//     const newTempProfessor = new TempProfessor({
-//       name,
-//       department,
-//       gender,
-//       title,
-//       college,
-//       university,
-//       subjects: subjectsArray,
-//     });
-
-//     await newTempProfessor.save();
-//     return NextResponse.json(newTempProfessor);
-//   } catch (err) {
-//     console.error(err.message);
-//     return NextResponse.json({ error: "Server Error" }, { status: 500 });
-//   }
-// }
+      await TempProfessor.deleteOne({ _id: body.id });
+      return NextResponse.json({ msg: "TempProfessor removed" });
+    } else {
+      return NextResponse.json({ msg: "Incorrect passcode" }, { status: 403 });
+    }
+  } catch (err) {
+    console.error(err.message);
+    return NextResponse.json({ error: "Server Error" }, { status: 500 });
+  }
+}
