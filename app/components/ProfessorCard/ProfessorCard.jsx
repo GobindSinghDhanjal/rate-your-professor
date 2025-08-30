@@ -1,14 +1,13 @@
 import { Avatar, Rating } from "@mui/material";
 import styles from "./ProfessorCard.module.css";
 import avgRating from "../avgRatingUtil";
+import Link from "next/link";
 
 export default function ProfessorCard({ prop, onButtonClick }) {
   return (
-    <div
-      className={styles.professorCard}
-      onClick={() => {
-        onButtonClick(prop);
-      }}
+    <Link
+      className={`${styles.professorCard} plain-link`}
+      href={`/professor/${prop._id}`}
     >
       <div className={styles.image}>
         <Avatar
@@ -33,6 +32,6 @@ export default function ProfessorCard({ prop, onButtonClick }) {
           readOnly
         />
       </div>
-    </div>
+    </Link>
   );
 }

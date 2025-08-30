@@ -223,7 +223,7 @@ export default function SearchBox() {
           </SearchResults>
         )} */}
 
-        {isSearchOpen && (
+        {isSearchOpen && searchResults.length > 0 && (
           <SearchResults>
             {loading ? (
               <Typography

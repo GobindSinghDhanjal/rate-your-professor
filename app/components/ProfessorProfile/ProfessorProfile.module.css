@@ -1,6 +1,6 @@
 .container {
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   flex-wrap: wrap;
   align-items: center;
   margin-top: 10px;
@@ -18,7 +18,7 @@
 }
 
 .professorDetails {
-  flex: 2;
+  flex: 1;
 }
 
 .professorDetails h2 {
@@ -26,10 +26,12 @@
 }
 
 @media (min-width: 768px) {
+  .container {
+    flex-direction: row;
+  }
   .professorImage {
     flex: 1;
   }
-
   .professorDetails {
     flex: 3;
   }

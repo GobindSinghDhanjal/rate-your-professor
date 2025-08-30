@@ -97,11 +97,6 @@ h3 {
   all:unset
 }
 
-.professor-card,
-.university-card {
-  cursor: pointer;
-}
-
 .homepage-avatar {
   text-align: -webkit-center;
   position: relative;
