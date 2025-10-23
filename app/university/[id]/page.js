@@ -13,10 +13,10 @@ export async function generateMetadata({ params }) {
 
   return {
     title: `${university.name}`,
-    description: `Explore professors and ratings for ${university.name}.`,
+    description: `${university.description}`,
     openGraph: {
       title: `${university.name}`,
-      description: `Find the best professors at ${university.name}.`,
+      description: `${university.description}`,
       images: [
         {
           url: university.image || "/default-university-image.jpg", // fallback image
