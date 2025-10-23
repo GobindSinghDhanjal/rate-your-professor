@@ -2,6 +2,7 @@ import styles from "./university.module.css";
 import { Avatar } from "@mui/material";
 import FilteredProfessors from "./FilteredProfessors";
 import SearchBox from "@/app/components/SearchBox/SearchBox";
+import TruncatedDescription from "../../components/TruncatedDescription/TruncatedDescription";
 
 const University = ({ university, professors }) => {
   return (
@@ -16,7 +17,8 @@ const University = ({ university, professors }) => {
             />
           </div>
           <div className={styles.details}>
-            <h2>{university.name}</h2>
+            <h2 className={styles.universityName}>{university.name}</h2>
+            <TruncatedDescription text={university.description} />
           </div>
         </div>
 

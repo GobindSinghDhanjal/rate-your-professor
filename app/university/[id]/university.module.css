@@ -1,11 +1,10 @@
 .universityHeader {
   display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
+  flex-direction: column;
   gap: 10px;
   align-items: center;
   margin-top: 20px;
-  user-select: none;
+  text-align: center;
 }
 
 .universityImage {
@@ -18,12 +17,18 @@
   font-weight: 600;
 }
 
-.image {
-  flex: 1;
+.universityName {
+  margin: 4px auto;
 }
-
-.details {
-  flex: 2;
-  display: flex;
-  flex-wrap: wrap;
+@media (min-width: 768px) {
+  .universityHeader {
+    flex-direction: row;
+  }
+  .image{
+    flex:1;
+  }
+  .details{
+    flex:3;
+    text-align: left;
+  }
 }
