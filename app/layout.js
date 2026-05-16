@@ -3,6 +3,7 @@ import { Poppins } from "next/font/google";
 import { GoogleAnalytics } from "@next/third-parties/google";
 import DrawerAppBar from "./components/DrawerAppBar/DrawerAppBar";
 import Footer from "./components/Footer/Footer";
+import Script from "next/script";
 
 const poppins = Poppins({
   subsets: ["latin"],
@@ -39,6 +40,12 @@ export default function RootLayout({ children }) {
         {children}
         <Footer />
         <GoogleAnalytics gaId="G-VB68FXNM9S" />
+        <Script
+          async
+          strategy="afterInteractive"
+          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8679343813839428"
+          crossOrigin="anonymous"
+        />
       </body>
     </html>
   );

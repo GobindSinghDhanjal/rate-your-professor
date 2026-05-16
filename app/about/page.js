@@ -1,3 +1,5 @@
+import GoogleAd from "../components/GoogleAd/GoogleAd";
+
 export const metadata = {
   title: "About",
   description:
@@ -80,6 +82,8 @@ export default function page() {
           Thank you for choosing RateYourProfessor. Let's build a brighter
           academic future together!
         </p>
+        
+        <GoogleAd/>
       </section>
     </div>
   );

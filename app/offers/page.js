@@ -1,3 +1,5 @@
+import GoogleAd from "../components/GoogleAd/GoogleAd";
+
 export const metadata = {
   title: "Offers",
 };
@@ -16,6 +18,8 @@ const page = () => {
         }}
       >
         <h1>We will soon upload student offers</h1>
+
+        <GoogleAd />
       </div>
     </div>
   );
