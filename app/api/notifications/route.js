@@ -5,7 +5,6 @@ import { NextResponse } from "next/server";
 
 export async function GET(req) {
   try {
-    authenticate(req);
     await dbConnect();
 
     const { searchParams } = new URL(req.url);
