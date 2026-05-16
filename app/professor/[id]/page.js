@@ -3,7 +3,8 @@ import ProfessorPage from "./ProfessorPage";
 export async function generateStaticParams() {
   try {
     const res = await fetch(
-      `${process.env.NEXT_PUBLIC_NEXT_BASE_URL}/professors`
+      `${process.env.NEXT_PUBLIC_NEXT_BASE_URL}/professors`,
+      { next: { revalidate: 60 } }
     );
     const data = await res.json();
 
@@ -21,7 +22,8 @@ export async function generateMetadata({ params }) {
 
   try {
     const response = await fetch(
-      `${process.env.NEXT_PUBLIC_NEXT_BASE_URL}/professors/${id}`
+      `${process.env.NEXT_PUBLIC_NEXT_BASE_URL}/professors/${id}`,
+      { next: { revalidate: 60 } }
     );
 
     if (!response.ok) {
