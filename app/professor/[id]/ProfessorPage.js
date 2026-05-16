@@ -7,7 +7,6 @@ const ProfessorPage = ({ professor }) => {
     <>
       <div className="professor container">
         <div className="sub-container">
-          {/* <ProfessorProfile professor={professor} /> */}
           <ProfessorProfile professor={professor} />
 
           <br />

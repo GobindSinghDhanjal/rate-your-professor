@@ -12,19 +12,19 @@ export async function generateMetadata({ params }) {
   }
 
   return {
-    title: `${university.name}`,
-    description: `${university.description}`,
+    title: `${university?.name}`,
+    description:
+      `${university?.description}` ||
+      `Read reviews and ratings for ${university.name}, a university in ${university.city}, ${university.state}.`,
+    keywords: `${university?.name}, ${university?.city}, ${university?.state}, ${university?.establishedYear}, university reviews, rate universities, student reviews, university feedback, university ratings India, college professors, faculty reviews`,
+    metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL),
     openGraph: {
-      title: `${university.name}`,
-      description: `${university.description}`,
-      images: [
-        {
-          url: university.image || "/default-university-image.jpg", // fallback image
-          width: 1200,
-          height: 630,
-          alt: `${university.name} Image`,
-        },
-      ],
+      title: `${university?.name} | ${university?.city}, ${university?.state}`,
+      description: `Read reviews and ratings for ${university?.name}, a university in ${university?.city}, ${university?.state}.`,
+      images: [`${university?.image}`],
+      url: `${process.env.NEXT_PUBLIC_SITE_URL}/university/${university._id}`,
+      type: "profile",
+      siteName: "Rate Your Professor",
     },
   };
 }
@@ -32,7 +32,7 @@ export async function generateMetadata({ params }) {
 export async function generateStaticParams() {
   try {
     const res = await fetch(
-      `${process.env.NEXT_PUBLIC_NEXT_BASE_URL}/universities`
+      `${process.env.NEXT_PUBLIC_NEXT_BASE_URL}/universities`,
     );
     const universities = await res.json();
 
@@ -48,7 +48,7 @@ export async function generateStaticParams() {
 async function getUniversity(id) {
   try {
     const response = await fetch(
-      `${process.env.NEXT_PUBLIC_NEXT_BASE_URL}/universities/${id}`
+      `${process.env.NEXT_PUBLIC_NEXT_BASE_URL}/universities/${id}`,
     );
     if (!response.ok) throw new Error("University not found");
     return await response.json();
@@ -62,7 +62,7 @@ async function getProfessorsByUniversity(id) {
   try {
     const res = await fetch(
       `${process.env.NEXT_PUBLIC_NEXT_BASE_URL}/professors/byUniversity/${id}`,
-      { next: { revalidate: 60 } }
+      { next: { revalidate: 60 } },
     );
     if (!res.ok) throw new Error();
     return await res.json();
