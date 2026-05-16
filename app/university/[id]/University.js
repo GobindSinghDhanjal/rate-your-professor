@@ -22,7 +22,7 @@ const University = ({ university, professors }) => {
           </div>
         </div>
 
-        <SearchBox />
+        <SearchBox page="university" university={university} />
 
         {/* <FilteredProfessors universityId={university._id} /> */}
         <FilteredProfessors professors={professors} />

@@ -40,7 +40,7 @@ const SearchResults = styled("div")(({ theme }) => ({
   padding: theme.spacing(1),
 }));
 
-export default function SearchBox() {
+export default function SearchBox({ page = "" , university = {}}) {
   const [searchTerm, setSearchTerm] = useState("");
   const [searchResults, setSearchResults] = useState([]);
   const [professors, setProfessors] = useState([]); // Store all professors data here
@@ -65,9 +65,13 @@ export default function SearchBox() {
   useEffect(() => {
     const fetchProfessors = async () => {
       try {
-        const response = await fetch(
-          `${process.env.NEXT_PUBLIC_NEXT_BASE_URL}/professors`
-        );
+        let url = `${process.env.NEXT_PUBLIC_NEXT_BASE_URL}`;
+        if (page === "university") {
+          url += `/professors/byUniversity/${university._id}`;
+        }else{
+          url+='/professors'
+        }
+        const response = await fetch(url);
         if (!response.ok) {
           throw new Error("Failed to fetch professors");
         }
@@ -87,11 +91,11 @@ export default function SearchBox() {
     const debounceTimer = setTimeout(() => {
       if (searchTerm !== "") {
         const filteredResults = professors.filter((professor) =>
-          professor.name.toLowerCase().includes(searchTerm.toLowerCase())
+          professor.name.toLowerCase().includes(searchTerm.toLowerCase()),
         );
         const limitedResults = filteredResults.slice(0, 4);
         setSearchResults(
-          limitedResults.length ? limitedResults : ["Didn't find"]
+          limitedResults.length ? limitedResults : ["Didn't find"],
         );
       } else {
         setSearchResults([]); // Clear search results when input is empty
@@ -131,12 +135,12 @@ export default function SearchBox() {
     if (event.key === "ArrowUp") {
       event.preventDefault();
       setSelectedIndex((prevIndex) =>
-        prevIndex === -1 ? searchResults.length - 1 : prevIndex - 1
+        prevIndex === -1 ? searchResults.length - 1 : prevIndex - 1,
       );
     } else if (event.key === "ArrowDown") {
       event.preventDefault();
       setSelectedIndex((prevIndex) =>
-        prevIndex === searchResults.length - 1 ? -1 : prevIndex + 1
+        prevIndex === searchResults.length - 1 ? -1 : prevIndex + 1,
       );
     } else if (event.key === "Enter" && selectedIndex !== -1) {
       handleResultClick(searchResults[selectedIndex]);
@@ -153,75 +157,13 @@ export default function SearchBox() {
         </div>
         <StyledInputBase
           className={styles.searchInput}
-          placeholder="Search…"
+          placeholder={university?.name ? `Search professors in University...` : "Search professors..."}
           inputProps={{ "aria-label": "search" }}
           value={searchTerm}
           onChange={handleSearchChange}
           onFocus={() => setIsSearchOpen(true)} // Open search when input is focused
           onKeyDown={handleKeyDown}
         />
-
-        {/* {isSearchOpen && (
-          <SearchResults>
-            {loading ? (
-              <Typography
-                variant="body2"
-                sx={{ color: "grey", textAlign: "center", padding: "5px" }}
-              >
-                Searching{dots}
-              </Typography>
-            ) : (
-              <>
-                {searchResults.map((result, index) =>
-                  result.college ? (
-                    <div
-                      key={index}
-                      onClick={() => handleResultClick(result)}
-                      style={{
-                        cursor: "pointer",
-                        padding: "5px",
-                        backgroundColor:
-                          index === selectedIndex ? "lightblue" : "transparent",
-                      }}
-                    >
-                      <Typography
-                        variant="body1"
-                        sx={{ color: "black" }}
-                        style={{
-                          fontWeight:
-                            index === selectedIndex ? "bold" : "normal",
-                        }}
-                      >
-                        {result.name}
-                      </Typography>
-                      <Typography
-                        variant="body2"
-                        sx={{ fontSize: 12, color: "grey" }}
-                      >
-                        {result.college.name}, {result.college.university.name}
-                      </Typography>
-                      <Divider sx={{ mt: 1, mb: 0 }} />
-                    </div>
-                  ) : null
-                )}
-                <Link href="/addprofessor">
-                  <Typography
-                    variant="body1"
-                    sx={{
-                      cursor: "pointer",
-                      color: "blue",
-                      textAlign: "center",
-                      marginTop: "10px",
-                      fontSize: 12,
-                    }}
-                  >
-                    Didn't find your professor? <br /> Add Now
-                  </Typography>
-                </Link>
-              </>
-            )}
-          </SearchResults>
-        )} */}
 
         {isSearchOpen && searchResults.length > 0 && (
           <SearchResults>
@@ -274,7 +216,7 @@ export default function SearchBox() {
                         <Divider sx={{ mt: 1, mb: 0 }} />
                       </div>
                     </Link>
-                  ) : null
+                  ) : null,
                 )}
 
                 <Link href="/addprofessor" style={{ textDecoration: "none" }}>
