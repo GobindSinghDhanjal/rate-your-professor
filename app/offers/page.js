@@ -18,9 +18,8 @@ const page = () => {
         }}
       >
         <h1>We will soon upload student offers</h1>
-
-        <GoogleAd />
       </div>
+      <GoogleAd />
     </div>
   );
 };
