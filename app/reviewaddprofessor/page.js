@@ -1,27 +1,20 @@
 "use client";
 import React, { useState, useEffect } from "react";
-import ProfileCard from "./ProfileCard";
 import { Box, Button, TextField } from "@mui/material";
+import ProfileCard from "../components/ProfileCard/ProfileCard";
 
 const Page = () => {
   const [passcode, setPasscode] = useState("");
   const [authenticated, setAuthenticated] = useState(false);
   const [professors, setProfessors] = useState([]);
 
-  const handlePasscodeChange = (e) => {
-    setPasscode(e.target.value);
-  };
-
+  // Remove the professor whose id matches — called by ProfileCard on successful add OR remove
   const handleClick = (data) => {
-    const updatedProfessors = professors.filter(
-      (professor) => professor.id !== data.id
-    );
-    setProfessors(updatedProfessors);
+    setProfessors((prev) => prev.filter((p) => p._id !== data.id));
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    // Check if passcode matches the expected passcode
     if (passcode === process.env.NEXT_PUBLIC_PASSCODE) {
       setAuthenticated(true);
     } else {
@@ -31,13 +24,12 @@ const Page = () => {
 
   useEffect(() => {
     if (authenticated) {
-      // Fetch professors data when authenticated
       fetch(
-        `${process.env.NEXT_PUBLIC_NEXT_BASE_URL}/professors/tempProfessor/all`
+        `${process.env.NEXT_PUBLIC_NEXT_BASE_URL}/professors/tempProfessor/all`,
       )
-        .then((response) => response.json())
+        .then((res) => res.json())
         .then((data) => setProfessors(data))
-        .catch((error) => console.error("Error fetching professors:", error));
+        .catch((err) => console.error("Error fetching professors:", err));
     }
   }, [authenticated]);
 
@@ -51,7 +43,7 @@ const Page = () => {
                 label="Enter Passcode"
                 type="password"
                 value={passcode}
-                onChange={handlePasscodeChange}
+                onChange={(e) => setPasscode(e.target.value)}
                 variant="outlined"
                 fullWidth
                 margin="normal"
@@ -72,15 +64,13 @@ const Page = () => {
     );
   }
 
-  // If authenticated and professors data is fetched, render the content
   return (
     <div className="container">
       <div className="sub-container">
         <h1>Welcome to the secret page!</h1>
-        {/* Render each professor using map function */}
-        {professors.map((professor, index) => (
+        {professors.map((professor) => (
           <ProfileCard
-            key={index}
+            key={professor._id}
             handleClick={handleClick}
             profile={{
               id: professor._id,
@@ -91,7 +81,7 @@ const Page = () => {
               university: professor.university,
               department: professor.department,
               subjects: professor.subjects,
-              universityImageUrl: "",
+              universityImageUrl: professor.universityImageUrl || "",
             }}
           />
         ))}
