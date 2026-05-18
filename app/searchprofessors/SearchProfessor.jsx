@@ -15,7 +15,7 @@ const SearchProfessor = () => {
     let timer;
     if (search) {
       fetch(
-        `${process.env.NEXT_PUBLIC_NEXT_BASE_URL}/professors/search/${search}`
+        `${process.env.NEXT_PUBLIC_NEXT_BASE_URL}/professors/search/${search}`,
       )
         .then((response) => {
           if (!response.ok) {
@@ -47,23 +47,24 @@ const SearchProfessor = () => {
         {loading ? (
           <LoadingScreen />
         ) : (
-          <div className="professors">
+          <div className="professors" style={{ textAlign: "center" }}>
             {professors && professors.length > 0 ? (
               <Suspense fallback={<LoadingScreen />}>
                 <ProfessorList props={professors} />
               </Suspense>
             ) : (
-              <div style={{ textAlign: "center" }}>
+              <div >
                 <br />
                 <p>No professor with name "{search}"</p>
-                <br />
-                <hr />
-                <br />
-                <Link href="/addprofessor">
-                  Didn't Find Your Professor? <br /> Add Now
-                </Link>
               </div>
             )}
+
+            <br />
+            <hr />
+            <br />
+            <Link href="/addprofessor">
+              Didn't Find Your Professor? <br /> Add Now
+            </Link>
           </div>
         )}
       </div>

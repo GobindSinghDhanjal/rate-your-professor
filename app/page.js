@@ -6,6 +6,7 @@ import SearchBox from "./components/SearchBox/SearchBox";
 import TopUniversities from "./components/TopUniversities/TopUniversities";
 import TopRatedProfessors from "./components/TopRatedProfessors/TopRatedProfessors";
 import MostRatedProfessors from "./components/MostRatedProfessors/MostRatedProfessors";
+import SearchBox2 from "./components/SearchBox2/SearchBox2";
 
 export default function Home() {
   const [professors, setProfessors] = useState([]);
@@ -16,7 +17,7 @@ export default function Home() {
     const fetchProfessors = async () => {
       try {
         const response = await fetch(
-          `${process.env.NEXT_PUBLIC_NEXT_BASE_URL}/professors/prof/topThree`
+          `${process.env.NEXT_PUBLIC_NEXT_BASE_URL}/professors/prof/topThree`,
         );
         if (!response.ok) {
           throw new Error("Failed to fetch professors");
@@ -34,7 +35,7 @@ export default function Home() {
           `${process.env.NEXT_PUBLIC_NEXT_BASE_URL}/universities/top`,
           {
             next: { revalidate: 2592000 }, // revalidate every 30 days (in seconds)
-          }
+          },
         );
         if (!response.ok) {
           throw new Error("Failed to fetch universities");
@@ -50,7 +51,7 @@ export default function Home() {
       try {
         const response = await fetch(
           `${process.env.NEXT_PUBLIC_NEXT_BASE_URL}/professors/mostRated`,
-          { cache: "no-cache" }
+          { cache: "no-cache" },
         );
         if (!response.ok) {
           throw new Error("Failed to fetch universities");
@@ -71,7 +72,8 @@ export default function Home() {
     <div>
       <Banner />
       <div className="sub-container">
-        <SearchBox />
+        <SearchBox2 />
+        {/* <SearchBox /> */}
 
         <div className="divider-p">
           <Divider className="divider" />
