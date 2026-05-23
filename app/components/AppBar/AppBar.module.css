@@ -1,0 +1,99 @@
+.appBar {
+  padding: 10px 20px;
+  border-radius: 10px;
+  background: grey;
+  color: white;
+
+  width: calc(100% - 20px);
+  max-width: 1200px;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  position: fixed;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+
+  z-index: 10000;
+}
+
+.left h3 {
+  margin: 0;
+}
+
+.desktopMenu {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.link {
+  text-decoration: none;
+  color: white;
+}
+
+.hamburger {
+  display: none;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+
+  flex-direction: column;
+  gap: 5px;
+}
+
+.hamburger span {
+  width: 24px;
+  height: 2px;
+  background: white;
+  border-radius: 20px;
+}
+
+.mobileMenu {
+  position: fixed;
+  top: 85px;
+  left: 50%;
+  transform: translateX(-50%);
+
+  width: calc(100% - 20px);
+  max-width: 1200px;
+
+  background: grey;
+  border-radius: 10px;
+
+  padding: 20px;
+
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+
+  z-index: 9999;
+}
+
+.mobileLink {
+  text-decoration: none;
+  color: white;
+}
+
+@media (max-width: 768px) {
+  .desktopMenu {
+    display: none;
+  }
+
+  .hamburger {
+    display: flex;
+  }
+}
+
+@media (min-width: 769px) {
+  .mobileMenu {
+    display: none;
+  }
+
+  .appBar {
+    width: calc(100% - 40px);
+    padding: 16px 32px;
+  }
+}

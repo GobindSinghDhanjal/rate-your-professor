@@ -1,246 +1,110 @@
-body {
-  margin: 0px;
-  font-family: var(--font-poppins);
+:root {
+  --bg-primary: #07090f;
+  --bg-secondary: #0d1117;
+  --bg-card: #111827;
+  --bg-card-hover: #161f2e;
+  --bg-glass: rgba(17, 24, 39, 0.6);
+
+  --accent-purple: #7c3aed;
+  --accent-violet: #8b5cf6;
+  --accent-blue: #3b82f6;
+  --accent-cyan: #06b6d4;
+  --accent-glow: rgba(124, 58, 237, 0.4);
+  --accent-glow-soft: rgba(124, 58, 237, 0.15);
+
+  --text-primary: #f1f5f9;
+  --text-secondary: #94a3b8;
+  --text-muted: #475569;
+  --text-accent: #a78bfa;
+
+  --border-subtle: rgba(255, 255, 255, 0.06);
+  --border-glow: rgba(124, 58, 237, 0.3);
+
+  --font-sora: var(--font-sora);
+  --font-dm-sans: var(--font-dm-sans);
+
+  --radius-sm: 8px;
+  --radius-md: 14px;
+  --radius-lg: 20px;
+  --radius-xl: 28px;
+
+  --shadow-card: 0 4px 32px rgba(0, 0, 0, 0.4);
+  --shadow-glow: 0 0 40px rgba(124, 58, 237, 0.25);
+
+  --transition-fast: 0.18s ease;
+  --transition-med: 0.3s ease;
+  --transition-slow: 0.5s ease;
 }
 
 *,
-MuiTypography-root {
-  font-family: var(--font-poppins) !important;
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
 }
 
-#app {
-  height: 100%;
+html {
+  scroll-behavior: smooth;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
-.swiper {
-  width: 100%;
-  height: 260px;
-  margin-top: 60px;
+body {
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  font-family: var(--font-dm-sans), sans-serif;
+  font-size: 16px;
+  line-height: 1.6;
+  overflow-x: hidden;
 }
 
-.swiper-slide {
-  text-align: center;
-  font-size: 18px;
-  background: #000000;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: var(--font-sora), sans-serif;
+  line-height: 1.15;
+  letter-spacing: -0.02em;
 }
 
-.swiper-slide img {
-  display: block;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
+a {
+  color: inherit;
+  text-decoration: none;
 }
 
-.professor-detail-avatar {
-  width: 120px !important;
-  height: 120px !important;
-  text-align: center;
-}
-
-.banner-desktop {
-  display: block !important;
-}
-
-.loading {
-  display: flex;
-  justify-content: center; /* Horizontally center */
-  align-items: center; /* Vertically center */
-  height: 50vh;
-  text-align: center;
-}
-
-.app-bar {
-  background: none !important;
-  box-shadow: none !important;
-}
-
-.divider {
-  padding: 5px;
-  margin: 2px auto;
-}
-
-.banner-mobile {
-  display: none !important;
-}
-.banner-mobile a {
-  -webkit-tap-highlight-color: transparent;
-}
-
-.sub-container {
-  max-width: 1200px;
-  padding: 5px 20px;
-  margin: auto;
-  min-height: 60vh;
-}
-
-h3 {
-  font-weight: 700;
-}
-
-.custom-desktop-link-style {
-  color: #ececec;
-  text-decoration: none !important;
-}
-
-.container {
-  margin-top: 80px;
-}
-
-.about p {
-  padding-bottom: 20px;
-}
-
-.plain-link{
-  all:unset
-}
-
-.homepage-avatar {
-  text-align: -webkit-center;
-  position: relative;
-  width: 100px;
+button {
   cursor: pointer;
-  margin: 0 auto;
-  user-select: none;
-  transition: all 0.25s ease;
-  -webkit-tap-highlight-color: transparent;
+  border: none;
+  background: none;
+  font-family: inherit;
 }
 
-.homepage-avatar p {
-  font-size: small;
-  margin-bottom: 2px;
-  font-weight: 500;
+img {
+  max-width: 100%;
+  display: block;
 }
 
-.homepage-avatar:active {
-  transform: scale(0.9);
+::selection {
+  background: var(--accent-glow);
+  color: var(--text-primary);
 }
 
-.professor h2 {
-  font-weight: 600;
-  margin-bottom: 1px;
+::-webkit-scrollbar {
+  width: 6px;
 }
 
-.professor h3 {
-  font-weight: 600;
-  margin-bottom: 8px;
+::-webkit-scrollbar-track {
+  background: var(--bg-primary);
 }
 
-.professor h4 {
-  font-weight: 600;
-  margin: 1px auto;
+::-webkit-scrollbar-thumb {
+  background: var(--text-muted);
+  border-radius: 99px;
 }
 
-.professor p {
-  font-size: small;
-  margin: 1px auto;
-}
-
-.student-name {
-  font-size: medium;
-  margin: 1px auto;
-  font-weight: 500;
-  color: #2b2b2b;
-}
-
-.professor small {
-  font-size: x-small;
-  margin: 1px auto;
-}
-
-.professor hr {
-  background-color: #e6e6e6;
-  border-color: #e6e6e6;
-  border: 1px solid #e6e6e6;
-  margin: 1px auto;
-}
-
-.card {
-  text-align: -webkit-center;
-  margin-top: 20px;
-}
-
-.single-card {
-  position: relative;
-  transition: transform 0.25s ease-in-out !important;
-}
-
-.single-card:hover {
-  transform: scale(1.1);
-}
-
-.loading-heading {
-  margin-top: 25px;
-  margin-bottom: 2px;
-}
-
-.loading-text {
-  margin-top: 2px;
-}
-
-.list-item {
-  min-width: "40px" !important;
-}
-
-
-
-@media screen and (max-width: 850px) {
-  .menubar {
-    margin-left: 10px;
-  }
-
-  .menubar-items {
-    margin-right: 10px;
-  }
-}
-
-@media screen and (max-width: 700px) {
-  .swiper {
-    height: 220px;
-    margin-top: 50px;
-  }
-
-  .container {
-    margin-top: 60px;
-  }
-
-  .menubar {
-    margin-left: 0px;
-  }
-
-  .menubar-items {
-    margin-right: 0px;
-  }
-
-  .sub-container {
-    padding: 5px 20px;
-  }
-
-  .banner-mobile {
-    display: block !important;
-  }
-
-  .banner-desktop {
-    display: none !important;
-  }
-
-  .professor-detail-avatar {
-    width: 120px !important;
-    height: 120px !important;
-  }
-}
-
-@media screen and (max-width: 500px) {
-  .swiper {
-    height: 180px;
-    margin-top: 50px;
-  }
-}
-
-@media (min-width: 1024px) {
-  .homepage-avatar:hover {
-    transform: scale(1.1);
-  }
+::-webkit-scrollbar-thumb:hover {
+  background: var(--accent-violet);
 }
