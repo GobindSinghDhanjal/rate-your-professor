@@ -4,7 +4,7 @@ import FilteredProfessors from "./FilteredProfessors";
 import SearchBox from "@/app/components/SearchBox/SearchBox";
 import TruncatedDescription from "../../components/TruncatedDescription/TruncatedDescription";
 
-const University = ({ university, professors }) => {
+const UniversityDetails = ({ university, professors }) => {
   return (
     <div className="container">
       <div className="sub-container">
@@ -31,4 +31,4 @@ const University = ({ university, professors }) => {
   );
 };
 
-export default University;
+export default UniversityDetails;
