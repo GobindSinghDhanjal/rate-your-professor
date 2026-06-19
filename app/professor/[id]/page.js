@@ -1,15 +1,18 @@
+import Professor from "@/app/models/Professor";
 import ProfessorPage from "./ProfessorPage";
+import dbConnect from "@/app/utils/dbConnect";
+import College from "@/app/models/College";
+import University from "@/app/models/University";
 
 export async function generateStaticParams() {
   try {
-    const res = await fetch(
-      `${process.env.NEXT_PUBLIC_NEXT_BASE_URL}/professors`,
-      { next: { revalidate: 60 } }
-    );
-    const data = await res.json();
+
+    await dbConnect();
+
+    const data = await Professor.find();
 
     return data.map((prof) => ({
-      id: prof._id,
+      id: prof._id.toString(),
     }));
   } catch (error) {
     console.error("Error generating static params:", error);
@@ -21,16 +24,20 @@ export async function generateMetadata({ params }) {
   const { id } = params;
 
   try {
-    const response = await fetch(
-      `${process.env.NEXT_PUBLIC_NEXT_BASE_URL}/professors/${id}`,
-      { next: { revalidate: 60 } }
-    );
+    await dbConnect();
 
-    if (!response.ok) {
+    const professor = await Professor.findById(id)
+      .populate({
+        path: "college",
+        populate: {
+          path: "university",
+        },
+      })
+      .lean();
+
+    if (!professor) {
       throw new Error("Professor not found");
     }
-
-    const professor = await response.json();
 
     return {
       title: `${professor.name} | ${professor.college.name}`,
@@ -57,11 +64,18 @@ export async function generateMetadata({ params }) {
 
 async function getProfessor(id) {
   try {
-    const response = await fetch(
-      `${process.env.NEXT_PUBLIC_NEXT_BASE_URL}/professors/${id}`
-    );
-    if (!response.ok) throw new Error("Professor not found");
-    return await response.json();
+    await dbConnect();
+
+    const professor = await Professor.findById(id)
+      .populate({
+        path: "college",
+        populate: {
+          path: "university",
+        },
+      })
+      .lean();
+
+    return professor;
   } catch (error) {
     console.error("Error fetching professor:", error);
     return null;
