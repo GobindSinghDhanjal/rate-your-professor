@@ -2,7 +2,8 @@ import { notFound } from "next/navigation";
 import University from "./University";
 
 export async function generateMetadata({ params }) {
-  const university = await getUniversity(params.id);
+  const { slug } = await params;
+  const university = await getUniversity(slug);
 
   if (!university) {
     return {
@@ -22,8 +23,8 @@ export async function generateMetadata({ params }) {
       title: `${university?.name} | ${university?.city}, ${university?.state}`,
       description: `Read reviews and ratings for ${university?.name}, a university in ${university?.city}, ${university?.state}.`,
       images: [`${university?.image}`],
-      url: `${process.env.NEXT_PUBLIC_SITE_URL}/university/${university._id}`,
-      type: "profile",
+      url: `${process.env.NEXT_PUBLIC_SITE_URL}/university/${university.slug}`,
+      type: "website",
       siteName: "Rate Your Professor",
     },
   };
@@ -37,7 +38,7 @@ export async function generateStaticParams() {
     const universities = await res.json();
 
     return universities.map((university) => ({
-      id: university._id,
+      slug: university.slug,
     }));
   } catch (error) {
     console.error("Error fetching universities for static params:", error);
@@ -45,10 +46,10 @@ export async function generateStaticParams() {
   }
 }
 
-async function getUniversity(id) {
+async function getUniversity(slug) {
   try {
     const response = await fetch(
-      `${process.env.NEXT_PUBLIC_NEXT_BASE_URL}/universities/${id}`,
+      `${process.env.NEXT_PUBLIC_NEXT_BASE_URL}/universities/${slug}`,
     );
     if (!response.ok) throw new Error("University not found");
     return await response.json();
@@ -72,9 +73,8 @@ async function getProfessorsByUniversity(id) {
 }
 
 const Page = async ({ params }) => {
-  const { id } = await params;
-  const university = await getUniversity(id);
-  const professors = await getProfessorsByUniversity(id);
+  const { slug } = await params;
+  const university = await getUniversity(slug);
 
   if (!university) {
     return (
@@ -84,6 +84,8 @@ const Page = async ({ params }) => {
       </div>
     );
   }
+  
+  const professors = await getProfessorsByUniversity(university._id);
 
   return <University university={university} professors={professors} />;
 };

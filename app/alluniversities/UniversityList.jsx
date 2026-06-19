@@ -1,14 +1,14 @@
 "use client";
 import React from "react";
-import { Grid, Avatar, Typography } from "@mui/material";
+import { Avatar, Typography } from "@mui/material";
 import { useRouter } from "next/navigation";
 import styles from "./styles.module.css";
 
 const UniversityList = ({ universities }) => {
   const router = useRouter();
 
-  function onButtonClick(id) {
-    router.push(`/university/${id}`);
+  function onButtonClick(slug) {
+    router.push(`/university/${slug}`);
   }
 
   return (
@@ -18,7 +18,7 @@ const UniversityList = ({ universities }) => {
           className={styles.universityCard}
           key={index}
           onClick={() => {
-            onButtonClick(university._id);
+            onButtonClick(university.slug);
           }}
         >
           <Avatar

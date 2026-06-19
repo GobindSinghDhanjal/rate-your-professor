@@ -3,9 +3,8 @@ import { Rating, Skeleton } from "@mui/material";
 import styles from "./TopUniversities.module.css";
 import Link from "next/link";
 
-export default function TopUniversities({ props }) {
-  
-  if (!props || !props.length) {
+export default function TopUniversities({ universities }) {
+  if (!universities || !universities.length) {
     return (
       <div className={styles.container}>
         {[1, 2, 3].map((_, i) => (
@@ -19,36 +18,25 @@ export default function TopUniversities({ props }) {
 
   return (
     <div className={styles.container}>
-      {props.map(
-        (prop, i) =>
+      {universities.map(
+        (university, i) =>
           i < 3 && (
             <Link
               className="homepage-avatar plain-link"
-              href={`/university/${prop._id}`}
+              href={`/university/${university.slug}`}
               key={i}
             >
               <Avatar
                 className="avatar-image"
-                alt={prop.name}
-                src={prop.image}
+                alt={university.name}
+                src={university.image}
                 sx={{
                   width: 76,
                   height: 76,
                 }}
               />
-              {prop.title && <p>{prop.name}</p>}
-
-              {prop.title && (
-                <Rating
-                  name="read-only"
-                  value={prop.averageRating}
-                  precision={0.5}
-                  sx={{ margin: "1px auto", fontSize: 16 }}
-                  readOnly
-                />
-              )}
             </Link>
-          )
+          ),
       )}
     </div>
   );

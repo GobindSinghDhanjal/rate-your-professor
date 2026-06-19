@@ -80,7 +80,7 @@ export default function Home() {
         </div>
 
         <h3>Top Universities</h3>
-        <TopUniversities props={universities} />
+        <TopUniversities universities={universities} />
         <br />
         <div className="divider-p">
           <Divider className="divider" />

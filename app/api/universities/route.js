@@ -22,10 +22,11 @@ export async function GET() {
   try {
     await dbConnect();
 
-    // Fetch all universities
     const universities = await University.find()
+      .select("_id name image slug city state country")
       .collation({ locale: "en", strength: 1 })
       .sort({ name: 1 });
+
     return NextResponse.json(universities);
   } catch (err) {
     return NextResponse.json({ message: err.message }, { status: 500 });

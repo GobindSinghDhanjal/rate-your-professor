@@ -1,21 +1,21 @@
-// app/api/universities/[id]/route.js
+// app/api/universities/[slug]/route.js
 
 import dbConnect from "@/app/utils/dbConnect";
 import University from "@/app/models/University";
 import { NextResponse } from "next/server";
 
 export async function GET(req, { params }) {
-  const { id } = params;
+  const { slug } = params;
 
   try {
     await dbConnect();
 
-    // Find the university by ID
-    const university = await University.findById(id);
+    const university = await University.findOne({ slug });
+
     if (!university) {
       return NextResponse.json(
         { message: "University not found" },
-        { status: 404 }
+        { status: 404 },
       );
     }
 
@@ -26,18 +26,18 @@ export async function GET(req, { params }) {
 }
 
 export async function PATCH(req, { params }) {
-  const { id } = params;
+  const { slug } = params;
   const { name, description } = await req.json();
 
   try {
     await dbConnect();
 
-    // Find the university and update it
-    const university = await University.findById(id);
+    const university = await University.findOne({ slug });
+
     if (!university) {
       return NextResponse.json(
         { message: "University not found" },
-        { status: 404 }
+        { status: 404 },
       );
     }
 
@@ -45,6 +45,7 @@ export async function PATCH(req, { params }) {
     if (description != null) university.description = description;
 
     const updatedUniversity = await university.save();
+
     return NextResponse.json(updatedUniversity);
   } catch (err) {
     return NextResponse.json({ message: err.message }, { status: 400 });
@@ -52,24 +53,25 @@ export async function PATCH(req, { params }) {
 }
 
 export async function DELETE(req, { params }) {
-  const { id } = params;
+  const { slug } = params;
 
   try {
     await dbConnect();
 
-    // Find the university by ID
-    const university = await University.findById(id);
+    const university = await University.findOne({ slug });
+
     if (!university) {
       return NextResponse.json(
         { message: "University not found" },
-        { status: 404 }
+        { status: 404 },
       );
     }
 
-    // Delete the university
-    await university.remove();
+    await University.deleteOne({ _id: university._id });
 
-    return NextResponse.json({ message: "University deleted" });
+    return NextResponse.json({
+      message: "University deleted",
+    });
   } catch (err) {
     return NextResponse.json({ message: err.message }, { status: 500 });
   }
