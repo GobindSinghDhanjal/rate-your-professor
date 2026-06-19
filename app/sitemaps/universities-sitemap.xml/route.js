@@ -2,7 +2,7 @@ export async function GET() {
   const baseUrl = process.env.NEXT_PUBLIC_SITE_URL;
 
   const res = await fetch(
-    `${process.env.NEXT_PUBLIC_NEXT_BASE_URL}/universities`,
+    `${process.env.BASE_URL}/universities`,
     {
       next: { revalidate: 86400 },
     },
