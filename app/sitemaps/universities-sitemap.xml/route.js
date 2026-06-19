@@ -15,8 +15,7 @@ export async function GET() {
     const start = new Date("2026-05-01").getTime();
     const end = new Date("2026-06-15").getTime();
 
-    return new Date(start + Math.random() * (end - start))
-      .toISOString();
+    return new Date(start + Math.random() * (end - start)).toISOString();
   }
 
   const xml = `<?xml version="1.0" encoding="UTF-8"?>
@@ -29,7 +28,7 @@ ${universities
   .map(
     (university) => `
 <url>
-  <loc>${baseUrl}/university/${university._id}</loc>
+  <loc>${baseUrl}/university/${university.slug}</loc>
   <lastmod>${getRandomDate()}</lastmod>
   <changefreq>weekly</changefreq>
   <priority>0.9</priority>
