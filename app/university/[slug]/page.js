@@ -1,5 +1,5 @@
 import { notFound } from "next/navigation";
-import University from "./University";
+import UniversityDetailPage from "./UniversityDetailPage";
 
 export async function generateMetadata({ params }) {
   const { slug } = await params;
@@ -84,10 +84,12 @@ const Page = async ({ params }) => {
       </div>
     );
   }
-  
+
   const professors = await getProfessorsByUniversity(university._id);
 
-  return <University university={university} professors={professors} />;
+  return (
+    <UniversityDetailPage university={university} professors={professors} />
+  );
 };
 
 export default Page;

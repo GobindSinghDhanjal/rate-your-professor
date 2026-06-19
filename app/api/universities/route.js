@@ -23,7 +23,7 @@ export async function GET() {
     await dbConnect();
 
     const universities = await University.find()
-      .select("_id name image slug city state country")
+      .select("_id name description image slug city state country universityType abbreviation")
       .collation({ locale: "en", strength: 1 })
       .sort({ name: 1 });
 

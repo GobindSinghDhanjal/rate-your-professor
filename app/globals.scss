@@ -12,7 +12,7 @@
   --accent-glow: rgba(124, 58, 237, 0.4);
   --accent-glow-soft: rgba(124, 58, 237, 0.15);
 
-  --text-primary: #f1f5f9;
+  --text-primary: #f1f5f9e4;
   --text-secondary: #94a3b8;
   --text-muted: #475569;
   --text-accent: #a78bfa;
@@ -107,4 +107,48 @@ img {
 
 ::-webkit-scrollbar-thumb:hover {
   background: var(--accent-violet);
+}
+
+.container {
+  margin-top: 5rem;
+  min-height: 70vh;
+  max-width: 1200px;
+  margin: 6rem auto;
+  line-height: 1.7;
+  .sub-container {
+    padding: 6rem 1.5rem;
+  }
+  @media (min-width: 768px) {
+    min-height: 80vh;
+  }
+}
+
+.plain-link {
+  all: unset;
+  display: contents;
+}
+
+.section {
+  position: relative;
+  overflow: hidden;
+  padding: 6rem 1.5rem;
+
+  @media (max-width: 600px) {
+    padding: 4rem 1rem;
+  }
+}
+
+.section::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    var(--border-subtle),
+    transparent
+  );
 }

@@ -1,4 +1,5 @@
 import GoogleAd from "../components/GoogleAd/GoogleAd";
+import styles from "./About.module.scss";
 
 export const metadata = {
   title: "About",
@@ -8,7 +9,7 @@ export const metadata = {
 
 export default function page() {
   return (
-    <div className="about container sub-container">
+    <div className={styles.about}>
       <section>
         <h2>About Us</h2>
         <p>
@@ -82,8 +83,8 @@ export default function page() {
           Thank you for choosing RateYourProfessor. Let's build a brighter
           academic future together!
         </p>
-        
-        <GoogleAd/>
+
+        <GoogleAd />
       </section>
     </div>
   );

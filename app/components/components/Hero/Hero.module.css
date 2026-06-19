@@ -106,7 +106,6 @@
   font-weight: 500;
   color: var(--text-accent);
   backdrop-filter: blur(8px);
-  white-space: nowrap;
 }
 
 .heading {

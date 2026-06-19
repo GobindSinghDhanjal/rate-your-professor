@@ -1,5 +1,5 @@
-import UniversityPageSkeleton from "./UniversityPageSkeleton";
+import Loader from "@/app/components/Loader/Loader";
 
 export default function Loading() {
-  return <UniversityPageSkeleton />;
+  return <Loader />;
 }

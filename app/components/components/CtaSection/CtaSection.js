@@ -9,7 +9,7 @@ export default function CtaSection() {
   const inView = useInView(ref, { once: true, margin: '-60px' });
 
   return (
-    <section className={styles.section} ref={ref}>
+    <section className="section" ref={ref}>
       <div className={styles.blob1} />
       <div className={styles.blob2} />
       <div className={styles.gridLines} />

@@ -1,8 +1,4 @@
-.section {
-  padding: 6rem 1.5rem;
-  position: relative;
-  overflow: hidden;
-}
+
 
 .blob1 {
   position: absolute;
@@ -174,9 +170,6 @@
 }
 
 @media (max-width: 600px) {
-  .section {
-    padding: 4rem 1rem;
-  }
 
   .actions {
     flex-direction: column;

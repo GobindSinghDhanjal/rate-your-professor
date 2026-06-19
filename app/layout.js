@@ -1,5 +1,5 @@
 import { Sora, DM_Sans } from "next/font/google";
-import "./globals.css";
+import "./globals.scss";
 import { GoogleAnalytics } from "@next/third-parties/google";
 import Script from "next/script";
 import Navbar from "./components/components/Navbar/Navbar";
@@ -42,7 +42,9 @@ export default function RootLayout({ children }) {
     <html lang="en" className={`${sora.variable} ${dmSans.variable}`}>
       <body>
         <Navbar />
-        {children}
+        <div className="container">
+          {children}
+        </div>
         <Footer />
         <GoogleAnalytics gaId="G-VB68FXNM9S" />
         <Script

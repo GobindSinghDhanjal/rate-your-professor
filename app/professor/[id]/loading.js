@@ -1,5 +1,5 @@
-import ProfessorSkeleton from "../ProfessorSkeleton";
+import Loader from "@/app/components/Loader/Loader";
 
 export default function Loading() {
-  return <ProfessorSkeleton />;
+  return <Loader />;
 }

@@ -1,5 +1,5 @@
 .section {
-  padding: 6rem 1.5rem;
+
   position: relative;
   overflow: hidden;
 }
@@ -11,7 +11,11 @@
   transform: translateX(-50%);
   width: 900px;
   height: 400px;
-  background: radial-gradient(ellipse at center, rgba(124, 58, 237, 0.08), transparent 70%);
+  background: radial-gradient(
+    ellipse at center,
+    rgba(124, 58, 237, 0.08),
+    transparent 70%
+  );
   pointer-events: none;
 }
 
@@ -56,10 +60,12 @@
   line-height: 1.65;
 }
 
-.grid {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 1rem;
+.flex {
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: row;
+  justify-content: center;
+  gap: 2rem;
   width: 100%;
 }
 
@@ -69,12 +75,18 @@
   border: 1px solid var(--border-subtle);
   border-radius: var(--radius-lg);
   padding: 1.4rem;
+  min-width: 18rem;
+  min-height: 10rem;
   display: flex;
   flex-direction: column;
   gap: 0.6rem;
   overflow: hidden;
-  transition: border-color var(--transition-med), transform var(--transition-med);
+  transition:
+    border-color var(--transition-med),
+    transform var(--transition-med);
   text-decoration: none;
+  flex: 1 1 calc((100% - 4rem) / 3);
+  max-width: calc((100% - 4rem) / 3);
 }
 
 .card:hover {
@@ -93,15 +105,19 @@
 .cardGlow {
   position: absolute;
   inset: 0;
-  background: radial-gradient(ellipse at 30% 0%, color-mix(in srgb, var(--uni-color) 12%, transparent), transparent 70%);
+  background: radial-gradient(
+    ellipse at 30% 0%,
+    color-mix(in srgb, var(--uni-color) 12%, transparent),
+    transparent 70%
+  );
   opacity: 0;
   transition: opacity var(--transition-med);
   pointer-events: none;
 }
 
 .abbrWrap {
-  width: 48px;
-  height: 48px;
+  width: 64px;
+  height: 64px;
   border-radius: 12px;
   background: color-mix(in srgb, var(--uni-color) 12%, transparent);
   border: 1px solid color-mix(in srgb, var(--uni-color) 25%, transparent);
@@ -179,5 +195,34 @@
 
   .card {
     padding: 1rem;
+  }
+}
+
+.uniLogo {
+  width: 64px;
+  height: 64px;
+  object-fit: cover;
+  border-radius: 12px;
+}
+
+.skeletonCard::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -150%;
+  width: 150%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.078),
+    transparent
+  );
+  animation: shimmer 2.5s infinite;
+}
+
+@keyframes shimmer {
+  100% {
+    left: 150%;
   }
 }

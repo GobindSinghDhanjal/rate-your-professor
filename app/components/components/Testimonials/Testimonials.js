@@ -86,7 +86,7 @@ export default function Testimonials() {
   const col3 = testimonials.slice(4, 6);
 
   return (
-    <section id="testimonials" className={styles.section} ref={ref}>
+    <section id="testimonials" className="section" ref={ref}>
       <div className={styles.container}>
         <motion.div
           className={styles.header}

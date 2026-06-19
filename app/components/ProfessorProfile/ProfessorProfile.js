@@ -1,4 +1,4 @@
-import ProfRating from "@/app/professor/[id]/ProfRating";
+import ProfRating from "@/app/ProfessorPage/[id]/ProfRating";
 import { Avatar } from "@mui/material";
 import styles from "./ProfessorProfile.module.css";
 

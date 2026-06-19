@@ -1,47 +1,57 @@
-'use client';
+"use client";
 
-import { motion, useInView } from 'framer-motion';
-import { useRef } from 'react';
-import styles from './SearchPreview.module.css';
+import { motion, useInView } from "framer-motion";
+import { useRef, useState } from "react";
+import styles from "./SearchPreview.module.css";
+import { useRouter } from "next/navigation";
 
-const trending = ['Rajesh Kumar', 'Priya Sharma', 'DTU CSE', 'IIT Delhi Faculty', 'Amity Noida'];
+const trending = [
+  "Rajesh Kumar",
+  "Priya Sharma",
+  "DTU CSE",
+  "IIT Delhi Faculty",
+  "Amity Noida",
+];
 
 const professors = [
   {
     id: 1,
-    name: 'Dr. Rajesh Kumar',
-    dept: 'Computer Science',
-    university: 'DTU, Delhi',
+    name: "Dr. Rajesh Kumar",
+    dept: "Computer Science",
+    university: "DTU, Delhi",
     rating: 4.7,
     reviews: 312,
-    tags: ['Clear Explanations', 'Helpful', 'Research-focused'],
-    snippet: '"Best professor for algorithms. Explains every concept with real-world examples."',
-    avatar: 'RK',
-    avatarBg: 'linear-gradient(135deg, #7c3aed, #3b82f6)',
+    tags: ["Clear Explanations", "Helpful", "Research-focused"],
+    snippet:
+      '"Best professor for algorithms. Explains every concept with real-world examples."',
+    avatar: "RK",
+    avatarBg: "linear-gradient(135deg, #7c3aed, #3b82f6)",
   },
   {
     id: 2,
-    name: 'Prof. Priya Sharma',
-    dept: 'Electronics & Communication',
-    university: 'NSUT, Delhi',
+    name: "Prof. Priya Sharma",
+    dept: "Electronics & Communication",
+    university: "NSUT, Delhi",
     rating: 4.5,
     reviews: 198,
-    tags: ['Interactive', 'Industry Connect', 'Projects'],
-    snippet: '"Extremely knowledgeable. Makes complex circuits feel simple and fun."',
-    avatar: 'PS',
-    avatarBg: 'linear-gradient(135deg, #06b6d4, #8b5cf6)',
+    tags: ["Interactive", "Industry Connect", "Projects"],
+    snippet:
+      '"Extremely knowledgeable. Makes complex circuits feel simple and fun."',
+    avatar: "PS",
+    avatarBg: "linear-gradient(135deg, #06b6d4, #8b5cf6)",
   },
   {
     id: 3,
-    name: 'Dr. Amit Singh',
-    dept: 'Mathematics',
-    university: 'IIT Delhi',
+    name: "Dr. Amit Singh",
+    dept: "Mathematics",
+    university: "IIT Delhi",
     rating: 4.9,
     reviews: 520,
-    tags: ['Brilliant', 'Rigorous', 'Inspiring'],
-    snippet: '"If you want to truly understand maths, attend his lectures. Life-changing."',
-    avatar: 'AS',
-    avatarBg: 'linear-gradient(135deg, #f59e0b, #ef4444)',
+    tags: ["Brilliant", "Rigorous", "Inspiring"],
+    snippet:
+      '"If you want to truly understand maths, attend his lectures. Life-changing."',
+    avatar: "AS",
+    avatarBg: "linear-gradient(135deg, #f59e0b, #ef4444)",
   },
 ];
 
@@ -49,7 +59,14 @@ function StarRating({ rating }) {
   return (
     <div className={styles.stars}>
       {[1, 2, 3, 4, 5].map((s) => (
-        <span key={s} className={s <= Math.round(rating) ? styles.starFilled : styles.starEmpty}>★</span>
+        <span
+          key={s}
+          className={
+            s <= Math.round(rating) ? styles.starFilled : styles.starEmpty
+          }
+        >
+          ★
+        </span>
       ))}
       <span className={styles.ratingNum}>{rating}</span>
     </div>
@@ -58,10 +75,25 @@ function StarRating({ rating }) {
 
 export default function SearchPreview() {
   const ref = useRef(null);
-  const inView = useInView(ref, { once: true, margin: '-80px' });
+  const inView = useInView(ref, { once: true, margin: "-80px" });
+
+  const router = useRouter();
+  const [searchTerm, setSearchTerm] = useState("");
+
+  const handleSearch = () => {
+    if (!searchTerm.trim()) return;
+
+    router.push(`/searchprofessors?search=${encodeURIComponent(searchTerm)}`);
+  };
+
+  const handleKeyDown = (event) => {
+    if (event.key === "Enter") {
+      handleSearch();
+    }
+  };
 
   return (
-    <section id="search" className={styles.section} ref={ref}>
+    <section id="search" className="section" ref={ref}>
       <div className={styles.container}>
         {/* Header */}
         <motion.div
@@ -73,7 +105,8 @@ export default function SearchPreview() {
           <span className={styles.eyebrow}>Search Preview</span>
           <h2 className={styles.title}>Find Your Professor Instantly</h2>
           <p className={styles.subtitle}>
-            Search by name, department, or university. Get real reviews in seconds.
+            Search by name, department, or university. Get real reviews in
+            seconds.
           </p>
         </motion.div>
 
@@ -85,22 +118,41 @@ export default function SearchPreview() {
           transition={{ duration: 0.7, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
         >
           <div className={styles.searchInputRow}>
-            <svg className={styles.searchIcon} width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <circle cx="11" cy="11" r="8" /><path d="m21 21-4.3-4.3" />
+            <svg
+              className={styles.searchIcon}
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <circle cx="11" cy="11" r="8" />
+              <path d="m21 21-4.3-4.3" />
             </svg>
             <input
               type="text"
-              placeholder="Search professors, departments, or universities..."
+              placeholder="Search professors..."
+              // placeholder="Search professors, departments, or universities..."
               className={styles.searchInput}
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              onKeyDown={handleKeyDown}
             />
-            <button className={styles.searchBtn}>Search</button>
+            <button className={styles.searchBtn} onClick={handleSearch}>
+              Search
+            </button>
           </div>
 
           <div className={styles.trending}>
             <span className={styles.trendingLabel}>Trending:</span>
             <div className={styles.trendingTags}>
               {trending.map((t) => (
-                <span key={t} className={styles.trendingTag}>{t}</span>
+                <span key={t} className={styles.trendingTag}>
+                  {t}
+                </span>
               ))}
             </div>
           </div>
@@ -110,8 +162,12 @@ export default function SearchPreview() {
         <motion.div
           className={styles.cards}
           initial="hidden"
-          animate={inView ? 'visible' : 'hidden'}
-          variants={{ visible: { transition: { staggerChildren: 0.12, delayChildren: 0.25 } } }}
+          animate={inView ? "visible" : "hidden"}
+          variants={{
+            visible: {
+              transition: { staggerChildren: 0.12, delayChildren: 0.25 },
+            },
+          }}
         >
           {professors.map((prof) => (
             <motion.div
@@ -119,11 +175,18 @@ export default function SearchPreview() {
               className={styles.card}
               variants={{
                 hidden: { opacity: 0, y: 24 },
-                visible: { opacity: 1, y: 0, transition: { duration: 0.55, ease: [0.16, 1, 0.3, 1] } },
+                visible: {
+                  opacity: 1,
+                  y: 0,
+                  transition: { duration: 0.55, ease: [0.16, 1, 0.3, 1] },
+                },
               }}
             >
               <div className={styles.cardTop}>
-                <div className={styles.avatar} style={{ background: prof.avatarBg }}>
+                <div
+                  className={styles.avatar}
+                  style={{ background: prof.avatarBg }}
+                >
                   {prof.avatar}
                 </div>
                 <div className={styles.profInfo}>
@@ -143,13 +206,19 @@ export default function SearchPreview() {
 
               <div className={styles.tags}>
                 {prof.tags.map((t) => (
-                  <span key={t} className={styles.tag}>{t}</span>
+                  <span key={t} className={styles.tag}>
+                    {t}
+                  </span>
                 ))}
               </div>
 
               <div className={styles.cardFooter}>
-                <span className={styles.reviewCount}>{prof.reviews} reviews</span>
-                <a href="#" className={styles.viewLink}>View Profile →</a>
+                <span className={styles.reviewCount}>
+                  {prof.reviews} reviews
+                </span>
+                <a href="#" className={styles.viewLink}>
+                  View Profile →
+                </a>
               </div>
             </motion.div>
           ))}

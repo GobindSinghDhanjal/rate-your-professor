@@ -5,10 +5,11 @@ import { motion, AnimatePresence } from "framer-motion";
 import styles from "./Navbar.module.css";
 
 const navLinks = [
-  { label: "Professors", href: "#search" },
-  { label: "Universities", href: "#universities" },
-  { label: "Reviews", href: "#testimonials" },
-  { label: "About", href: "#" },
+  { label: "Professors", href: "/search" },
+  { label: "Universities", href: "/universities" },
+  { label: "Reviews", href: "/#testimonials" },
+  { label: "About", href: "/about" },
+  { label: "Notifications", href: "/notifications" },
 ];
 
 export default function Navbar() {

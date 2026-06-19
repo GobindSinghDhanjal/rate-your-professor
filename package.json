@@ -32,6 +32,7 @@
     "react-router-dom": "^6.21.3",
     "react-slick": "^0.30.1",
     "resend": "^4.1.1",
+    "sass": "^1.101.0",
     "slick-carousel": "^1.8.1",
     "slugify": "^1.6.9",
     "styled-components": "^6.1.8",

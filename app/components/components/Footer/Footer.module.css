@@ -2,6 +2,7 @@
   position: relative;
   background: var(--bg-secondary);
   padding: 4rem 1.5rem 2rem;
+  margin-top: 4rem;
 }
 
 .topBorder {
@@ -194,8 +195,8 @@
 }
 
 .disclaimer {
-  font-size: 0.78rem;
-  color: var(--border-glow);
+  font-size: 0.75rem;
+  color: #f9f9f969;
 }
 
 @media (max-width: 1000px) {
