@@ -215,7 +215,9 @@ export default function SearchPage({ universities }) {
     const fetchData = async () => {
       try {
         setLoading(true);
-        const res = await fetch(`/api/professors`);
+        const res = await fetch(
+          `${process.env.NEXT_PUBLIC_NEXT_BASE_URL}/professors`,
+        );
         const data = await res.json();
         if (mounted) setProfessors(data || []);
       } catch (err) {

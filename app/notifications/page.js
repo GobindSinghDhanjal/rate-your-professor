@@ -4,8 +4,8 @@ export const metadata = {
   title: "Notifications",
 };
 
-const NotificationComponent = () => {
+const NotificationsPage = () => {
   return <Notifications />;
 };
 
-export default NotificationComponent;
+export default NotificationsPage;

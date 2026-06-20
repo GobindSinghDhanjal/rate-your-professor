@@ -226,7 +226,7 @@
   flex-direction: row;
   align-items: center;
   margin-top: 1rem;
-  font-size: 1.2rem;
+  font-size: 1rem;
   gap: 4px;
 }
 
@@ -447,7 +447,7 @@
     grid-template-columns: 1fr;
   }
   .sidebar {
-    position: static;
+    display: none;
   }
   .filterOptions {
     flex-direction: row;
