@@ -11,6 +11,19 @@ import Image from "next/image";
 import Loader from "@/app/components/Loader/Loader";
 import { useLoader } from "@/app/components/LoaderContext/LoaderContext";
 
+async function copyTextFallback(text) {
+  const textarea = document.createElement("textarea");
+  textarea.value = text;
+  textarea.setAttribute("readonly", "");
+  textarea.style.position = "absolute";
+  textarea.style.left = "-9999px";
+  document.body.appendChild(textarea);
+  textarea.select();
+  const success = document.execCommand("copy");
+  document.body.removeChild(textarea);
+  return success;
+}
+
 const ALL_TAGS = [
   { label: "Helpful", icon: "🤝", positive: true },
   { label: "Clear Explanations", icon: "💡", positive: true },
@@ -128,6 +141,7 @@ export default function ProfessorPage({ prof }) {
   );
   const [activeTab, setActiveTab] = useState("reviews");
   const [modalOpen, setModalOpen] = useState(false);
+  const [shareStatus, setShareStatus] = useState("");
 
   const { averageRating, numberOfRatings } = ProfessorAverageRating(prof);
 
@@ -140,6 +154,41 @@ export default function ProfessorPage({ prof }) {
         displayReviews.length) *
         100,
     ) || prof?.wouldTakeAgain;
+
+  const sharePage = async () => {
+    const shareUrl = window.location.href;
+    const shareData = {
+      title: `${prof?.name} - Rate Your Professor`,
+      text: `Check out reviews for ${prof?.name}`,
+      url: shareUrl,
+    };
+
+    if (navigator.share) {
+      try {
+        await navigator.share(shareData);
+        setShareStatus("Link shared successfully.");
+      } catch (error) {
+        if (error.name !== "AbortError") {
+          console.error("Share failed", error);
+          setShareStatus("Could not share. Try copying the link.");
+        }
+      }
+      return;
+    }
+
+    try {
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        await navigator.clipboard.writeText(shareUrl);
+      } else {
+        const copied = await copyTextFallback(shareUrl);
+        if (!copied) throw new Error("Fallback copy failed");
+      }
+      setShareStatus("Link copied to clipboard.");
+    } catch (error) {
+      console.error("Copy to clipboard failed", error);
+      setShareStatus("Copy failed. Please copy manually.");
+    }
+  };
 
   return (
     // <PageWrapper>
@@ -208,8 +257,23 @@ export default function ProfessorPage({ prof }) {
                 >
                   ✍️ Write a Review
                 </button>
-                <button className={styles.shareBtn}>📤 Share</button>
+                <button className={styles.shareBtn} onClick={sharePage}>
+                  📤 Share
+                </button>
               </div>
+              {shareStatus && (
+                <div className={styles.shareStatusWrap}>
+                  <p className={styles.shareStatus}>{shareStatus}</p>
+                  <button
+                    type="button"
+                    className={styles.shareStatusClose}
+                    onClick={() => setShareStatus("")}
+                    aria-label="Close share status"
+                  >
+                    ×
+                  </button>
+                </div>
+              )}
             </div>
           </motion.div>
         </div>
