@@ -1,11 +1,10 @@
 .hero {
   position: relative;
-  min-height: 100vh;
+  min-height: 90vh;
   display: flex;
   align-items: center;
   justify-content: center;
   overflow: hidden;
-  padding: 8rem 1.5rem 4rem;
 }
 
 /* Background elements */
@@ -16,7 +15,11 @@
     linear-gradient(rgba(124, 58, 237, 0.04) 1px, transparent 1px),
     linear-gradient(90deg, rgba(124, 58, 237, 0.04) 1px, transparent 1px);
   background-size: 60px 60px;
-  mask-image: radial-gradient(ellipse 80% 80% at 50% 50%, black 30%, transparent 100%);
+  mask-image: radial-gradient(
+    ellipse 80% 80% at 50% 50%,
+    black 30%,
+    transparent 100%
+  );
 }
 
 .blobPurple {
@@ -25,7 +28,11 @@
   left: 15%;
   width: 600px;
   height: 600px;
-  background: radial-gradient(circle, rgba(124, 58, 237, 0.22) 0%, transparent 70%);
+  background: radial-gradient(
+    circle,
+    rgba(124, 58, 237, 0.22) 0%,
+    transparent 70%
+  );
   border-radius: 50%;
   filter: blur(60px);
   animation: floatBlob 12s ease-in-out infinite;
@@ -38,7 +45,11 @@
   right: 5%;
   width: 500px;
   height: 500px;
-  background: radial-gradient(circle, rgba(59, 130, 246, 0.18) 0%, transparent 70%);
+  background: radial-gradient(
+    circle,
+    rgba(59, 130, 246, 0.18) 0%,
+    transparent 70%
+  );
   border-radius: 50%;
   filter: blur(60px);
   animation: floatBlob 15s ease-in-out infinite reverse;
@@ -51,7 +62,11 @@
   right: 25%;
   width: 300px;
   height: 300px;
-  background: radial-gradient(circle, rgba(6, 182, 212, 0.1) 0%, transparent 70%);
+  background: radial-gradient(
+    circle,
+    rgba(6, 182, 212, 0.1) 0%,
+    transparent 70%
+  );
   border-radius: 50%;
   filter: blur(40px);
   animation: floatBlob 10s ease-in-out infinite 3s;
@@ -68,9 +83,16 @@
 }
 
 @keyframes floatBlob {
-  0%, 100% { transform: translate(0, 0) scale(1); }
-  33% { transform: translate(30px, -20px) scale(1.05); }
-  66% { transform: translate(-20px, 15px) scale(0.95); }
+  0%,
+  100% {
+    transform: translate(0, 0) scale(1);
+  }
+  33% {
+    transform: translate(30px, -20px) scale(1.05);
+  }
+  66% {
+    transform: translate(-20px, 15px) scale(0.95);
+  }
 }
 
 /* Content */
@@ -117,7 +139,11 @@
 }
 
 .gradientText {
-  background: linear-gradient(135deg, var(--accent-violet) 0%, var(--accent-cyan) 100%);
+  background: linear-gradient(
+    135deg,
+    var(--accent-violet) 0%,
+    var(--accent-cyan) 100%
+  );
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -149,13 +175,20 @@
   font-weight: 600;
   color: #fff;
   background: linear-gradient(135deg, var(--accent-purple), var(--accent-blue));
-  box-shadow: 0 0 30px var(--accent-glow), inset 0 1px 0 rgba(255,255,255,0.1);
-  transition: transform var(--transition-fast), box-shadow var(--transition-fast), opacity var(--transition-fast);
+  box-shadow:
+    0 0 30px var(--accent-glow),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  transition:
+    transform var(--transition-fast),
+    box-shadow var(--transition-fast),
+    opacity var(--transition-fast);
 }
 
 .btnPrimary:hover {
   transform: translateY(-2px);
-  box-shadow: 0 0 50px var(--accent-glow), inset 0 1px 0 rgba(255,255,255,0.15);
+  box-shadow:
+    0 0 50px var(--accent-glow),
+    inset 0 1px 0 rgba(255, 255, 255, 0.15);
 }
 
 .btnPrimary:active {
@@ -173,7 +206,10 @@
   color: var(--text-primary);
   background: var(--bg-card);
   border: 1px solid var(--border-subtle);
-  transition: border-color var(--transition-fast), background var(--transition-fast), transform var(--transition-fast);
+  transition:
+    border-color var(--transition-fast),
+    background var(--transition-fast),
+    transform var(--transition-fast);
 }
 
 .btnSecondary:hover {
@@ -200,7 +236,7 @@
 }
 
 .scrollDot::after {
-  content: '';
+  content: "";
   position: absolute;
   top: 3px;
   left: 50%;
@@ -213,15 +249,18 @@
 }
 
 @keyframes scrollBounce {
-  0%, 100% { transform: translateX(-50%) translateY(0); opacity: 1; }
-  60% { transform: translateX(-50%) translateY(8px); opacity: 0.4; }
+  0%,
+  100% {
+    transform: translateX(-50%) translateY(0);
+    opacity: 1;
+  }
+  60% {
+    transform: translateX(-50%) translateY(8px);
+    opacity: 0.4;
+  }
 }
 
 @media (max-width: 640px) {
-  .hero {
-    padding: 7rem 1rem 3rem;
-  }
-
   .ctas {
     flex-direction: column;
     width: 100%;
@@ -240,5 +279,11 @@
   .badge {
     font-size: 0.72rem;
     padding: 0.3rem 0.7rem;
+  }
+}
+
+@media (min-width: 768px) {
+  .hero {
+    min-height: 100vh;
   }
 }

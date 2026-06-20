@@ -126,7 +126,7 @@ export default function Universities() {
   }, []);
 
   return (
-    <section id="universities" className={styles.section} ref={ref}>
+    <section id="universities" className="section" ref={ref}>
       <div className={styles.bgAccent} />
       <div className={styles.container}>
         <motion.div

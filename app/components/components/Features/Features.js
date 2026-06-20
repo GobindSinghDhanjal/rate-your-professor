@@ -72,7 +72,7 @@ export default function Features() {
   const inView = useInView(ref, { once: true, margin: '-60px' });
 
   return (
-    <section className="section" ref={ref}>
+    <section className={`${styles.features} section`} ref={ref}>
       <div className={styles.container}>
         <motion.div
           className={styles.header}

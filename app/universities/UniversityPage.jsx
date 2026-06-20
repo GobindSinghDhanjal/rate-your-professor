@@ -103,7 +103,7 @@ export default function UniversitiesPage({ universities }) {
   return (
     <>
       {/* Hero */}
-      <section className={styles.hero}>
+      <section className={`${styles.hero} sub-container`}>
         <div className={styles.heroBg} />
         <div className={styles.heroInner}>
           <motion.div
@@ -165,7 +165,7 @@ export default function UniversitiesPage({ universities }) {
       </section>
 
       {/* Trending */}
-      <section className={styles.trendingSection}>
+      <section className={`${styles.trendingSection} sub-container`}>
         <div className={styles.container}>
           <h2 className={styles.sectionLabel}>🔥 Trending This Week</h2>
           <div className={styles.trendingGrid}>
@@ -203,7 +203,7 @@ export default function UniversitiesPage({ universities }) {
       </section>
 
       {/* Grid */}
-      <section className={styles.gridSection}>
+      <section className={`${styles.gridSection} sub-container`}>
         <div className={styles.container}>
           <div className={styles.gridHeader}>
             <p className={styles.gridCount}>

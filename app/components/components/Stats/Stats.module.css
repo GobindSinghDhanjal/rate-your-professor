@@ -1,5 +1,4 @@
 .stats {
-
   position: relative;
 }
 
@@ -23,7 +22,9 @@
   text-align: center;
   overflow: hidden;
   cursor: default;
-  transition: border-color var(--transition-med), transform var(--transition-med);
+  transition:
+    border-color var(--transition-med),
+    transform var(--transition-med);
 }
 
 .card:hover {
@@ -47,7 +48,11 @@
 .cardGlow {
   position: absolute;
   inset: 0;
-  background: radial-gradient(ellipse at 50% 100%, rgba(124, 58, 237, 0.12), transparent 70%);
+  background: radial-gradient(
+    ellipse at 50% 100%,
+    rgba(124, 58, 237, 0.12),
+    transparent 70%
+  );
   opacity: 0;
   transition: opacity var(--transition-med);
   pointer-events: none;
@@ -96,9 +101,5 @@
 
   .card {
     padding: 1.5rem 1rem;
-  }
-
-  .stats {
-    padding: 4rem 1rem;
   }
 }

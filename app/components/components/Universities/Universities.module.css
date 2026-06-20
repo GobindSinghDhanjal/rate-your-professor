@@ -1,5 +1,4 @@
 .section {
-
   position: relative;
   overflow: hidden;
 }
@@ -180,10 +179,6 @@
 @media (max-width: 700px) {
   .grid {
     grid-template-columns: repeat(2, 1fr);
-  }
-
-  .section {
-    padding: 4rem 1rem;
   }
 }
 

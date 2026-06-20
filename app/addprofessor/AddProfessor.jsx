@@ -80,7 +80,7 @@ const AddProfessor = () => {
 
   return (
     <>
-      <section className={styles.searchHero}>
+      <section className={`${styles.searchHero} sub-container`}>
         <div className={styles.heroBlob} />
         <div className={styles.heroInner}>
           <motion.h1
@@ -103,7 +103,10 @@ const AddProfessor = () => {
           </motion.p>
         </div>
       </section>
-      <form className={styles.formWrapper} onSubmit={handleSubmit}>
+      <form
+        className={`${styles.formWrapper} sub-container`}
+        onSubmit={handleSubmit}
+      >
         <div className={styles.formGroup}>
           <label htmlFor="name" className={styles.fieldLabel}>
             Name

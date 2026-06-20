@@ -1,14 +1,38 @@
-'use client';
+"use client";
 
-import { useEffect, useRef, useState } from 'react';
-import { motion, useInView } from 'framer-motion';
-import styles from './Stats.module.css';
+import { useEffect, useRef, useState } from "react";
+import { motion, useInView } from "framer-motion";
+import styles from "./Stats.module.css";
 
 const stats = [
-  { value: 2000, suffix: '+', label: 'Professors Listed', icon: '👨‍🏫', desc: 'Across all disciplines' },
-  { value: 20, suffix: '+', label: 'Universities', icon: '🏛️', desc: 'Top Indian institutions' },
-  { value: 10000, suffix: '+', label: 'Student Reviews', icon: '📝', desc: 'Honest & anonymous' },
-  { value: 98, suffix: '%', label: 'Growing Every Day', icon: '📈', desc: 'Month-over-month growth' },
+  {
+    value: 2000,
+    suffix: "+",
+    label: "Professors Listed",
+    icon: "👨‍🏫",
+    desc: "Across all disciplines",
+  },
+  {
+    value: 20,
+    suffix: "+",
+    label: "Universities",
+    icon: "🏛️",
+    desc: "Top Indian institutions",
+  },
+  {
+    value: 10000,
+    suffix: "+",
+    label: "Student Reviews",
+    icon: "📝",
+    desc: "Honest & anonymous",
+  },
+  {
+    value: 98,
+    suffix: "%",
+    label: "Growing Every Day",
+    icon: "📈",
+    desc: "Month-over-month growth",
+  },
 ];
 
 function CountUp({ target, suffix, active }) {
@@ -34,22 +58,23 @@ function CountUp({ target, suffix, active }) {
 
   return (
     <span className={styles.statValue}>
-      {count.toLocaleString('en-IN')}{suffix}
+      {count.toLocaleString("en-IN")}
+      {suffix}
     </span>
   );
 }
 
 export default function Stats() {
   const ref = useRef(null);
-  const inView = useInView(ref, { once: true, margin: '-80px' });
+  const inView = useInView(ref, { once: true, margin: "-80px" });
 
   return (
-    <section ref={ref} className={styles.stats}>
+    <section ref={ref} className={`${styles.stats} sub-container`}>
       <div className={styles.container}>
         <motion.div
           className={styles.grid}
           initial="hidden"
-          animate={inView ? 'visible' : 'hidden'}
+          animate={inView ? "visible" : "hidden"}
           variants={{
             visible: { transition: { staggerChildren: 0.1 } },
           }}
@@ -60,7 +85,11 @@ export default function Stats() {
               className={styles.card}
               variants={{
                 hidden: { opacity: 0, y: 30 },
-                visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: [0.16, 1, 0.3, 1] } },
+                visible: {
+                  opacity: 1,
+                  y: 0,
+                  transition: { duration: 0.6, ease: [0.16, 1, 0.3, 1] },
+                },
               }}
             >
               <div className={styles.cardInner}>

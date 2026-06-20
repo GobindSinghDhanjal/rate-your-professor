@@ -294,7 +294,7 @@ export default function SearchPage({ universities }) {
   return (
     <>
       {/* Hero search bar */}
-      <section className={styles.searchHero}>
+      <section className={` ${styles.searchHero} sub-container`}>
         <div className={styles.heroBlob} />
         <div className={styles.heroInner}>
           <motion.h1
@@ -363,7 +363,7 @@ export default function SearchPage({ universities }) {
       </section>
 
       {/* Body */}
-      <div className={styles.body}>
+      <div className={` ${styles.body} sub-container`}>
         <div className={styles.sidebar}>
           <div className={styles.filterBlock}>
             <h3 className={styles.filterTitle}>University</h3>
