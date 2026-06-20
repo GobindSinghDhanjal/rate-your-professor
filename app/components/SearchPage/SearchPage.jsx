@@ -174,7 +174,7 @@ export default function SearchPage({ universities }) {
   useEffect(() => {
     window.scrollTo(0, 0); // Scroll to the top of the page
   }, []);
-  
+
   const router = useRouter();
   const searchParams = useSearchParams();
 
@@ -441,6 +441,14 @@ export default function SearchPage({ universities }) {
                   <span className={styles.emptyIcon}>🔍</span>
                   <h3>No professors found</h3>
                   <p>Try a different search term or adjust your filters.</p>
+                  <hr className={styles.divider}/>
+                  <Link
+                    href="/addprofessor"
+                    className={`${styles.link} plain-link`}
+                  >
+                    Didn't find your professor?
+                    <span className={styles.addNow}> Add Now</span>
+                  </Link>
                 </motion.div>
               ) : (
                 <motion.div

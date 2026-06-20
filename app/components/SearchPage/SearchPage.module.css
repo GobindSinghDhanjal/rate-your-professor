@@ -140,6 +140,10 @@
   letter-spacing: 0.06em;
   text-transform: uppercase;
 }
+.divider {
+  width: 80%;
+  border: 1px solid #ffffff1f;
+}
 .filterOptions {
   display: flex;
   flex-direction: column;
@@ -470,5 +474,9 @@
   }
   .profCardArrow {
     display: none;
+  }
+
+  .empty {
+    padding: 0;
   }
 }
