@@ -1,24 +1,16 @@
 "use client";
 import React, { useState } from "react";
-import {
-  Typography,
-  TextField,
-  Button,
-  Box,
-  Autocomplete,
-  InputLabel,
-  FormControl,
-  Select,
-  MenuItem,
-} from "@mui/material";
-import LoadingScreen from "../components/LoadingScreen";
 import SuccessPage from "./SuccessPage";
 import FailedPage from "./FailedPage";
+import styles from "./AddProfessor.module.css";
+import { motion } from "framer-motion";
+import { useLoader } from "../components/LoaderContext/LoaderContext";
 
 const AddProfessor = () => {
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
   const [fail, setFail] = useState(false);
+  const { setLoadingScreen } = useLoader();
 
   const [professorData, setProfessorData] = useState({
     name: "",
@@ -49,9 +41,8 @@ const AddProfessor = () => {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    setLoading(true);
+    setLoadingScreen(true);
     professorData.image = null;
-    // Handle form submission
 
     try {
       const response = await fetch(
@@ -62,26 +53,22 @@ const AddProfessor = () => {
             "Content-Type": "application/json",
           },
           body: JSON.stringify(professorData),
-        }
+        },
       );
 
       if (response.ok) {
-        setLoading(false);
+        setLoadingScreen(false);
         setSuccess(true);
       } else {
-        setLoading(false);
+        setLoadingScreen(false);
         setFail(true);
       }
     } catch (error) {
-      setLoading(false);
+      setLoadingScreen(false);
       setFail(true);
       console.error("Error sending professor data:", error);
     }
   };
-
-  if (loading) {
-    return <LoadingScreen />;
-  }
 
   if (success) {
     return <SuccessPage />;
@@ -92,111 +79,174 @@ const AddProfessor = () => {
   }
 
   return (
-    <div className="container">
-      <div className="sub-container">
-        <Typography variant="h5" gutterBottom>
-          Add Professor
-        </Typography>
-        <form onSubmit={handleSubmit}>
-          <TextField
-            fullWidth
-            label="Name"
+    <>
+      <section className={styles.searchHero}>
+        <div className={styles.heroBlob} />
+        <div className={styles.heroInner}>
+          <motion.h1
+            className={styles.heroTitle}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+          >
+            Add Professor
+          </motion.h1>
+          <motion.p
+            className={styles.heroSub}
+            initial={{ opacity: 0, y: 16 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.1 }}
+          >
+            Can't find your professor? Submit a request and we'll verify and add
+            them within 24 hours. Stay updated on the progress through your
+            notifications.
+          </motion.p>
+        </div>
+      </section>
+      <form className={styles.formWrapper} onSubmit={handleSubmit}>
+        <div className={styles.formGroup}>
+          <label htmlFor="name" className={styles.fieldLabel}>
+            Name
+          </label>
+          <input
+            id="name"
+            type="text"
             name="name"
             value={professorData.name}
             onChange={handleChange}
             required
-            margin="normal"
-            multiline
-            maxRows={4}
+            className={styles.textInput}
           />
+        </div>
 
-          <FormControl sx={{ marginTop: 2 }} fullWidth>
-            <InputLabel id="title-label">Title</InputLabel>
-            <Select
-              labelId="title-label"
-              value={professorData.title}
-              onChange={(event) => handleChange(event)}
-              label="Title"
-              name="title"
-              required
-            >
-              {titleOptions.map((option) => (
-                <MenuItem key={option} value={option}>
-                  {option}
-                </MenuItem>
-              ))}
-            </Select>
-          </FormControl>
+        <div className={styles.formRow}>
+          <div className={styles.formGroup}>
+            <label htmlFor="title" className={styles.fieldLabel}>
+              Title
+            </label>
+            <div className={styles.selectWrapper}>
+              <select
+                id="title"
+                name="title"
+                value={professorData.title}
+                onChange={handleChange}
+                required
+                className={styles.selectInput}
+              >
+                {titleOptions.map((option) => (
+                  <option key={option} value={option}>
+                    {option}
+                  </option>
+                ))}
+              </select>
+            </div>
+          </div>
 
-          <FormControl sx={{ marginTop: 3, marginBottom: 1 }} fullWidth>
-            <InputLabel id="gender-label">Gender</InputLabel>
-            <Select
-              labelId="gender-label"
-              value={professorData.gender}
-              onChange={(event) => handleChange(event)}
-              label="Gender"
-              name="gender"
-              required
-            >
-              {genderOptions.map((option) => (
-                <MenuItem key={option} value={option}>
-                  {option}
-                </MenuItem>
-              ))}
-            </Select>
-          </FormControl>
-          <TextField
-            fullWidth
-            label="College"
+          <div className={styles.formGroup}>
+            <label htmlFor="gender" className={styles.fieldLabel}>
+              Gender
+            </label>
+            <div className={styles.selectWrapper}>
+              <select
+                id="gender"
+                name="gender"
+                value={professorData.gender}
+                onChange={handleChange}
+                required
+                className={styles.selectInput}
+              >
+                {genderOptions.map((option) => (
+                  <option key={option} value={option}>
+                    {option}
+                  </option>
+                ))}
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <div className={styles.formGroup}>
+          <label htmlFor="college" className={styles.fieldLabel}>
+            College
+          </label>
+          <input
+            id="college"
+            type="text"
             name="college"
             value={professorData.college}
             onChange={handleChange}
             required
-            margin="normal"
-            multiline
-            maxRows={4}
+            className={styles.textInput}
           />
-          <TextField
-            fullWidth
-            label="University"
+        </div>
+
+        <div className={styles.formGroup}>
+          <label htmlFor="university" className={styles.fieldLabel}>
+            University
+          </label>
+
+          <textarea
+            id="university"
+            type="text"
+            name="university"
+            value={professorData.university}
+            required
+            onChange={(e) => {
+              handleChange(e);
+              e.target.style.height = "auto";
+              e.target.style.height = `${e.target.scrollHeight}px`;
+            }}
+            rows={1}
+            className={styles.textArea}
+          />
+
+          {/* <input
+            id="university"
+            type="text"
             name="university"
             value={professorData.university}
             onChange={handleChange}
             required
-            margin="normal"
-            multiline
-            maxRows={4}
-          />
-          <TextField
-            fullWidth
-            label="Department"
+            className={styles.textInput}
+          /> */}
+        </div>
+
+        <div className={styles.formGroup}>
+          <label htmlFor="department" className={styles.fieldLabel}>
+            Department
+          </label>
+          <input
+            id="department"
+            type="text"
             name="department"
             value={professorData.department}
             onChange={handleChange}
-            margin="normal"
-            multiline
-            maxRows={4}
+            className={styles.textInput}
           />
-          <TextField
-            fullWidth
-            label="Subjects (Comma separated)"
+        </div>
+
+        <div className={styles.formGroup}>
+          <label htmlFor="subjects" className={styles.fieldLabel}>
+            Subjects (Comma separated)
+          </label>
+          <input
+            id="subjects"
+            type="text"
             name="subjects"
             value={professorData.subjects}
             onChange={handleChange}
-            margin="normal"
-            helperText="Enter multiple subjects separated by commas"
-            multiline
-            maxRows={4}
+            className={styles.textInput}
           />
+          <p className={styles.helperText}>
+            Enter multiple subjects separated by commas.
+          </p>
+        </div>
 
-          <Box mt={2}>
-            <Button type="submit" variant="contained" color="primary">
-              Add Professor
-            </Button>
-          </Box>
-        </form>
-      </div>
-    </div>
+        <button type="submit" className={styles.submitButton}>
+          Add Professor
+        </button>
+      </form>
+    </>
   );
 };
 

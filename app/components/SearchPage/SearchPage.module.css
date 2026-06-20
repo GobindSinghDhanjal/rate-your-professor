@@ -215,6 +215,32 @@
   flex-direction: column;
   gap: 1rem;
 }
+.link,
+.addNow {
+  transition: transform 0.2s ease;
+}
+
+.link {
+  color: #ffffffe8;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  margin-top: 1rem;
+  font-size: 1.2rem;
+  gap: 4px;
+}
+
+.addNow {
+  color: var(--text-accent);
+}
+
+.link:hover {
+  color: #ffffff;
+}
+
+.addNow:hover {
+  color: var(--text-accent);
+}
 .profCard {
   display: flex;
   gap: 1.25rem;

@@ -133,6 +133,7 @@ img {
 .plain-link {
   all: unset;
   display: contents;
+  cursor: pointer;
 }
 
 .section {

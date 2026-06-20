@@ -158,16 +158,7 @@ export default function Universities() {
                 <div
                   key={index}
                   className={`${styles.card} ${styles.skeletonCard}`}
-                >
-                  {/* <div className={styles.skeletonCircle}></div>
-
-                  <div className={styles.skeletonContent}>
-                    <div className={styles.skeletonTitle}></div>
-                    <div className={styles.skeletonText}></div>
-                  </div>
-
-                  <div className={styles.skeletonReviews}></div> */}
-                </div>
+                ></div>
               ))
             : universities.map((university) => (
                 <Link

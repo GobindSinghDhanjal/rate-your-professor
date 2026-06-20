@@ -3,6 +3,8 @@
 import { useEffect, useState, useRef, useCallback } from "react";
 import { Card, CardContent, Typography, Box } from "@mui/material";
 import Loading from "./loading";
+import styles from "./Notification.module.css";
+import { motion } from "framer-motion";
 
 const Notifications = () => {
   const [notifications, setNotifications] = useState([]);
@@ -40,7 +42,7 @@ const Notifications = () => {
       setNotifications((prev) => {
         const existingIds = new Set(prev.map((item) => item._id));
         const newNotifications = data.filter(
-          (item) => !existingIds.has(item._id)
+          (item) => !existingIds.has(item._id),
         );
         return [...prev, ...newNotifications];
       });
@@ -69,70 +71,54 @@ const Notifications = () => {
       });
       if (node) observer.current.observe(node);
     },
-    [loading, nextCursor]
+    [loading, nextCursor],
   );
 
   if (error) return <p>{error}</p>;
 
   return (
-    <div className="container sub-container">
-      <h1>Notifications</h1>
-      <Box
-        sx={{
-          display: "flex",
-          flexDirection: "column",
-          gap: 4,
-        }}
-      >
-        {notifications.map((notification, index) => (
-          <Card
-            key={notification._id}
-            ref={
-              index === notifications.length - 1 ? lastNotificationRef : null
-            }
-            sx={{
-              width: "100%",
-              borderRadius: 2,
-              boxShadow: "2px 2px 8px rgba(0, 0, 0, 0.21)",
-            }}
+    <>
+      <section className={styles.searchHero}>
+        <div className={styles.heroBlob} />
+        <div className={styles.heroInner}>
+          <motion.h1
+            className={styles.heroTitle}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
           >
-            <CardContent sx={{ minHeight: 100, position: "relative" }}>
-              <Typography
-                variant="h6"
-                component="div"
-                sx={{ marginBottom: 1, fontSize: "1rem" }}
-              >
-                {notification.title}
-              </Typography>
-              <Typography
-                variant="body1"
-                component="div"
-                sx={{ marginBottom: 1, fontSize: "0.9rem" }}
-              >
-                {notification.message}
-              </Typography>
-              <Typography
-                variant="body2"
-                color="text.secondary"
-                sx={{
-                  position: "absolute",
-                  bottom: 8,
-                  right: 8,
-                  fontSize: "0.75rem",
-                }}
-              >
-                {new Date(notification.date).toLocaleDateString("en-GB", {
-                  day: "2-digit",
-                  month: "short",
-                  year: "numeric",
-                })}
-              </Typography>
-            </CardContent>
-          </Card>
-        ))}
-      </Box>
+            Notifications
+          </motion.h1>
+          <motion.p
+            className={styles.heroSub}
+            initial={{ opacity: 0, y: 16 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.1 }}
+          >
+            Stay updated with newly added professors, rating activity, and
+            announcements from Rate Your Professor.
+          </motion.p>
+        </div>
+      </section>
+      {notifications.map((notification, index) => (
+        <motion.div
+          key={notification?._id || index}
+          ref={index === notifications.length - 1 ? lastNotificationRef : null}
+          className={styles.notificationCard}
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{
+            duration: 0.4,
+            delay: index * 0.06,
+            ease: [0.16, 1, 0.3, 1],
+          }}
+        >
+          <h3 className={styles.notificationTitle}>{notification?.title}</h3>
+          <p className={styles.notificationMessage}>{notification?.message}</p>
+        </motion.div>
+      ))}
       {loading && <Loading />}
-    </div>
+    </>
   );
 };
 

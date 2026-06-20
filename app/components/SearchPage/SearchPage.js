@@ -8,6 +8,7 @@ import Loader from "../Loader/Loader";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useDebounce } from "@/app/hooks/use-debounce";
 import { useLoader } from "../LoaderContext/LoaderContext";
+import Link from "next/link";
 
 const departments = [
   "All",
@@ -294,164 +295,169 @@ export default function SearchPage({ universities }) {
   }, [filtered]);
   return (
     <>
-      {/* <Navbar /> */}
-      <>
-        {/* Hero search bar */}
-        <section className={styles.searchHero}>
-          <div className={styles.heroBlob} />
-          <div className={styles.heroInner}>
-            <motion.h1
-              className={styles.heroTitle}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6 }}
+      {/* Hero search bar */}
+      <section className={styles.searchHero}>
+        <div className={styles.heroBlob} />
+        <div className={styles.heroInner}>
+          <motion.h1
+            className={styles.heroTitle}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+          >
+            Find Your Professor
+          </motion.h1>
+          <motion.p
+            className={styles.heroSub}
+            initial={{ opacity: 0, y: 16 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.1 }}
+          >
+            Search by name, department, university or course
+          </motion.p>
+
+          <motion.div
+            className={styles.searchBarWrap}
+            initial={{ opacity: 0, y: 16 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.15 }}
+          >
+            <svg
+              className={styles.searchIcon}
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
             >
-              Find Your Professor
-            </motion.h1>
-            <motion.p
-              className={styles.heroSub}
-              initial={{ opacity: 0, y: 16 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.1 }}
-            >
-              Search by name, department, university or course
-            </motion.p>
-
-            <motion.div
-              className={styles.searchBarWrap}
-              initial={{ opacity: 0, y: 16 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.15 }}
-            >
-              <svg
-                className={styles.searchIcon}
-                width="20"
-                height="20"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
-                <circle cx="11" cy="11" r="8" />
-                <path d="m21 21-4.3-4.3" />
-              </svg>
-              <input
-                type="text"
-                value={query}
-                onChange={(e) => setQuery(e.target.value)}
-                placeholder="Search professors, departments, courses..."
-                className={styles.searchInput}
-              />
-              {query && (
-                <button
-                  className={styles.clearBtn}
-                  onClick={() => setQuery("")}
-                >
-                  ✕
-                </button>
-              )}
-            </motion.div>
-          </div>
-        </section>
-
-        {/* Body */}
-        <div className={styles.body}>
-          <div className={styles.sidebar}>
-            <div className={styles.filterBlock}>
-              <h3 className={styles.filterTitle}>University</h3>
-              <div className={styles.filterOptions}>
-                <button
-                  className={`${styles.filterOpt} ${selectedUni === "All" ? styles.filterActive : ""}`}
-                  onClick={() => setSelectedUni("All")}
-                >
-                  All Universities
-                </button>
-                {universities.map((u) => (
-                  <button
-                    key={u?._id}
-                    className={`${styles.filterOpt} ${selectedUni === u?._id ? styles.filterActive : ""}`}
-                    onClick={() => setSelectedUni(u?._id)}
-                  >
-                    {u?.name}
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            <div className={styles.filterBlock}>
-              <h3 className={styles.filterTitle}>Department</h3>
-              <div className={styles.filterOptions}>
-                {departments.map((d) => (
-                  <button
-                    key={d}
-                    className={`${styles.filterOpt} ${selectedDept === d ? styles.filterActive : ""}`}
-                    onClick={() => setSelectedDept(d)}
-                  >
-                    {d}
-                  </button>
-                ))}
-              </div>
-            </div>
-          </div>
-
-          <div className={styles.results}>
-            <div className={styles.resultsHeader}>
-              <p className={styles.resultsCount}>
-                <strong>{filtered.length}</strong> professor
-                {filtered.length !== 1 ? "s" : ""} found
-              </p>
-              <select
-                className={styles.sortSelect}
-                value={sortBy}
-                onChange={(e) => setSortBy(e.target.value)}
-              >
-                {sortOptions.map((o) => (
-                  <option key={o.value} value={o.value}>
-                    {o.label}
-                  </option>
-                ))}
-              </select>
-            </div>
-
-            {loading ? (
-              <div className={styles.loaderWrap}>
-                <Loader />
-              </div>
-            ) : (
-              <AnimatePresence mode="wait">
-                {filtered.length === 0 ? (
-                  <motion.div
-                    key="empty"
-                    className={styles.empty}
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    exit={{ opacity: 0 }}
-                  >
-                    <span className={styles.emptyIcon}>🔍</span>
-                    <h3>No professors found</h3>
-                    <p>Try a different search term or adjust your filters.</p>
-                  </motion.div>
-                ) : (
-                  <motion.div
-                    key="list"
-                    className={styles.list}
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    exit={{ opacity: 0 }}
-                  >
-                    {filtered.map((prof, i) => (
-                      <ProfCard key={prof?._id} prof={prof} index={i} />
-                    ))}
-                  </motion.div>
-                )}
-              </AnimatePresence>
+              <circle cx="11" cy="11" r="8" />
+              <path d="m21 21-4.3-4.3" />
+            </svg>
+            <input
+              type="text"
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+              placeholder="Search professors, departments, courses..."
+              className={styles.searchInput}
+            />
+            {query && (
+              <button className={styles.clearBtn} onClick={() => setQuery("")}>
+                ✕
+              </button>
             )}
+          </motion.div>
+
+          <motion.div
+            className={styles.heroSub}
+            initial={{ opacity: 0, y: 16 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.1 }}
+          >
+            <Link href="/addprofessor" className={`${styles.link} plain-link`}>
+              Didn't find your professor?
+              <span className={styles.addNow}> Add Now</span>
+            </Link>
+          </motion.div>
+        </div>
+      </section>
+
+      {/* Body */}
+      <div className={styles.body}>
+        <div className={styles.sidebar}>
+          <div className={styles.filterBlock}>
+            <h3 className={styles.filterTitle}>University</h3>
+            <div className={styles.filterOptions}>
+              <button
+                className={`${styles.filterOpt} ${selectedUni === "All" ? styles.filterActive : ""}`}
+                onClick={() => setSelectedUni("All")}
+              >
+                All Universities
+              </button>
+              {universities.map((u) => (
+                <button
+                  key={u?._id}
+                  className={`${styles.filterOpt} ${selectedUni === u?._id ? styles.filterActive : ""}`}
+                  onClick={() => setSelectedUni(u?._id)}
+                >
+                  {u?.name}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          <div className={styles.filterBlock}>
+            <h3 className={styles.filterTitle}>Department</h3>
+            <div className={styles.filterOptions}>
+              {departments.map((d) => (
+                <button
+                  key={d}
+                  className={`${styles.filterOpt} ${selectedDept === d ? styles.filterActive : ""}`}
+                  onClick={() => setSelectedDept(d)}
+                >
+                  {d}
+                </button>
+              ))}
+            </div>
           </div>
         </div>
-      </>
-      {/* <Footer /> */}
+
+        <div className={styles.results}>
+          <div className={styles.resultsHeader}>
+            <p className={styles.resultsCount}>
+              <strong>{filtered.length}</strong> professor
+              {filtered.length !== 1 ? "s" : ""} found
+            </p>
+            <select
+              className={styles.sortSelect}
+              value={sortBy}
+              onChange={(e) => setSortBy(e.target.value)}
+            >
+              {sortOptions.map((o) => (
+                <option key={o.value} value={o.value}>
+                  {o.label}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          {loading ? (
+            <div className={styles.loaderWrap}>
+              <Loader />
+            </div>
+          ) : (
+            <AnimatePresence mode="wait">
+              {filtered.length === 0 ? (
+                <motion.div
+                  key="empty"
+                  className={styles.empty}
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                >
+                  <span className={styles.emptyIcon}>🔍</span>
+                  <h3>No professors found</h3>
+                  <p>Try a different search term or adjust your filters.</p>
+                </motion.div>
+              ) : (
+                <motion.div
+                  key="list"
+                  className={styles.list}
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                >
+                  {filtered.map((prof, i) => (
+                    <ProfCard key={prof?._id} prof={prof} index={i} />
+                  ))}
+                </motion.div>
+              )}
+            </AnimatePresence>
+          )}
+        </div>
+      </div>
     </>
   );
 }
