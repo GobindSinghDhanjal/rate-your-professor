@@ -1,8 +1,7 @@
 "use client";
 
 import { useEffect, useState, useRef, useCallback } from "react";
-import { Card, CardContent, Typography, Box } from "@mui/material";
-import Loading from "./loading";
+import Loading from "./Loading";
 import styles from "./Notification.module.css";
 import { motion } from "framer-motion";
 
