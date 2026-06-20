@@ -5,6 +5,9 @@ import { motion, AnimatePresence } from "framer-motion";
 import styles from "./SearchPage.module.css";
 import { ProfessorAverageRating } from "@/app/utils/ProfessorAverageRating";
 import Loader from "../Loader/Loader";
+import { useRouter, useSearchParams } from "next/navigation";
+import { useDebounce } from "@/app/hooks/use-debounce";
+import { useLoader } from "../LoaderContext/LoaderContext";
 
 const departments = [
   "All",
@@ -67,11 +70,19 @@ function ProfCard({ prof, index }) {
   const snippet = profReviews[index % 3];
 
   const { averageRating, numberOfRatings } = ProfessorAverageRating(prof);
+  const router = useRouter();
+
+  const { setLoadingScreen } = useLoader();
+
+  const handleClick = () => {
+    setLoadingScreen(true);
+    router.push(`/professor/${prof._id}`);
+  };
 
   return (
-    <motion.a
-      href={`/professor/${prof?._id}`}
+    <motion.div
       className={styles.profCard}
+      onClick={handleClick}
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{
@@ -154,74 +165,137 @@ function ProfCard({ prof, index }) {
       </div>
 
       <div className={styles.profCardArrow}>→</div>
-    </motion.a>
+    </motion.div>
   );
 }
 
 export default function SearchPage({ universities }) {
-  const [query, setQuery] = useState("");
-  const [selectedDept, setSelectedDept] = useState("All");
-  const [selectedUni, setSelectedUni] = useState("All");
-  const [sortBy, setSortBy] = useState("rating-desc");
-  const [filtersOpen, setFiltersOpen] = useState(false);
+  // ... inside component
+  const router = useRouter();
+  const searchParams = useSearchParams();
+
+  const { setLoadingScreen } = useLoader();
+
+  // 1. Initialize state from URL (so refreshing/sharing works)
+  const [query, setQuery] = useState(searchParams.get("q") || "");
+  const [selectedDept, setSelectedDept] = useState(
+    searchParams.get("dept") || "All",
+  );
+  const [selectedUni, setSelectedUni] = useState(
+    searchParams.get("uni") || "All",
+  );
+  const [sortBy, setSortBy] = useState(
+    searchParams.get("sort") || "rating-desc",
+  );
+
   const [professors, setProfessors] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
+  const filterParams = useMemo(
+    () => ({ q: query, dept: selectedDept, uni: selectedUni, sort: sortBy }),
+    [query, selectedDept, selectedUni, sortBy],
+  );
+
+  const {
+    q: debouncedQuery,
+    dept: debouncedDept,
+    uni: debouncedUni,
+    sort: debouncedSort,
+  } = useDebounce(filterParams, 800);
+
+  useEffect(() => {
+    setLoading(true);
+  }, [query, selectedDept, selectedUni, sortBy]);
+
+  // 3. Fetch Data (Keep this simple)
   useEffect(() => {
     let mounted = true;
-    setLoading(true);
-    fetch(`${process.env.NEXT_PUBLIC_NEXT_BASE_URL}/professors`)
-      .then((res) => {
-        if (!res.ok) throw new Error(`Failed to fetch: ${res.status}`);
-        return res.json();
-      })
-      .then((data) => {
-        if (!mounted) return;
-        setProfessors(data || []);
-      })
-      .catch((err) => {
-        if (!mounted) return;
-        setError(err.message || "Error fetching professors");
-      })
-      .finally(() => mounted && setLoading(false));
-
+    const fetchData = async () => {
+      try {
+        setLoading(true);
+        const res = await fetch(
+          `${process.env.NEXT_PUBLIC_NEXT_BASE_URL}/professors`,
+        );
+        const data = await res.json();
+        if (mounted) setProfessors(data || []);
+      } catch (err) {
+        if (mounted) setError(err.message);
+      } finally {
+        if (mounted) {
+          setLoading(false);
+          setLoadingScreen(false);
+        }
+      }
+    };
+    fetchData();
     return () => {
       mounted = false;
     };
   }, []);
 
-  const filtered = useMemo(() => {
-    let list = [...professors];
-    if (query.trim()) {
-      const q = query.toLowerCase();
-      list = list.filter(
-        (p) =>
-          p?.name?.toLowerCase().includes(q) ||
-          p?.dept?.toLowerCase().includes(q) ||
-          p?.college?.name?.toLowerCase().includes(q) ||
-          p?.college?.university?.name?.toLowerCase().includes(q) ||
-          p?.courses?.some((c) => c?.toLowerCase()?.includes(q)),
-      );
-    }
-    if (selectedDept !== "All")
-      list = list.filter((p) => p.dept === selectedDept);
-    if (selectedUni !== "All")
-      list = list.filter((p) => p?.college?.university?._id === selectedUni);
-    list.sort((a, b) => {
-      if (sortBy === "rating-desc") return b.rating - a.rating;
-      if (sortBy === "rating-asc") return a.rating - b.rating;
-      if (sortBy === "reviews-desc") return b.totalReviews - a.totalReviews;
-      if (sortBy === "name-asc") return a.name.localeCompare(b.name);
-      return 0;
-    });
-    return list;
-  }, [query, selectedDept, selectedUni, sortBy, professors]);
+  // 4. Update URL whenever filters change (Debounced)
+  useEffect(() => {
+    const params = new URLSearchParams();
+    if (debouncedQuery) params.set("q", debouncedQuery);
+    if (debouncedDept !== "All") params.set("dept", debouncedDept);
+    if (debouncedUni !== "All") params.set("uni", debouncedUni);
+    if (debouncedSort !== "rating-desc") params.set("sort", debouncedSort);
 
+    router.replace(`?${params.toString()}`, { scroll: false });
+  }, [debouncedQuery, debouncedDept, debouncedUni, debouncedSort, router]);
+
+  // 5. Optimized Filtering logic
+  const filtered = useMemo(() => {
+    if (!professors.length) return [];
+
+    const q = debouncedQuery.toLowerCase().trim();
+
+    return professors
+      .filter((p) => {
+        if (debouncedDept !== "All" && p.dept !== debouncedDept) return false;
+
+        if (
+          debouncedUni !== "All" &&
+          p?.college?.university?._id !== debouncedUni
+        )
+          return false;
+
+        if (q) {
+          return (
+            p.name?.toLowerCase().includes(q) ||
+            p.dept?.toLowerCase().includes(q) ||
+            p.courses?.some((c) => c?.toLowerCase().includes(q)) ||
+            p.college?.name?.toLowerCase().includes(q) ||
+            p.college?.university?.name?.toLowerCase().includes(q)
+          );
+        }
+        return true;
+      })
+      .sort((a, b) => {
+        switch (debouncedSort) {
+          case "rating-desc":
+            return b.rating - a.rating;
+          case "rating-asc":
+            return a.rating - b.rating;
+          case "reviews-desc":
+            return b.totalReviews - a.totalReviews;
+          case "name-asc":
+            return a.name.localeCompare(b.name);
+          default:
+            return 0;
+        }
+      });
+  }, [professors, debouncedQuery, debouncedDept, debouncedUni, debouncedSort]);
+
+  // 2. Stop loading once the debounced filtering is complete
+  useEffect(() => {
+    setLoading(false);
+  }, [filtered]);
   return (
     <>
       {/* <Navbar /> */}
-      <main className={styles.main}>
+      <>
         {/* Hero search bar */}
         <section className={styles.searchHero}>
           <div className={styles.heroBlob} />
@@ -376,7 +450,7 @@ export default function SearchPage({ universities }) {
             )}
           </div>
         </div>
-      </main>
+      </>
       {/* <Footer /> */}
     </>
   );

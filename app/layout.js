@@ -1,9 +1,10 @@
 import { Sora, DM_Sans } from "next/font/google";
-import "./globals.scss";
+import "./globals.css";
 import { GoogleAnalytics } from "@next/third-parties/google";
 import Script from "next/script";
 import Navbar from "./components/components/Navbar/Navbar";
 import Footer from "./components/components/Footer/Footer";
+import { LoaderProvider } from "./components/LoaderContext/LoaderContext";
 
 const sora = Sora({
   subsets: ["latin"],
@@ -42,9 +43,9 @@ export default function RootLayout({ children }) {
     <html lang="en" className={`${sora.variable} ${dmSans.variable}`}>
       <body>
         <Navbar />
-        <div className="container">
-          {children}
-        </div>
+        <LoaderProvider>
+          <div className="container">{children}</div>
+        </LoaderProvider>
         <Footer />
         <GoogleAnalytics gaId="G-VB68FXNM9S" />
         <Script

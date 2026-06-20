@@ -4,13 +4,14 @@ import { motion, useInView } from "framer-motion";
 import { useRef, useState } from "react";
 import styles from "./SearchPreview.module.css";
 import { useRouter } from "next/navigation";
+import { useLoader } from "../../LoaderContext/LoaderContext";
 
 const trending = [
-  "Rajesh Kumar",
-  "Priya Sharma",
-  "DTU CSE",
-  "IIT Delhi Faculty",
-  "Amity Noida",
+  "Rajesh",
+  "IIT",
+  "Indraprastha University",
+  "University",
+  "Calcutta",
 ];
 
 const professors = [
@@ -76,14 +77,16 @@ function StarRating({ rating }) {
 export default function SearchPreview() {
   const ref = useRef(null);
   const inView = useInView(ref, { once: true, margin: "-80px" });
+  const { setLoadingScreen } = useLoader();
 
   const router = useRouter();
   const [searchTerm, setSearchTerm] = useState("");
 
   const handleSearch = () => {
     if (!searchTerm.trim()) return;
+    setLoadingScreen(true);
 
-    router.push(`/searchprofessors?search=${encodeURIComponent(searchTerm)}`);
+    router.push(`/search?q=${encodeURIComponent(searchTerm)}`);
   };
 
   const handleKeyDown = (event) => {
@@ -150,7 +153,18 @@ export default function SearchPreview() {
             <span className={styles.trendingLabel}>Trending:</span>
             <div className={styles.trendingTags}>
               {trending.map((t) => (
-                <span key={t} className={styles.trendingTag}>
+                <span
+                  key={t}
+                  className={styles.trendingTag}
+                  onClick={() => setSearchTerm(t)}
+                  role="button"
+                  tabIndex={0}
+                  onKeyDown={(event) => {
+                    if (event.key === "Enter" || event.key === " ") {
+                      setSearchTerm(t);
+                    }
+                  }}
+                >
                   {t}
                 </span>
               ))}
@@ -169,7 +183,7 @@ export default function SearchPreview() {
             },
           }}
         >
-          {professors.map((prof) => (
+          {/* {professors.map((prof) => (
             <motion.div
               key={prof.id}
               className={styles.card}
@@ -221,7 +235,7 @@ export default function SearchPreview() {
                 </a>
               </div>
             </motion.div>
-          ))}
+          ))} */}
         </motion.div>
       </div>
     </section>

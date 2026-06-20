@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import styles from "./Navbar.module.css";
+import Link from "next/link";
 
 const navLinks = [
   { label: "Professors", href: "/search" },
@@ -56,9 +57,9 @@ export default function Navbar() {
           </nav>
 
           <div className={styles.actions}>
-            <a href="#search" className={styles.btnPrimary}>
+            <Link href="/#search" className={styles.btnPrimary}>
               Get Started
-            </a>
+            </Link>
             <button
               className={styles.hamburger}
               onClick={() => setMenuOpen(!menuOpen)}
@@ -107,13 +108,13 @@ export default function Navbar() {
                 animate={{ opacity: 1 }}
                 transition={{ delay: 0.3 }}
               >
-                <a
-                  href="#search"
+                <Link
+                  href="/#search"
                   onClick={() => setMenuOpen(false)}
                   className={styles.mobilePrimary}
                 >
                   Get Started
-                </a>
+                </Link>
               </motion.div>
             </nav>
           </motion.div>

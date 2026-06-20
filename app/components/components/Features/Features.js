@@ -22,7 +22,7 @@ const features = [
       </svg>
     ),
     title: 'Honest Student Feedback',
-    desc: 'Real experiences from verified students. No paid promotions, no biased reviews.',
+    desc: 'Real experiences from students. No paid promotions, no biased reviews.',
     color: '#3b82f6',
   },
   {
@@ -52,7 +52,7 @@ const features = [
       </svg>
     ),
     title: 'Easy Search Experience',
-    desc: 'Lightning-fast search by name, subject, or university. Find the right professor in seconds.',
+    desc: 'Lightning-fast search by name, college, or university. Find the right professor in seconds.',
     color: '#f59e0b',
   },
   {

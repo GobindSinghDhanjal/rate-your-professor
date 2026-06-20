@@ -9,6 +9,7 @@ import styles from "./ProfessorPage.module.css";
 import { ProfessorAverageRating } from "@/app/utils/ProfessorAverageRating";
 import Image from "next/image";
 import Loader from "@/app/components/Loader/Loader";
+import { useLoader } from "@/app/components/LoaderContext/LoaderContext";
 
 const ALL_TAGS = [
   { label: "Helpful", icon: "🤝", positive: true },
@@ -117,8 +118,11 @@ function ReviewCard({ rev, index }) {
 }
 
 export default function ProfessorPage({ prof }) {
+  const { setLoadingScreen } = useLoader();
+
+  setLoadingScreen(false);
   // const prof = professors.find((p) => p.id === id) || professors[0];
-  console.log("Professor data:", prof);
+  // console.log("Professor data:", prof);
   const displayReviews = [...(prof?.feedbacks || [])].sort(
     (a, b) => new Date(b.date) - new Date(a.date),
   );

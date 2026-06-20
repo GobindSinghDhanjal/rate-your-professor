@@ -202,7 +202,7 @@
   box-shadow: 0 0 20px var(--accent-glow);
 }
 
-@media (max-width: 768px) {
+@media (max-width: 920px) {
   .desktopNav {
     display: none;
   }

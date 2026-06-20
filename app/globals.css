@@ -115,11 +115,18 @@ img {
   max-width: 1200px;
   margin: 6rem auto;
   line-height: 1.7;
-  .sub-container {
-    padding: 6rem 1.5rem;
-  }
-  @media (min-width: 768px) {
+  padding-left: 1rem;
+  padding-right: 1rem;
+}
+
+.sub-container {
+  padding: 6rem 1.5rem;
+}
+@media (min-width: 768px) {
+  .container {
     min-height: 80vh;
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
   }
 }
 
