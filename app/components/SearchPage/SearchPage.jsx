@@ -171,7 +171,10 @@ function ProfCard({ prof, index }) {
 }
 
 export default function SearchPage({ universities }) {
-  // ... inside component
+  useEffect(() => {
+    window.scrollTo(0, 0); // Scroll to the top of the page
+  }, []);
+  
   const router = useRouter();
   const searchParams = useSearchParams();
 

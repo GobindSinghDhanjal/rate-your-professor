@@ -444,7 +444,8 @@
     max-height: 95vh;
     border-radius: var(--radius-lg);
     top: 4%;
-    left: 2%;
+    left: 4%;
+    max-width: 90vw;
   }
   .modalHeader,
   .modalBody,

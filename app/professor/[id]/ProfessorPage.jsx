@@ -30,7 +30,7 @@ function AnimatedBar({ label, value, color = "var(--accent-violet)" }) {
     <div className={styles.animBar} ref={ref}>
       <div className={styles.animBarTop}>
         <span className={styles.animBarLabel}>{label}</span>
-        <span className={styles.animBarNum}>{value}/5</span>
+        <span className={styles.animBarNum}>{value ? value + "/5" : "NA"}</span>
       </div>
       <div className={styles.animBarTrack}>
         <motion.div
@@ -101,7 +101,7 @@ function ReviewCard({ rev, index }) {
             </span>
           )}
         </div>
-        <button
+        {/* <button
           className={`${styles.helpfulBtn} ${voted ? styles.helpfulVoted : ""}`}
           onClick={() => {
             if (!voted) {
@@ -111,7 +111,7 @@ function ReviewCard({ rev, index }) {
           }}
         >
           👍 Helpful ({helpful})
-        </button>
+        </button> */}
       </div>
     </motion.div>
   );

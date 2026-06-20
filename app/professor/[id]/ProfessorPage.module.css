@@ -728,4 +728,7 @@
   .statsGrid {
     grid-template-columns: 1fr 1fr;
   }
+  .sideProfInfo {
+    display: none;
+  }
 }

@@ -77,7 +77,7 @@ const Notifications = () => {
 
   return (
     <>
-      <section className={styles.searchHero}>
+      <section className={`${styles.searchHero} sub-container`}>
         <div className={styles.heroBlob} />
         <div className={styles.heroInner}>
           <motion.h1
@@ -99,24 +99,30 @@ const Notifications = () => {
           </motion.p>
         </div>
       </section>
-      {notifications.map((notification, index) => (
-        <motion.div
-          key={notification?._id || index}
-          ref={index === notifications.length - 1 ? lastNotificationRef : null}
-          className={styles.notificationCard}
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{
-            duration: 0.4,
-            delay: index * 0.06,
-            ease: [0.16, 1, 0.3, 1],
-          }}
-        >
-          <h3 className={styles.notificationTitle}>{notification?.title}</h3>
-          <p className={styles.notificationMessage}>{notification?.message}</p>
-        </motion.div>
-      ))}
-      {loading && <Loading />}
+      <section className="sub-container">
+        {notifications.map((notification, index) => (
+          <motion.div
+            key={notification?._id || index}
+            ref={
+              index === notifications.length - 1 ? lastNotificationRef : null
+            }
+            className={styles.notificationCard}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{
+              duration: 0.4,
+              delay: index * 0.06,
+              ease: [0.16, 1, 0.3, 1],
+            }}
+          >
+            <h3 className={styles.notificationTitle}>{notification?.title}</h3>
+            <p className={styles.notificationMessage}>
+              {notification?.message}
+            </p>
+          </motion.div>
+        ))}
+        {loading && <Loading />}
+      </section>
     </>
   );
 };
