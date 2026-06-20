@@ -1,37 +1,22 @@
-// pages/success.js
-
-import { Container, Typography, Button } from "@mui/material";
 import Link from "next/link";
 import { useEffect } from "react";
+import styles from "./SuccessPage.module.css";
 
 const SuccessPage = () => {
   useEffect(() => {
     window.scrollTo(0, 0); // Scroll to the top of the page
   }, []);
+
   return (
-    <div className="container">
-      <div className="sub-container">
-        <Container maxWidth="md" sx={{ mt: 2, mb: 10 }}>
-          <Typography
-            variant="h4"
-            component="h1"
-            gutterBottom
-            align="center"
-            color="primary"
-          >
-            Thank You!
-          </Typography>
-          <Typography variant="body1" align="center" sx={{ mt: 4, mb: 6 }}>
-            Your request to add a professor will be processed within 24 hours
-          </Typography>
-          <div style={{ textAlign: "center" }}>
-            <Link href="/" passHref>
-              <Button variant="contained" color="primary">
-                Go back to home page
-              </Button>
-            </Link>
-          </div>
-        </Container>
+    <div className={styles.pageWrapper}>
+      <div className={styles.card}>
+        <h1 className={styles.title}>Thank You!</h1>
+        <p className={styles.message}>
+          Your request to add a professor will be processed within 24 hours.
+        </p>
+        <Link href="/" className={styles.button}>
+          Go back to home page
+        </Link>
       </div>
     </div>
   );

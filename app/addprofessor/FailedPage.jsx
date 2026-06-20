@@ -1,6 +1,6 @@
-import { Container, Typography, Button } from "@mui/material";
 import Link from "next/link";
 import { useEffect } from "react";
+import styles from "./SuccessPage.module.css";
 
 const FailedPage = ({ message }) => {
   useEffect(() => {
@@ -8,28 +8,18 @@ const FailedPage = ({ message }) => {
   }, []);
 
   return (
-    <Container maxWidth="md" sx={{ mt: 8, mb: 10 }}>
-      <Typography
-        variant="h4"
-        component="h1"
-        gutterBottom
-        align="center"
-        color="error"
-      >
-        Failed!
-      </Typography>
-      <Typography variant="body1" align="center" sx={{ mt: 4, mb: 6 }}>
-        {message ||
-          "Oops! An error occurred while processing your request to add a professor. Please try again later. Thank you for your patience!"}
-      </Typography>
-      <div style={{ textAlign: "center" }}>
-        <Link href="/" passHref>
-          <Button variant="contained" color="primary">
-            Go back to home page
-          </Button>
+    <div className={styles.pageWrapper}>
+      <div className={styles.card}>
+        <h1 className={styles.title}>Failed!</h1>
+        <p className={styles.message}>
+          {message ||
+            "Oops! An error occurred while processing your request to add a professor. Please try again later. Thank you for your patience!"}
+        </p>
+        <Link href="/" className={styles.button}>
+          Go back to home page
         </Link>
       </div>
-    </Container>
+    </div>
   );
 };
 

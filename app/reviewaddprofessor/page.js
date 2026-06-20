@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from "react";
 import { Box, Button, TextField } from "@mui/material";
 import ProfileCard from "../components/ProfileCard/ProfileCard";
+import styles from "./styles.module.css";
 
 const Page = () => {
   const [passcode, setPasscode] = useState("");
@@ -35,57 +36,53 @@ const Page = () => {
 
   if (!authenticated) {
     return (
-      <div className="container">
-        <div className="sub-container">
-          <Box padding={5} mt={10} mb={5} boxShadow={3} borderRadius={8}>
-            <form onSubmit={handleSubmit}>
-              <TextField
-                label="Enter Passcode"
-                type="password"
-                value={passcode}
-                onChange={(e) => setPasscode(e.target.value)}
-                variant="outlined"
-                fullWidth
-                margin="normal"
-              />
-              <Button
-                type="submit"
-                variant="contained"
-                color="primary"
-                fullWidth
-                sx={{ marginTop: 2 }}
-              >
-                Submit
-              </Button>
-            </form>
-          </Box>
-        </div>
+      <div className={styles.container}>
+        <Box padding={5} mt={10} mb={5} boxShadow={3} borderRadius={8}>
+          <form onSubmit={handleSubmit}>
+            <TextField
+              label="Enter Passcode"
+              type="password"
+              value={passcode}
+              onChange={(e) => setPasscode(e.target.value)}
+              variant="outlined"
+              fullWidth
+              margin="normal"
+            />
+            <Button
+              type="submit"
+              variant="contained"
+              color="primary"
+              fullWidth
+              sx={{ marginTop: 2 }}
+            >
+              Submit
+            </Button>
+          </form>
+        </Box>
       </div>
     );
   }
 
   return (
-    <div className="container">
-      <div className="sub-container">
-        <h1>Welcome to the secret page!</h1>
-        {professors.map((professor) => (
-          <ProfileCard
-            key={professor._id}
-            handleClick={handleClick}
-            profile={{
-              id: professor._id,
-              name: professor.name,
-              title: professor.title,
-              gender: professor.gender,
-              college: professor.college,
-              university: professor.university,
-              department: professor.department,
-              subjects: professor.subjects,
-              universityImageUrl: professor.universityImageUrl || "",
-            }}
-          />
-        ))}
-      </div>
+    <div className={styles.container}>
+      <h1>Welcome to the secret page!</h1>
+      {professors.map((professor) => (
+        <ProfileCard
+          key={professor._id}
+          handleClick={handleClick}
+          profile={{
+            id: professor._id,
+            name: professor.name,
+            title: professor.title,
+            gender: professor.gender,
+            college: professor.college,
+            university: professor.university,
+            department: professor.department,
+            subjects: professor.subjects,
+            universityImageUrl: professor.universityImageUrl || "",
+          }}
+        />
+      ))}
     </div>
   );
 };

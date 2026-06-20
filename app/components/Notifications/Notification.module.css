@@ -1,0 +1,117 @@
+.main {
+  min-height: 100vh;
+}
+
+/* Hero */
+.searchHero {
+  position: relative;
+  overflow: hidden;
+  padding-top: 4rem;
+  padding-bottom: 3rem;
+  background: linear-gradient(
+    180deg,
+    rgba(124, 58, 237, 0.06) 0%,
+    transparent 100%
+  );
+  border-bottom: 1px solid var(--border-subtle);
+}
+.heroBlob {
+  position: absolute;
+  top: -60px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 600px;
+  height: 300px;
+  background: radial-gradient(
+    ellipse at center,
+    rgba(124, 58, 237, 0.15),
+    transparent 70%
+  );
+  pointer-events: none;
+  filter: blur(40px);
+}
+.heroInner {
+  max-width: 720px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  text-align: center;
+  position: relative;
+  z-index: 1;
+}
+.heroTitle {
+  font-size: clamp(1.8rem, 4vw, 2.8rem);
+  font-weight: 800;
+  color: var(--text-primary);
+  letter-spacing: -0.03em;
+}
+.heroSub {
+  font-size: 1rem;
+  color: var(--text-secondary);
+}
+
+.notificationCard {
+  display: flex;
+  gap: 1.25rem;
+  align-items: flex-start;
+  flex-direction: column;
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  padding: 1.5rem;
+  margin-top: 2rem;
+  transition:
+    border-color var(--transition-med),
+    transform var(--transition-med),
+    box-shadow var(--transition-med);
+  text-decoration: none;
+  cursor: pointer;
+}
+.notificationCard:hover {
+  border-color: var(--border-glow);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 32px rgba(124, 58, 237, 0.1);
+}
+
+.notificationTitle {
+  font-size: 1.1rem;
+  margin-top: 0.15rem;
+}
+.notificationMessage {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+}
+
+.card {
+  position: relative;
+  width: 100%;
+  height: 10rem;
+  background: #ffffff27;
+  margin-top: 2rem;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.skeletonCard::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -150%;
+  width: 150%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.078),
+    transparent
+  );
+  animation: shimmer 2.5s infinite;
+}
+
+@keyframes shimmer {
+  100% {
+    left: 150%;
+  }
+}

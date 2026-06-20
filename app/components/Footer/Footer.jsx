@@ -57,7 +57,7 @@ const Footer = () => {
       </div>
       <hr />
       <div className="footer-bottom">
-        <p className={styles["version"]}>Version 1.7.0</p>
+        <p className={styles["version"]}>Version 2.0.0</p>
       </div>
     </footer>
   );

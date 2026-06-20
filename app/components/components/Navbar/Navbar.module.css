@@ -1,0 +1,224 @@
+.navbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  padding: 0 1.5rem;
+  transition: background var(--transition-med), box-shadow var(--transition-med), border-color var(--transition-med);
+  border-bottom: 1px solid transparent;
+}
+
+.navbar.scrolled {
+  background: rgba(7, 9, 15, 0.85);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-bottom-color: var(--border-subtle);
+  box-shadow: 0 1px 40px rgba(0, 0, 0, 0.5);
+}
+
+.inner {
+  max-width: 1280px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 68px;
+  gap: 2rem;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  flex-shrink: 0;
+}
+
+.logoMark {
+  width: 34px;
+  height: 34px;
+  background: linear-gradient(135deg, var(--accent-purple), var(--accent-blue));
+  border-radius: 9px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-sora), sans-serif;
+  font-weight: 800;
+  font-size: 1rem;
+  color: #fff;
+  box-shadow: 0 0 16px var(--accent-glow);
+}
+
+.logoText {
+  font-family: var(--font-sora), sans-serif;
+  font-weight: 700;
+  font-size: 1rem;
+  color: var(--text-primary);
+  letter-spacing: -0.02em;
+}
+
+.desktopNav {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.navLink {
+  padding: 0.45rem 0.85rem;
+  border-radius: var(--radius-sm);
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+  transition: color var(--transition-fast), background var(--transition-fast);
+}
+
+.navLink:hover {
+  color: var(--text-primary);
+  background: var(--border-subtle);
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.btnGhost {
+  padding: 0.45rem 1rem;
+  border-radius: var(--radius-sm);
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+  transition: color var(--transition-fast);
+}
+
+.btnGhost:hover {
+  color: var(--text-primary);
+}
+
+.btnPrimary {
+  padding: 0.5rem 1.15rem;
+  border-radius: var(--radius-sm);
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #fff;
+  background: linear-gradient(135deg, var(--accent-purple), var(--accent-blue));
+  box-shadow: 0 0 20px var(--accent-glow);
+  transition: opacity var(--transition-fast), box-shadow var(--transition-fast), transform var(--transition-fast);
+}
+
+.btnPrimary:hover {
+  opacity: 0.9;
+  box-shadow: 0 0 30px var(--accent-glow);
+  transform: translateY(-1px);
+}
+
+.hamburger {
+  display: none;
+  flex-direction: column;
+  gap: 5px;
+  padding: 6px;
+  cursor: pointer;
+}
+
+.bar {
+  display: block;
+  width: 22px;
+  height: 2px;
+  background: var(--text-secondary);
+  border-radius: 99px;
+  transition: transform var(--transition-fast), opacity var(--transition-fast);
+}
+
+.bar1Open {
+  transform: translateY(7px) rotate(45deg);
+}
+
+.bar2Open {
+  opacity: 0;
+}
+
+.bar3Open {
+  transform: translateY(-7px) rotate(-45deg);
+}
+
+/* Mobile menu */
+.mobileMenu {
+  position: fixed;
+  inset: 68px 0 0 0;
+  z-index: 999;
+  background: rgba(7, 9, 15, 0.97);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  padding: 2rem 1.5rem;
+  border-top: 1px solid var(--border-subtle);
+}
+
+.mobileNav {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.mobileNavLink {
+  padding: 0.9rem 1rem;
+  font-size: 1.1rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+  border-radius: var(--radius-sm);
+  transition: color var(--transition-fast), background var(--transition-fast);
+}
+
+.mobileNavLink:hover {
+  color: var(--text-primary);
+  background: var(--border-subtle);
+}
+
+.mobileActions {
+  margin-top: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.mobileGhost {
+  text-align: center;
+  padding: 0.85rem;
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  font-size: 1rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+}
+
+.mobilePrimary {
+  text-align: center;
+  padding: 0.85rem;
+  border-radius: var(--radius-md);
+  font-size: 1rem;
+  font-weight: 600;
+  color: #fff;
+  background: linear-gradient(135deg, var(--accent-purple), var(--accent-blue));
+  box-shadow: 0 0 20px var(--accent-glow);
+}
+
+@media (max-width: 920px) {
+  .desktopNav {
+    display: none;
+  }
+
+  .btnGhost,
+  .btnPrimary {
+    display: none;
+  }
+
+  .hamburger {
+    display: flex;
+  }
+}
+
+@media (max-width: 480px) {
+  .logoText {
+    display: none;
+  }
+}

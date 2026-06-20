@@ -1,19 +1,14 @@
-import { Skeleton, Box } from "@mui/material";
+import styles from "./Notification.module.css";
 
 export default function Loading() {
   return (
-    <div style={{marginTop: 24}}>
-      <Box sx={{ display: "flex", flexDirection: "column", gap: 4 }}>
-        {[...Array(2)].map((_, index) => (
-          <Skeleton
-            key={index}
-            sx={{ borderRadius: 2 }}
-            variant="rectangular"
-            width="100%"
-            height={160}
-          />
-        ))}
-      </Box>
-    </div>
+    <>
+      {Array.from({ length: 2 }).map((_, index) => (
+        <div
+          key={index}
+          className={`${styles.card} ${styles.skeletonCard}`}
+        ></div>
+      ))}
+    </>
   );
 }

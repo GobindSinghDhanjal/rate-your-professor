@@ -1,25 +1,31 @@
+import { Sora, DM_Sans } from "next/font/google";
 import "./globals.css";
-import { Poppins } from "next/font/google";
 import { GoogleAnalytics } from "@next/third-parties/google";
-import DrawerAppBar from "./components/DrawerAppBar/DrawerAppBar";
-import Footer from "./components/Footer/Footer";
 import Script from "next/script";
+import Navbar from "./components/components/Navbar/Navbar";
+import Footer from "./components/components/Footer/Footer";
+import { LoaderProvider } from "./components/LoaderContext/LoaderContext";
 
-const poppins = Poppins({
+const sora = Sora({
   subsets: ["latin"],
-  display: "swap",
-  variable: "--font-poppins",
-  weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"],
+  variable: "--font-sora",
+  weight: ["300", "400", "500", "600", "700", "800"],
+});
+
+const dmSans = DM_Sans({
+  subsets: ["latin"],
+  variable: "--font-dm-sans",
+  weight: ["300", "400", "500", "600"],
 });
 
 export const metadata = {
-  metadataBase: new URL("https://www.rateyourprofessor.in/"),
   title: {
-    default: "Rate Your Professor",
-    template: "%s | Rate Your Professor",
+    default: "RateYourProfessor — India's Largest Professor Rating Platform",
+    template: "%s | RateYourProfessor",
   },
   description:
-    "Welcome to RateYourProfessor, the platform where students have the power to share their valuable insights and experiences with professors anonymously, without the need for login or signup.",
+    "Discover honest and anonymous professor reviews from students across India and worldwide.",
+  metadataBase: new URL("https://www.rateyourprofessor.in/"),
   keywords: [
     "rate your professor",
     "professor reviews",
@@ -34,10 +40,12 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="en" className={poppins.variable}>
+    <html lang="en" className={`${sora.variable} ${dmSans.variable}`}>
       <body>
-        <DrawerAppBar />
-        {children}
+        <Navbar />
+        <LoaderProvider>
+          <div className="container">{children}</div>
+        </LoaderProvider>
         <Footer />
         <GoogleAnalytics gaId="G-VB68FXNM9S" />
         <Script
