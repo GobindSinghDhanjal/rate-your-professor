@@ -1,12 +1,13 @@
-'use client';
+"use client";
 
-import { motion } from 'framer-motion';
-import styles from './Hero.module.css';
+import { motion } from "framer-motion";
+import styles from "./Hero.module.css";
+import Link from "next/link";
 
 const trustBadges = [
-  { icon: '🔒', label: 'Anonymous Reviews' },
-  { icon: '✅', label: 'Trusted by Students' },
-  { icon: '💬', label: 'Real Experiences' },
+  { icon: "🔒", label: "Anonymous Reviews" },
+  { icon: "✅", label: "Trusted by Students" },
+  { icon: "💬", label: "Real Experiences" },
 ];
 
 const fadeUp = {
@@ -53,9 +54,8 @@ export default function Hero() {
           variants={fadeUp}
           custom={1}
         >
-          India&apos;s Largest{' '}
-          <span className={styles.gradientText}>Professor Rating</span>
-          {' '}Platform
+          India&apos;s Largest{" "}
+          <span className={styles.gradientText}>Professor Rating</span> Platform
         </motion.h1>
 
         {/* Subheading */}
@@ -66,8 +66,8 @@ export default function Hero() {
           variants={fadeUp}
           custom={2}
         >
-          Discover honest and anonymous professor reviews from students across India
-          and worldwide. Make smarter academic decisions.
+          Discover honest and anonymous professor reviews from students across
+          India and worldwide. Make smarter academic decisions.
         </motion.p>
 
         {/* CTAs */}
@@ -80,13 +80,22 @@ export default function Hero() {
         >
           <a href="#search" className={styles.btnPrimary}>
             <span>Search Professors</span>
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+            <svg
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2.5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
               <path d="m5 12 14 0M13 6l6 6-6 6" />
             </svg>
           </a>
-          <a href="#universities" className={styles.btnSecondary}>
+          <Link href="/universities" className={styles.btnSecondary}>
             <span>Explore Universities</span>
-          </a>
+          </Link>
         </motion.div>
 
         {/* Scroll indicator */}

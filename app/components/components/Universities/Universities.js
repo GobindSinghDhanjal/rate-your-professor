@@ -195,13 +195,13 @@ export default function Universities() {
                         📍 {university?.state}, {university?.country}
                       </p>
                     </div>
-                    <div className={styles.reviewCount}>
+                    {/* <div className={styles.reviewCount}>
                       <span>
                         {university.reviews ??
                           Math.floor(Math.random() * 401) + 100}
                       </span>
                       <span className={styles.reviewLabel}>reviews</span>
-                    </div>
+                    </div> */}
                     <div className={styles.cardGlow} />
                   </motion>
                 </Link>

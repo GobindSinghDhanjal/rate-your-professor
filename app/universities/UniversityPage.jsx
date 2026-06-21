@@ -211,9 +211,9 @@ export default function UniversitiesPage({ universities }) {
       <section className={`${styles.gridSection} sub-container`}>
         <div className={styles.container}>
           <div className={styles.gridHeader}>
-            <p className={styles.gridCount}>
+            {/* <p className={styles.gridCount}>
               <strong>{filtered.length}</strong> universities found
-            </p>
+            </p> */}
           </div>
           {filtered.length === 0 ? (
             <div className={styles.empty}>

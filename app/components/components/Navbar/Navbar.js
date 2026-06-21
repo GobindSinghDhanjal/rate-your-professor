@@ -43,10 +43,10 @@ export default function Navbar() {
         transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
       >
         <div className={styles.inner}>
-          <a href="/" className={styles.logo}>
+          <Link href="/" className={styles.logo}>
             <span className={styles.logoMark}>R</span>
             <span className={styles.logoText}>RateYourProfessor</span>
-          </a>
+          </Link>
 
           <nav className={styles.desktopNav}>
             {navLinks.map((link) => (
@@ -90,17 +90,16 @@ export default function Navbar() {
           >
             <nav className={styles.mobileNav}>
               {navLinks.map((link, i) => (
-                <motion.a
+                <motion.div
                   key={link.label}
-                  href={link.href}
                   className={styles.mobileNavLink}
                   onClick={() => setMenuOpen(false)}
                   initial={{ opacity: 0, x: -20 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ delay: i * 0.07 }}
                 >
-                  {link.label}
-                </motion.a>
+                  <Link href={link.href}> {link.label}</Link>
+                </motion.div>
               ))}
               <motion.div
                 className={styles.mobileActions}

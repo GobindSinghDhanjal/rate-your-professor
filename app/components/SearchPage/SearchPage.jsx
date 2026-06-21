@@ -437,7 +437,7 @@ export default function SearchPage({ universities }) {
               <Loader />
             </div>
           ) : (
-            <AnimatePresence mode="wait">
+            <AnimatePresence mode="sync">
               {filtered.length === 0 ? (
                 <motion.div
                   key="empty"
@@ -459,17 +459,11 @@ export default function SearchPage({ universities }) {
                   </Link>
                 </motion.div>
               ) : (
-                <motion.div
-                  key="list"
-                  className={styles.list}
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  exit={{ opacity: 0 }}
-                >
+                <div key="list" className={styles.list}>
                   {filtered.map((prof, i) => (
                     <ProfCard key={prof?._id} prof={prof} index={i} />
                   ))}
-                </motion.div>
+                </div>
               )}
             </AnimatePresence>
           )}
