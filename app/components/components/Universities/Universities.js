@@ -114,7 +114,7 @@ export default function Universities() {
         }
         const data = await response.json();
         setUniversities(data);
-        console.log("Fetched universities:", data);
+        // console.log("Fetched universities:", data);
       } catch (error) {
         console.error(error.message);
       } finally {

@@ -35,10 +35,10 @@ function UniCard({ uni, index }) {
           📍 {uni?.city}, {uni?.state}, {uni?.country}
         </p>
         <p className={styles.uniDesc}>
-          {uni?.description?.slice(0, 90) + "..."}
+          {uni?.description?.slice(0, 60) + "..."}
         </p>
       </div>
-      <div className={styles.cardStats}>
+      {/* <div className={styles.cardStats}>
         <div className={styles.statItem}>
           <span className={styles.statVal}>
             {uni?.professors ? uni?.totalProfessors?.toLocaleString() : "NA"}
@@ -59,10 +59,12 @@ function UniCard({ uni, index }) {
             <span className={styles.statLbl}>NAAC</span>
           </div>
         )}
-      </div>
+      </div> */}
       <div className={styles.cardMeta}>
         <span className={styles.typeBadge}>{uni?.universityType}</span>
-        <span className={styles.nirfBadge}>NIRF #{uni?.nirfRank}</span>
+        {uni?.nirfRank && (
+          <span className={styles.nirfBadge}>NIRF #{uni?.nirfRank}</span>
+        )}
       </div>
     </motion.a>
   );
@@ -165,42 +167,45 @@ export default function UniversitiesPage({ universities }) {
       </section>
 
       {/* Trending */}
-      <section className={`${styles.trendingSection} sub-container`}>
-        <div className={styles.container}>
-          <h2 className={styles.sectionLabel}>🔥 Trending This Week</h2>
-          <div className={styles.trendingGrid}>
-            {trending.map((uni, i) => (
-              <motion.a
-                key={uni?.slug}
-                href={`/university/${uni?.slug}`}
-                className={styles.trendCard}
-                style={{ "--uni-color": uni.color }}
-                initial={{ opacity: 0, y: 16 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: i * 0.08 }}
-              >
-                <div className={styles.trendRank}>#{i + 1}</div>
-                <div className={styles.trendLogo}>
-                  <img
-                    src={uni?.image}
-                    alt={uni?.name}
-                    className={styles.trendImg}
-                  />
-                </div>
-                <div className={styles.trendInfo}>
-                  <p className={styles.trendName}>{uni?.name}</p>
-                  {uni?.reviews && (
-                    <p className={styles.trendMeta}>
-                      {uni?.reviews?.toLocaleString()} reviews · {uni?.rating}★
-                    </p>
-                  )}
-                </div>
-                <span className={styles.trendArrow}>→</span>
-              </motion.a>
-            ))}
+      {query.length === 0 && activeFilter == "All" && (
+        <section className={`${styles.trendingSection} sub-container`}>
+          <div className={styles.container}>
+            <h2 className={styles.sectionLabel}>🔥 Trending This Week</h2>
+            <div className={styles.trendingGrid}>
+              {trending.map((uni, i) => (
+                <motion.a
+                  key={uni?.slug}
+                  href={`/university/${uni?.slug}`}
+                  className={styles.trendCard}
+                  style={{ "--uni-color": uni.color }}
+                  initial={{ opacity: 0, y: 16 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: i * 0.08 }}
+                >
+                  <div className={styles.trendRank}>#{i + 1}</div>
+                  <div className={styles.trendLogo}>
+                    <img
+                      src={uni?.image}
+                      alt={uni?.name}
+                      className={styles.trendImg}
+                    />
+                  </div>
+                  <div className={styles.trendInfo}>
+                    <p className={styles.trendName}>{uni?.name}</p>
+                    {uni?.reviews && (
+                      <p className={styles.trendMeta}>
+                        {uni?.reviews?.toLocaleString()} reviews · {uni?.rating}
+                        ★
+                      </p>
+                    )}
+                  </div>
+                  <span className={styles.trendArrow}>→</span>
+                </motion.a>
+              ))}
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
+      )}
 
       {/* Grid */}
       <section className={`${styles.gridSection} sub-container`}>

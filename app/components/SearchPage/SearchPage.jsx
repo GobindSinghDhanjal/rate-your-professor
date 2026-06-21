@@ -279,13 +279,15 @@ export default function SearchPage({ universities }) {
         return true;
       })
       .sort((a, b) => {
+        const ratingA = ProfessorAverageRating(a);
+        const ratingB = ProfessorAverageRating(b);
         switch (debouncedSort) {
           case "rating-desc":
-            return b.rating - a.rating;
+            return ratingB.averageRating - ratingA.averageRating;
           case "rating-asc":
-            return a.rating - b.rating;
+            return ratingA.averageRating - ratingB.averageRating;
           case "reviews-desc":
-            return b.totalReviews - a.totalReviews;
+            return ratingB.numberOfRatings - ratingA.numberOfRatings;
           case "name-asc":
             return a.name.localeCompare(b.name);
           default:

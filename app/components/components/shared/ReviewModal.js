@@ -112,12 +112,12 @@ export default function ReviewModal({
 
   const handleSubmit = async () => {
     try {
-      console.log("in submit");
-      console.log("rating: ", ratings);
+      // console.log("in submit");
+      // console.log("rating: ", ratings);
       const value = ratings.overall;
       const comment = reviewText.trim();
 
-      console.log("review text: ", comment);
+      // console.log("review text: ", comment);
 
       const todaySubmissions = getTodaySubmissions();
       if (
@@ -179,7 +179,7 @@ export default function ReviewModal({
         throw new Error("Failed to submit rating: " + response.statusText);
       }
 
-      console.log("Rating submitted successfully.");
+      // console.log("Rating submitted successfully.");
       recordSubmission();
     } catch (error) {
       console.error("Error submitting rating:", error.message);

@@ -1,7 +1,7 @@
 export const ProfessorAverageRating = (professor) => {
   if (!professor?.feedbacks || professor.feedbacks.length === 0) {
     return {
-      averageRating: null,
+      averageRating: 0,
       numberOfRatings: 0,
     };
   }

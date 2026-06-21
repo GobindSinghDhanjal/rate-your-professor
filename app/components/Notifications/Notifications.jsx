@@ -22,7 +22,7 @@ const Notifications = () => {
         process.env.NEXT_PUBLIC_NEXT_BASE_URL
       }/notifications?limit=10${nextCursor ? `&cursor=${nextCursor}` : ""}`;
 
-      console.log("Fetching from:", url);
+      // console.log("Fetching from:", url);
 
       const response = await fetch(url, {
         method: "GET",
