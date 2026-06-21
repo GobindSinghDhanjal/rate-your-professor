@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo, useEffect } from "react";
+import { useState, useMemo, useEffect, useLayoutEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import styles from "./SearchPage.module.css";
 import { ProfessorAverageRating } from "@/app/utils/ProfessorAverageRating";
@@ -171,14 +171,18 @@ function ProfCard({ prof, index }) {
 }
 
 export default function SearchPage({ universities }) {
+  const { setLoadingScreen } = useLoader();
+
+  useLayoutEffect(() => {
+    setLoadingScreen(true);
+  }, []);
+
   useEffect(() => {
     window.scrollTo(0, 0); // Scroll to the top of the page
   }, []);
 
   const router = useRouter();
   const searchParams = useSearchParams();
-
-  const { setLoadingScreen } = useLoader();
 
   // 1. Initialize state from URL (so refreshing/sharing works)
   const [query, setQuery] = useState(searchParams.get("q") || "");
@@ -407,10 +411,10 @@ export default function SearchPage({ universities }) {
 
         <div className={styles.results}>
           <div className={styles.resultsHeader}>
-            <p className={styles.resultsCount}>
+            {/* <p className={styles.resultsCount}>
               <strong>{filtered.length}</strong> professor
               {filtered.length !== 1 ? "s" : ""} found
-            </p>
+            </p> */}
             <select
               className={styles.sortSelect}
               value={sortBy}
@@ -441,7 +445,7 @@ export default function SearchPage({ universities }) {
                   <span className={styles.emptyIcon}>🔍</span>
                   <h3>No professors found</h3>
                   <p>Try a different search term or adjust your filters.</p>
-                  <hr className={styles.divider}/>
+                  <hr className={styles.divider} />
                   <Link
                     href="/addprofessor"
                     className={`${styles.link} plain-link`}
