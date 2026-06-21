@@ -283,7 +283,7 @@ export default function ProfessorPage({ prof }) {
       <div className={styles.statsStrip}>
         {[
           {
-            val: averageRating != null ? `${averageRating}/5` : "NA",
+            val: averageRating !== 0 ? `${averageRating}/5` : "NA",
             label: "Overall Rating",
             icon: "⭐",
           },

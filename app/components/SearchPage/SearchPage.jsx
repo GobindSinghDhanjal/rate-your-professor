@@ -114,7 +114,9 @@ function ProfCard({ prof, index }) {
             </p>
           </div>
           <div className={styles.profCardRating}>
-            <span className={styles.bigRating}>{averageRating}</span>
+            {averageRating !== 0 && (
+              <span className={styles.bigRating}>{averageRating}</span>
+            )}
             <StarRow rating={averageRating} />
             <span className={styles.reviewCount}>
               {numberOfRatings} reviews
