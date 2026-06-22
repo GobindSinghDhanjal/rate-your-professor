@@ -9,9 +9,9 @@ const quickLinks = [
 ];
 
 const resources = [
-  { label: "How It Works", href: "#" },
+  { label: "How It Works", href: "/#" },
   { label: "Privacy Policy", href: "/privacy-policy" },
-  { label: "Terms of Use", href: "#" },
+  { label: "Terms of Use", href: "/#" },
   { label: "Contact Us", href: "/contact-us" },
 ];
 
