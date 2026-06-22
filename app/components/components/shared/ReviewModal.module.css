@@ -441,7 +441,7 @@
 
 @media (max-width: 480px) {
   .modal {
-    max-height: 95vh;
+    max-height: 85vh;
     border-radius: var(--radius-lg);
     top: 4%;
     left: 4%;

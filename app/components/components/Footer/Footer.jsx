@@ -1,3 +1,4 @@
+import Link from "next/link";
 import styles from "./Footer.module.css";
 
 const quickLinks = [
@@ -9,9 +10,9 @@ const quickLinks = [
 
 const resources = [
   { label: "How It Works", href: "#" },
-  { label: "Privacy Policy", href: "#" },
+  { label: "Privacy Policy", href: "/privacy-policy" },
   { label: "Terms of Use", href: "#" },
-  { label: "Contact Us", href: "#" },
+  { label: "Contact Us", href: "/contact-us" },
 ];
 
 const socials = [
@@ -107,9 +108,9 @@ export default function Footer() {
             <ul className={styles.linkList}>
               {resources.map((l) => (
                 <li key={l.label}>
-                  <a href={l.href} className={styles.link}>
+                  <Link href={l.href} className={styles.link}>
                     {l.label}
-                  </a>
+                  </Link>
                 </li>
               ))}
             </ul>
@@ -126,7 +127,6 @@ export default function Footer() {
                 type="email"
                 placeholder="Enter your email"
                 className={styles.emailInput}
-                readOnly
               />
               <button className={styles.subscribeBtn}>Subscribe</button>
             </div>
