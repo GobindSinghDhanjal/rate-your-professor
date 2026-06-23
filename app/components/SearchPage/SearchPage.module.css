@@ -127,10 +127,9 @@
 .filterBlock {
   background: var(--bg-card);
   overflow-y: auto;
-  max-height: 45vh;
   border: 1px solid var(--border-subtle);
   border-radius: var(--radius-lg);
-  padding: 1.25rem;
+  padding: 1.25rem 0.5rem 1.25rem 1.25rem;
   display: flex;
   flex-direction: column;
   gap: 0.75rem;
@@ -150,6 +149,8 @@
   display: flex;
   flex-direction: column;
   gap: 2px;
+  overflow-y: auto;
+  max-height: 28vh;
 }
 .filterOpt {
   padding: 0.45rem 0.7rem;
@@ -160,6 +161,7 @@
   color: var(--text-secondary);
   cursor: pointer;
   background: none;
+  margin-right: 1rem;
   border: none;
   transition:
     background var(--transition-fast),
