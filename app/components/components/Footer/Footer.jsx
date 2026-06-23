@@ -6,15 +6,16 @@ const quickLinks = [
   { label: "Universities", href: "/universities" },
   { label: "Write a Review", href: "/#" },
   { label: "About Us", href: "/about" },
+  { label: "FAQ", href: "/faq" },
 ];
 
 const resources = [
-  { label: "How It Works", href: "/#" },
+  { label: "How It Works", href: "/how-it-works" },
   { label: "Privacy Policy", href: "/privacy-policy" },
-  { label: "Terms of Use", href: "/#" },
+  { label: "Terms of Service", href: "/terms" },
+  { label: "Community Guidelines", href: "/community-guidelines" },
   { label: "Contact Us", href: "/contact-us" },
 ];
-
 const socials = [
   {
     label: "Instagram",

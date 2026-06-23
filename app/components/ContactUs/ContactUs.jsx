@@ -1,6 +1,5 @@
 "use client";
 
-import GoogleAd from "../GoogleAd/GoogleAd";
 import styles from "../Shared.module.css";
 import { motion } from "framer-motion";
 
@@ -103,8 +102,6 @@ export default function ContactUs() {
             We aim to respond to inquiries as soon as reasonably possible.
           </p>
         </div>
-
-        <GoogleAd />
       </section>
     </>
   );
