@@ -188,7 +188,7 @@ export default function ReviewModal({
       setSubmitted(true);
 
       setTimeout(() => {
-        setSubmitted(false);
+        // setSubmitted(false);
         setStep(1);
         setRatings({ overall: 0, clarity: 0, helpfulness: 0, fairness: 0 });
         setSelectedTags([]);
@@ -196,11 +196,8 @@ export default function ReviewModal({
         setReviewText("");
         setWouldTakeAgain(null);
         setDifficulty(0);
-        onClose();
-        setTimeout(() => {
-          router.replace("/");
-        }, 200);
-      }, 8000);
+        // onClose();
+      }, 100);
     }
   };
 
