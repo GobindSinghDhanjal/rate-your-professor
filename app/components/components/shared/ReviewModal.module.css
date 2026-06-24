@@ -34,6 +34,20 @@
   gap: 1rem;
 }
 
+.link {
+  padding: 0.7rem 1.25rem;
+  border-radius: var(--radius-md);
+  background: linear-gradient(135deg, var(--accent-purple), var(--accent-blue));
+  box-shadow: 0 0 24px var(--accent-glow);
+  color: #fff;
+  font-size: 0.875rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition:
+    opacity var(--transition-fast),
+    transform var(--transition-fast);
+}
+
 .anonBadge {
   display: inline-flex;
   align-items: center;

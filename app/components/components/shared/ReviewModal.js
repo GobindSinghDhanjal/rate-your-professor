@@ -6,6 +6,7 @@ import styles from "./ReviewModal.module.css";
 import Filter from "bad-words";
 import { additionalBadWords } from "@/public/data/badwords";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 
 const ALL_TAGS = [
   "Clear Explanations",
@@ -199,7 +200,7 @@ export default function ReviewModal({
         setTimeout(() => {
           router.replace("/");
         }, 200);
-      }, 1800);
+      }, 8000);
     }
   };
 
@@ -224,7 +225,7 @@ export default function ReviewModal({
             exit={{ opacity: 0, y: 30, scale: 0.97 }}
             transition={{ type: "spring", damping: 28, stiffness: 320 }}
           >
-            {submitted ? (
+            {submitted? (
               <motion.div
                 className={styles.successState}
                 initial={{ opacity: 0, scale: 0.9 }}
@@ -236,7 +237,12 @@ export default function ReviewModal({
                 <p className={styles.successDesc}>
                   Your anonymous review has been submitted. Thank you for
                   helping fellow students!
+                  <br />
+                  <br />
+                  AI moderation is now reviewing your submission. Approved
+                  reviews are typically published within 6 hours.
                 </p>
+                <Link className={`${styles.link}`} href="/">Go Back to Homepage</Link>
               </motion.div>
             ) : (
               <>

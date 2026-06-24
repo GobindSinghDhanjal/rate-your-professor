@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { motion, useInView } from "framer-motion";
 import Link from "next/link";
 import StarRating from "../../components/components/shared/StarRating";
@@ -134,12 +134,38 @@ function ReviewCard({ rev, index }) {
 export default function ProfessorPage({ prof }) {
   const { setLoadingScreen } = useLoader();
 
-  setLoadingScreen(false);
+  const [feedbacks, setFeedbacks] = useState(null);
+
+  useEffect(() => {
+    async function fetchFeedbacks() {
+      try {
+        const res = await fetch(
+          `${process.env.NEXT_PUBLIC_NEXT_BASE_URL}/professors/${prof._id}`,
+          { cache: "no-store" },
+        );
+        if (!res.ok) throw new Error("Failed to fetch");
+        const data = await res.json();
+        setFeedbacks(data?.feedbacks);
+      } catch (err) {
+        console.error(err);
+        setFeedbacks([]); // fallback to empty
+      } finally {
+        setLoadingScreen(false);
+      }
+    }
+    fetchFeedbacks();
+  }, [prof._id]);
+
+  // Use live feedbacks if loaded, otherwise nothing yet
+  const displayReviews = feedbacks
+    ? [...feedbacks].sort((a, b) => new Date(b.date) - new Date(a.date))
+    : [];
+
   // const prof = professors.find((p) => p.id === id) || professors[0];
   // console.log("Professor data:", prof);
-  const displayReviews = [...(prof?.feedbacks || [])].sort(
-    (a, b) => new Date(b.date) - new Date(a.date),
-  );
+  // const displayReviews = [...(prof?.feedbacks || [])].sort(
+  //   (a, b) => new Date(b.date) - new Date(a.date),
+  // );
   const [activeTab, setActiveTab] = useState("reviews");
   const [modalOpen, setModalOpen] = useState(false);
   const [shareStatus, setShareStatus] = useState("");
