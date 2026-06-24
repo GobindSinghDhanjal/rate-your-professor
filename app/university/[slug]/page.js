@@ -50,6 +50,9 @@ async function getUniversity(slug) {
   try {
     const response = await fetch(
       `${process.env.NEXT_PUBLIC_NEXT_BASE_URL}/universities/${slug}`,
+      {
+        next: { revalidate: 60 },
+      },
     );
     if (!response.ok) throw new Error("University not found");
     return await response.json();

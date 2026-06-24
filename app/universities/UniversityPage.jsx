@@ -19,9 +19,7 @@ function UniCard({ uni, index }) {
     >
       <div className={styles.cardGlow} />
       <div className={styles.cardTop}>
-        <div className={styles.uniLogo}>
           <img src={uni?.image} alt={uni?.name} className={styles.uniImg} />
-        </div>
         {uni?.rating && (
           <div className={styles.uniRatingBadge}>
             <span className={styles.uniRatingNum}>{uni?.rating}</span>

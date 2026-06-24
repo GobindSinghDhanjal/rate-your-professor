@@ -198,6 +198,7 @@
   height: 64px;
   object-fit: cover;
   border-radius: 12px;
+  background: #ffffff;
 }
 
 .skeletonCard::after {

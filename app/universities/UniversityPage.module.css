@@ -9,7 +9,11 @@
   );
 }
 .uniImg {
+  width: 64px;
+  height: 64px;
   border-radius: 100px;
+  object-fit: cover;
+  background: #ffffff;
 }
 .heroBg {
   position: absolute;
