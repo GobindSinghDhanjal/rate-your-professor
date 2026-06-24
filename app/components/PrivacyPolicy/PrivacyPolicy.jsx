@@ -7,7 +7,7 @@ import { motion } from "framer-motion";
 export default function PrivacyPolicy() {
   return (
     <>
-      <section className={`${styles.searchHero} sub-container`}>
+      <section className={`${styles.searchHero} sub-container  page-top`}>
         <div className={styles.heroBlob} />
         <div className={styles.heroInner}>
           <motion.span

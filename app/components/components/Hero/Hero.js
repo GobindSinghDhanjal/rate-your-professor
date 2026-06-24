@@ -21,7 +21,7 @@ const fadeUp = {
 
 export default function Hero() {
   return (
-    <section className={`${styles.hero} sub-container`}>
+    <section className={`${styles.hero} sub-container page-top`}>
       {/* Animated background */}
       <div className={styles.bgGrid} />
       <div className={styles.blobPurple} />

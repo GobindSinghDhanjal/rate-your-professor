@@ -10,6 +10,7 @@ import { ProfessorAverageRating } from "@/app/utils/ProfessorAverageRating";
 import Image from "next/image";
 import Loader from "@/app/components/Loader/Loader";
 import { useLoader } from "@/app/components/LoaderContext/LoaderContext";
+import { Building2, GraduationCap } from "lucide-react";
 
 async function copyTextFallback(text) {
   const textarea = document.createElement("textarea");
@@ -191,7 +192,6 @@ export default function ProfessorPage({ prof }) {
   };
 
   return (
-    // <PageWrapper>
     <>
       <ReviewModal
         isOpen={modalOpen}
@@ -201,7 +201,7 @@ export default function ProfessorPage({ prof }) {
       />
 
       {/* Hero */}
-      <section className={styles.hero}>
+      <section className={`${styles.hero} small-page-top`}>
         <div className={styles.heroBg} />
         <div className={styles.heroInner}>
           <motion.div
@@ -231,15 +231,21 @@ export default function ProfessorPage({ prof }) {
                 />
               </div>
               <div className={styles.heroInfo}>
-                <div className={styles.heroBadge}>{prof?.dept}</div>
+                {/* <div className={styles.heroBadge}>{prof?.dept}</div> */}
                 <h1 className={styles.heroName}>{prof?.name}</h1>
                 <p className={styles.heroTitle}>{prof?.title}</p>
                 <Link
                   href={`/university/${prof?.college?.university?.slug}`}
                   className={styles.heroUni}
                 >
-                  🏛 {prof?.college?.university?.name}
+                  <GraduationCap size={16} /> {prof?.college?.university?.name}
                 </Link>
+
+                {/* College - no page yet, render as plain span */}
+                <span className={styles.heroUni}>
+                  <Building2 size={16} />
+                  {prof?.college?.name}
+                </span>
                 <div className={styles.heroRatingRow}>
                   <span className={styles.heroRatingBig}>{prof?.rating}</span>
                   <div className={styles.heroRatingRight}>

@@ -99,14 +99,22 @@
   line-height: 1.1;
 }
 .heroTitle {
-  font-size: 0.9rem;
+  font-size: 0.8rem;
   color: var(--text-secondary);
+  border: 1px solid var(--accent-glow);
+  width: max-content;
+  padding: 2px 12px;
+  border-radius: 50px;
+  background: var(--accent-glow-soft);
 }
 .heroUni {
-  font-size: 0.85rem;
-  color: var(--text-muted);
+  font-size: 0.9rem;
+  color: var(--text-secondary);
   width: fit-content;
   transition: color var(--transition-fast);
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 .heroUni:hover {
   color: var(--text-accent);

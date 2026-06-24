@@ -80,7 +80,7 @@ const AddProfessor = () => {
 
   return (
     <>
-      <section className={`${styles.searchHero} sub-container`}>
+      <section className={`${styles.searchHero} sub-container page-top`}>
         <div className={styles.heroBlob} />
         <div className={styles.heroInner}>
           <motion.h1

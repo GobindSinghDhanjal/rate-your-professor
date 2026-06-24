@@ -16,12 +16,7 @@ export const metadata = {
 };
 
 const page = () => {
-  return (
-    <div>
-      <br />
-      <AddProfessor />
-    </div>
-  );
+  return <AddProfessor />;
 };
 
 export default page;

@@ -80,7 +80,7 @@ export default function UniversityDetailPage({ university, professors }) {
     <>
       {/* Hero Banner */}
       <section
-        className={styles.hero}
+        className={`${styles.hero} small-page-top`}
         style={{ "--uni-color": university?.color }}
       >
         <div className={styles.heroBg} />
@@ -96,16 +96,11 @@ export default function UniversityDetailPage({ university, professors }) {
               ← All Universities
             </Link>
             <div className={styles.heroTop}>
-              <div className={styles.heroLogo}>
-                <img
-                  src={university?.image}
-                  alt={`${university?.name} logo`}
-                  className={styles.logoImg}
-                />
-                {/* <span className={styles.heroAbbr}>
-                  {university?.abbreviation}
-                </span> */}
-              </div>
+              <img
+                src={university?.image}
+                alt={`${university?.name} logo`}
+                className={styles.logoImg}
+              />
               <div className={styles.heroInfo}>
                 <div className={styles.heroBadges}>
                   {university?.universityType && (
@@ -128,8 +123,8 @@ export default function UniversityDetailPage({ university, professors }) {
                 </div>
                 <h1 className={styles.heroTitle}>{university?.name}</h1>
                 <p className={styles.heroLocation}>
-                  📍 {university?.state}, {university?.country} · Est.{" "}
-                  {university?.establishedYear}
+                  📍 {university?.city}, {university?.state},{" "}
+                  {university?.country} · Est. {university?.establishedYear}
                 </p>
                 {university?.rating && (
                   <div className={styles.heroRating}>

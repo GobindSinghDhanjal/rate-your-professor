@@ -71,6 +71,15 @@
   color: var(--uni-color);
   letter-spacing: 0.02em;
 }
+.logoImg {
+  height: 7rem;
+  width: 7rem;
+  border-radius: 12rem;
+  overflow: hidden;
+  background: #ffffff;
+  object-fit: cover;
+  padding: 4px;
+}
 .heroInfo {
   flex: 1;
   display: flex;

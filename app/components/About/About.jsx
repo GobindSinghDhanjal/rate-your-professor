@@ -79,7 +79,7 @@ const fadeUp = {
 export default function About() {
   return (
     <>
-      <section className={`${styles.searchHero} sub-container`}>
+      <section className={`${styles.searchHero} sub-container page-top`}>
         <div className={styles.heroBlob} />
         <div className={styles.heroInner}>
           <motion.span

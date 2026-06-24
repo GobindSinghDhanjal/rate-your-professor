@@ -19,7 +19,7 @@ function UniCard({ uni, index }) {
     >
       <div className={styles.cardGlow} />
       <div className={styles.cardTop}>
-          <img src={uni?.image} alt={uni?.name} className={styles.uniImg} />
+        <img src={uni?.image} alt={uni?.name} className={styles.uniImg} />
         {uni?.rating && (
           <div className={styles.uniRatingBadge}>
             <span className={styles.uniRatingNum}>{uni?.rating}</span>
@@ -30,7 +30,7 @@ function UniCard({ uni, index }) {
       <div className={styles.cardBody}>
         <h3 className={styles.uniName}>{uni?.name}</h3>
         <p className={styles.uniLocation}>
-          📍 {uni?.city}, {uni?.state}, {uni?.country}
+          📍 {uni?.state}, {uni?.country}
         </p>
         <p className={styles.uniDesc}>
           {uni?.description?.slice(0, 60) + "..."}
@@ -103,7 +103,7 @@ export default function UniversitiesPage({ universities }) {
   return (
     <>
       {/* Hero */}
-      <section className={`${styles.hero} sub-container`}>
+      <section className={`${styles.hero} sub-container page-top`}>
         <div className={styles.heroBg} />
         <div className={styles.heroInner}>
           <motion.div
