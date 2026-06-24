@@ -125,6 +125,10 @@ img {
 .small-page-top {
   padding-top: 2.8rem;
 }
+.sub-container:not(:first-child) {
+  max-width: 1200px;
+  margin: 0 auto;
+}
 
 @media (min-width: 768px) {
   .container {
