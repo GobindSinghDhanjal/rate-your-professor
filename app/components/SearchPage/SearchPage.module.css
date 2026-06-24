@@ -6,7 +6,6 @@
 .searchHero {
   position: relative;
   overflow: hidden;
-  padding-top: 4rem;
   padding-bottom: 3rem;
   background: linear-gradient(
     180deg,
