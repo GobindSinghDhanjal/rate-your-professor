@@ -1,12 +1,12 @@
-export const ProfessorAverageRating = (professor) => {
-  if (!professor?.feedbacks || professor.feedbacks.length === 0) {
+export const ProfessorAverageRating = (feedbacks) => {
+  if (!feedbacks || feedbacks.length === 0) {
     return {
       averageRating: 0,
       numberOfRatings: 0,
     };
   }
 
-  const ratings = professor.feedbacks.map((feedback) => feedback.rating);
+  const ratings = feedbacks.map((feedback) => feedback.rating);
 
   const averageRating =
     Math.floor(

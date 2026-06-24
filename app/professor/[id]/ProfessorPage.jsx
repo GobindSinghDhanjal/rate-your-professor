@@ -132,7 +132,7 @@ function ReviewCard({ rev, index }) {
 }
 
 export default function ProfessorPage({ prof }) {
-  const { setLoadingScreen } = useLoader();
+  const { loadingScreen, setLoadingScreen } = useLoader();
 
   const [feedbacks, setFeedbacks] = useState(null);
 
@@ -156,6 +156,10 @@ export default function ProfessorPage({ prof }) {
     fetchFeedbacks();
   }, [prof._id]);
 
+  useEffect(() => {
+    console.log(feedbacks);
+  }, [feedbacks]);
+
   // Use live feedbacks if loaded, otherwise nothing yet
   const displayReviews = feedbacks
     ? [...feedbacks].sort((a, b) => new Date(b.date) - new Date(a.date))
@@ -170,7 +174,7 @@ export default function ProfessorPage({ prof }) {
   const [modalOpen, setModalOpen] = useState(false);
   const [shareStatus, setShareStatus] = useState("");
 
-  const { averageRating, numberOfRatings } = ProfessorAverageRating(prof);
+  const { averageRating, numberOfRatings } = ProfessorAverageRating(feedbacks);
 
   // const avgRating =
   //   displayReviews.reduce((a, r) => a + r.rating, 0) / displayReviews.length ||
@@ -216,6 +220,10 @@ export default function ProfessorPage({ prof }) {
       setShareStatus("Copy failed. Please copy manually.");
     }
   };
+
+  // if (loadingScreen) {
+  //   return <Loader />;
+  // }
 
   return (
     <>

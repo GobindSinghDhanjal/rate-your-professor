@@ -70,7 +70,7 @@ function ProfCard({ prof, index }) {
   ];
   const snippet = profReviews[index % 3];
 
-  const { averageRating, numberOfRatings } = ProfessorAverageRating(prof);
+  const { averageRating, numberOfRatings } = ProfessorAverageRating(prof?.feedbacks);
   const router = useRouter();
 
   const { setLoadingScreen } = useLoader();
@@ -281,8 +281,8 @@ export default function SearchPage({ universities }) {
         return true;
       })
       .sort((a, b) => {
-        const ratingA = ProfessorAverageRating(a);
-        const ratingB = ProfessorAverageRating(b);
+        const ratingA = ProfessorAverageRating(a?.feedbacks);
+        const ratingB = ProfessorAverageRating(b?.feedbacks);
         switch (debouncedSort) {
           case "rating-desc":
             return ratingB.averageRating - ratingA.averageRating;
