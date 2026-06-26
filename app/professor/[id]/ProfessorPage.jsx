@@ -141,7 +141,7 @@ export default function ProfessorPage({ prof }) {
       try {
         const res = await fetch(
           `${process.env.NEXT_PUBLIC_NEXT_BASE_URL}/professors/${prof._id}`,
-          { cache: "no-store" },
+          { next: { revalidate: 60 } },
         );
         if (!res.ok) throw new Error("Failed to fetch");
         const data = await res.json();
@@ -156,20 +156,11 @@ export default function ProfessorPage({ prof }) {
     fetchFeedbacks();
   }, [prof._id]);
 
-  useEffect(() => {
-    console.log(feedbacks);
-  }, [feedbacks]);
-
   // Use live feedbacks if loaded, otherwise nothing yet
   const displayReviews = feedbacks
     ? [...feedbacks].sort((a, b) => new Date(b.date) - new Date(a.date))
     : [];
 
-  // const prof = professors.find((p) => p.id === id) || professors[0];
-  // console.log("Professor data:", prof);
-  // const displayReviews = [...(prof?.feedbacks || [])].sort(
-  //   (a, b) => new Date(b.date) - new Date(a.date),
-  // );
   const [activeTab, setActiveTab] = useState("reviews");
   const [modalOpen, setModalOpen] = useState(false);
   const [shareStatus, setShareStatus] = useState("");
@@ -227,12 +218,14 @@ export default function ProfessorPage({ prof }) {
 
   return (
     <>
-      <ReviewModal
-        isOpen={modalOpen}
-        onClose={() => setModalOpen(false)}
-        professorName={prof?.name}
-        id={prof._id}
-      />
+      {modalOpen && (
+        <ReviewModal
+          isOpen={modalOpen}
+          onClose={() => setModalOpen(false)}
+          professorName={prof?.name}
+          id={prof._id}
+        />
+      )}
 
       {/* Hero */}
       <section className={`${styles.hero} small-page-top`}>

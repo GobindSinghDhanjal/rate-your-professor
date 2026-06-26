@@ -20,6 +20,23 @@
   overflow: hidden;
 }
 
+/* Red border when profanity is detected */
+.textareaError {
+  border-color: #e53e3e !important;
+  box-shadow: 0 0 0 1px #e53e3e;
+}
+
+/* Inline error message below textarea */
+.inlineError {
+  margin-top: 6px;
+  padding: 8px 12px;
+  background: #fff5f5;
+  border: 1px solid #fed7d7;
+  border-radius: 6px;
+  color: #c53030;
+  font-size: 13px;
+  line-height: 1.4;
+}
 .modalWrapper {
   position: fixed;
   z-index: 1101;

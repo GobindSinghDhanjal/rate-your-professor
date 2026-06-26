@@ -3,10 +3,9 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import styles from "./ReviewModal.module.css";
-import Filter from "bad-words";
-import { additionalBadWords } from "@/public/data/badwords";
-import { useRouter } from "next/navigation";
 import Link from "next/link";
+import leoProfanity from "leo-profanity";
+import { additionalBadWords } from "@/public/data/badwords";
 
 const ALL_TAGS = [
   "Clear Explanations",
@@ -49,6 +48,31 @@ function StarPicker({ value, onChange, label }) {
   );
 }
 
+const STORAGE_KEY = "ratingSubmissions";
+const DAILY_LIMIT = 5;
+
+function getSessionSubmissions() {
+  try {
+    const raw = sessionStorage.getItem(STORAGE_KEY);
+    const submissions = raw ? JSON.parse(raw) : [];
+    const now = Date.now();
+    // Still filter to last 24 h in case the tab stays open overnight
+    return submissions.filter((ts) => now - ts < 24 * 60 * 60 * 1000);
+  } catch {
+    return [];
+  }
+}
+
+function recordSessionSubmission() {
+  try {
+    const current = getSessionSubmissions();
+    current.push(Date.now());
+    sessionStorage.setItem(STORAGE_KEY, JSON.stringify(current));
+  } catch {
+    // storage unavailable — fail silently
+  }
+}
+
 export default function ReviewModal({
   isOpen,
   onClose,
@@ -68,6 +92,7 @@ export default function ReviewModal({
   const [wouldTakeAgain, setWouldTakeAgain] = useState(null);
   const [difficulty, setDifficulty] = useState(0);
   const [submitted, setSubmitted] = useState(false);
+  const [profanityError, setProfanityError] = useState("");
 
   const MAX_CHARS = 500;
 
@@ -81,98 +106,45 @@ export default function ReviewModal({
     );
   };
 
-  const [basicAlert, setBasicAlert] = useState({ display: false, alert: {} });
-  const [commentAlert, setCommentAlert] = useState({
-    display: false,
-    alert: {},
-  });
+  const handleReviewChange = (e) => {
+    const text = e.target.value;
+    if (text.length > MAX_CHARS) return;
+    setReviewText(text);
 
-  const router = useRouter();
-  const filter = new Filter();
-
-  const getTodaySubmissions = () => {
-    const rawData = localStorage.getItem("ratingSubmissions");
-    const submissions = rawData ? JSON.parse(rawData) : [];
-
-    const now = new Date();
-    const last24Hours = submissions.filter((timestamp) => {
-      const date = new Date(timestamp);
-      return now - date < 24 * 60 * 60 * 1000;
-    });
-
-    return last24Hours;
+    if (text.trim().length > 0 && leoProfanity.check(text)) {
+      setProfanityError("Please remove offensive language before continuing.");
+    } else {
+      setProfanityError("");
+    }
   };
 
-  const recordSubmission = () => {
-    const rawData = localStorage.getItem("ratingSubmissions");
-    const submissions = rawData ? JSON.parse(rawData) : [];
-    const now = new Date().toISOString();
-    submissions.push(now);
-    localStorage.setItem("ratingSubmissions", JSON.stringify(submissions));
-  };
+  const canProceedStep1 = ratings.overall > 0;
+  const canProceedStep2 = profanityError === "";
 
   const handleSubmit = async () => {
+    // Re-validate profanity on submit (in case paste bypassed onChange)
+    if (leoProfanity.check(reviewText)) {
+      setProfanityError("Please remove offensive language before submitting.");
+      return;
+    }
+
+    // Check session-based rate limit
+    const sessionSubs = getSessionSubmissions();
+    if (sessionSubs.length >= DAILY_LIMIT) {
+      setSubmitted("limit_exceeded");
+      return;
+    }
+
     try {
-      // console.log("in submit");
-      // console.log("rating: ", ratings);
-      const value = ratings.overall;
-      const comment = reviewText.trim();
-
-      // console.log("review text: ", comment);
-
-      const todaySubmissions = getTodaySubmissions();
-      if (
-        todaySubmissions.length >= 5 &&
-        process.env.NODE_ENV !== "development"
-      ) {
-        setBasicAlert({
-          display: true,
-          alert: {
-            severity: "error",
-            message: "You’ve reached the daily limit of ratings.",
-          },
-        });
-        throw new Error("Daily submission limit reached");
-      }
-
-      const lowerCaseComment = comment.toLowerCase();
-      const lowerCaseBadWords = additionalBadWords.map((word) =>
-        word.toLowerCase(),
-      );
-
-      if (value === 0 || value === null) {
-        setBasicAlert({
-          display: true,
-          alert: {
-            severity: "error",
-            message: "Rating cannot be Null",
-          },
-        });
-        throw new Error("Rating cannot be Null");
-      } else if (
-        filter.isProfane(lowerCaseComment) ||
-        lowerCaseBadWords.some((word) => lowerCaseComment.includes(word))
-      ) {
-        setBasicAlert({ display: false, alert: {} });
-        setCommentAlert({
-          display: true,
-          alert: {
-            severity: "error",
-            message: "Please avoid using offensive language.",
-          },
-        });
-        throw new Error("Comment contains bad words");
-      } else {
-        setBasicAlert({ display: false, alert: {} });
-        setCommentAlert({ display: false, alert: {} });
-      }
-
       const response = await fetch(
         `${process.env.NEXT_PUBLIC_NEXT_BASE_URL}/professors/${id}/feedback`,
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ rating: value, comment: comment }),
+          body: JSON.stringify({
+            rating: ratings.overall,
+            comment: reviewText.trim(),
+          }),
         },
       );
 
@@ -180,29 +152,24 @@ export default function ReviewModal({
         throw new Error("Failed to submit rating: " + response.statusText);
       }
 
-      // console.log("Rating submitted successfully.");
-      recordSubmission();
+      recordSessionSubmission();
+      setSubmitted("success");
     } catch (error) {
       console.error("Error submitting rating:", error.message);
-    } finally {
-      setSubmitted(true);
-
-      setTimeout(() => {
-        // setSubmitted(false);
-        setStep(1);
-        setRatings({ overall: 0, clarity: 0, helpfulness: 0, fairness: 0 });
-        setSelectedTags([]);
-        setCourse("");
-        setReviewText("");
-        setWouldTakeAgain(null);
-        setDifficulty(0);
-        // onClose();
-      }, 100);
     }
   };
 
-  const canProceedStep1 = ratings.overall > 0;
-  const canProceedStep2 = reviewText.trim().length >= 20;
+  const resetForm = () => {
+    setStep(1);
+    setRatings({ overall: 0, clarity: 0, helpfulness: 0, fairness: 0 });
+    setSelectedTags([]);
+    setCourse("");
+    setReviewText("");
+    setWouldTakeAgain(null);
+    setDifficulty(0);
+    setProfanityError("");
+    setSubmitted(false);
+  };
 
   return (
     <AnimatePresence>
@@ -223,7 +190,7 @@ export default function ReviewModal({
               exit={{ opacity: 0, y: 30, scale: 0.97 }}
               transition={{ type: "spring", damping: 28, stiffness: 320 }}
             >
-              {submitted ? (
+              {submitted === "success" && (
                 <motion.div
                   className={styles.successState}
                   initial={{ opacity: 0, scale: 0.9 }}
@@ -231,7 +198,7 @@ export default function ReviewModal({
                   transition={{ duration: 0.4 }}
                 >
                   <div className={styles.successIcon}>✅</div>
-                  <h3 className={styles.successTitle}>Review Submitted!</h3>
+                  <h3 className={styles.successTitle}>Review submitted!</h3>
                   <p className={styles.successDesc}>
                     Your anonymous review has been submitted. Thank you for
                     helping fellow students!
@@ -240,13 +207,36 @@ export default function ReviewModal({
                     AI moderation is now reviewing your submission. Approved
                     reviews are typically published within 6 hours.
                   </p>
-                  <Link className={`${styles.link}`} href="/">
-                    Go Back to Homepage
+                  <Link className={styles.link} href="/">
+                    Go back to homepage
                   </Link>
                 </motion.div>
-              ) : (
+              )}
+
+              {submitted === "limit_exceeded" && (
+                <motion.div
+                  className={styles.successState}
+                  initial={{ opacity: 0, scale: 0.9 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{ duration: 0.4 }}
+                >
+                  <div className={styles.successIcon}>⏳</div>
+                  <h3 className={styles.successTitle}>Daily limit reached</h3>
+                  <p className={styles.successDesc}>
+                    You've submitted {DAILY_LIMIT} reviews today — that's the
+                    daily maximum to keep ratings fair.
+                    <br />
+                    <br />
+                    Come back tomorrow and your review will be waiting for you!
+                  </p>
+                  <button className={styles.link} onClick={onClose}>
+                    Close
+                  </button>
+                </motion.div>
+              )}
+
+              {!submitted && (
                 <>
-                  {/* Header */}
                   <div className={styles.modalHeader}>
                     <div>
                       <div className={styles.anonBadge}>
@@ -265,7 +255,6 @@ export default function ReviewModal({
                     </button>
                   </div>
 
-                  {/* Step indicators */}
                   <div className={styles.steps}>
                     {[1, 2, 3].map((s) => (
                       <div
@@ -323,6 +312,7 @@ export default function ReviewModal({
                           />
                         </motion.div>
                       )}
+
                       {step === 2 && (
                         <motion.div
                           key="step2"
@@ -333,17 +323,25 @@ export default function ReviewModal({
                           transition={{ duration: 0.25 }}
                         >
                           <div className={styles.formGroup}>
-                            <label className={styles.label}>Your Review</label>
+                            <label className={styles.label}>Your review</label>
                             <textarea
-                              className={styles.textarea}
+                              className={`${styles.textarea} ${profanityError ? styles.textareaError : ""}`}
                               placeholder="Share your honest experience with this professor..."
                               value={reviewText}
-                              onChange={(e) =>
-                                e.target.value.length <= MAX_CHARS &&
-                                setReviewText(e.target.value)
-                              }
+                              onChange={handleReviewChange}
                               rows={5}
                             />
+                            {/* Profanity error — shown inline, blocks Next */}
+                            {profanityError && (
+                              <motion.div
+                                className={styles.inlineError}
+                                initial={{ opacity: 0, y: -4 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                exit={{ opacity: 0 }}
+                              >
+                                ⚠️ {profanityError}
+                              </motion.div>
+                            )}
                             <div className={styles.charCount}>
                               <span
                                 className={
@@ -352,7 +350,9 @@ export default function ReviewModal({
                                     : styles.charOk
                                 }
                               >
-                                {reviewText.length > 20 && "Looks good!"}
+                                {reviewText.length >= 20 &&
+                                  !profanityError &&
+                                  "Looks good!"}
                               </span>
                               <span className={styles.charNum}>
                                 {reviewText.length}/{MAX_CHARS}
@@ -361,7 +361,7 @@ export default function ReviewModal({
                           </div>
                           <div className={styles.formGroup}>
                             <label className={styles.label}>
-                              Select Tags (up to 5)
+                              Select tags (up to 5)
                             </label>
                             <div className={styles.tagGrid}>
                               {ALL_TAGS.map((tag) => (
@@ -378,6 +378,7 @@ export default function ReviewModal({
                           </div>
                         </motion.div>
                       )}
+
                       {step === 3 && (
                         <motion.div
                           key="step3"
@@ -389,7 +390,7 @@ export default function ReviewModal({
                         >
                           <div className={styles.formGroup}>
                             <label className={styles.label}>
-                              Course Name (optional)
+                              Course name (optional)
                             </label>
                             <input
                               type="text"
@@ -422,7 +423,7 @@ export default function ReviewModal({
                           </div>
                           <div className={styles.formGroup}>
                             <label className={styles.label}>
-                              Difficulty Level: <strong>{difficulty}/5</strong>
+                              Difficulty level: <strong>{difficulty}/5</strong>
                             </label>
                             <input
                               type="range"
@@ -450,7 +451,6 @@ export default function ReviewModal({
                     </AnimatePresence>
                   </div>
 
-                  {/* Footer nav */}
                   <div className={styles.modalFooter}>
                     {step > 1 && (
                       <button
@@ -464,7 +464,10 @@ export default function ReviewModal({
                     {step < 3 ? (
                       <button
                         className={styles.nextBtn}
-                        disabled={step === 1 && !canProceedStep1}
+                        disabled={
+                          (step === 1 && !canProceedStep1) ||
+                          (step === 2 && !canProceedStep2)
+                        }
                         onClick={() => setStep((s) => s + 1)}
                       >
                         Next →
@@ -474,7 +477,7 @@ export default function ReviewModal({
                         className={styles.submitBtn}
                         onClick={handleSubmit}
                       >
-                        Submit Review ✓
+                        Submit review ✓
                       </button>
                     )}
                   </div>
