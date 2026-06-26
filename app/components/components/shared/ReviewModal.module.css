@@ -7,12 +7,7 @@
 }
 
 .modal {
-  position: fixed;
-  z-index: 1101;
-  top: 15%;
-  left: 25%;
-  transform: translate(-50%, -50%);
-  width: min(620px, 95vw);
+  width: min(620px, 90vw);
   max-height: 90vh;
   background: var(--bg-card);
   border: 1px solid var(--border-glow);
@@ -24,6 +19,15 @@
   flex-direction: column;
   overflow: hidden;
 }
+
+.modalWrapper {
+  position: fixed;
+  z-index: 1101;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
 
 .modalHeader {
   display: flex;
@@ -457,9 +461,6 @@
   .modal {
     max-height: 85vh;
     border-radius: var(--radius-lg);
-    top: 4%;
-    left: 4%;
-    max-width: 90vw;
   }
   .modalHeader,
   .modalBody,

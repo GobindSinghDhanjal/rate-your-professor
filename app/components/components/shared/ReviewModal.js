@@ -215,260 +215,273 @@ export default function ReviewModal({
             exit={{ opacity: 0 }}
             onClick={onClose}
           />
-          <motion.div
-            className={styles.modal}
-            initial={{ opacity: 0, y: 40, scale: 0.96 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: 30, scale: 0.97 }}
-            transition={{ type: "spring", damping: 28, stiffness: 320 }}
-          >
-            {submitted? (
-              <motion.div
-                className={styles.successState}
-                initial={{ opacity: 0, scale: 0.9 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ duration: 0.4 }}
-              >
-                <div className={styles.successIcon}>✅</div>
-                <h3 className={styles.successTitle}>Review Submitted!</h3>
-                <p className={styles.successDesc}>
-                  Your anonymous review has been submitted. Thank you for
-                  helping fellow students!
-                  <br />
-                  <br />
-                  AI moderation is now reviewing your submission. Approved
-                  reviews are typically published within 6 hours.
-                </p>
-                <Link className={`${styles.link}`} href="/">Go Back to Homepage</Link>
-              </motion.div>
-            ) : (
-              <>
-                {/* Header */}
-                <div className={styles.modalHeader}>
-                  <div>
-                    <div className={styles.anonBadge}>🔒 Anonymous Review</div>
-                    <h2 className={styles.modalTitle}>Rate {professorName}</h2>
-                  </div>
-                  <button
-                    className={styles.closeBtn}
-                    onClick={onClose}
-                    aria-label="Close"
-                  >
-                    ✕
-                  </button>
-                </div>
-
-                {/* Step indicators */}
-                <div className={styles.steps}>
-                  {[1, 2, 3].map((s) => (
-                    <div
-                      key={s}
-                      className={`${styles.step} ${step >= s ? styles.stepActive : ""} ${step > s ? styles.stepDone : ""}`}
-                    >
-                      <div className={styles.stepDot}>{step > s ? "✓" : s}</div>
-                      <span className={styles.stepLabel}>
-                        {["Ratings", "Review", "Details"][s - 1]}
-                      </span>
+          <div className={styles.modalWrapper}>
+            <motion.div
+              className={styles.modal}
+              initial={{ opacity: 0, y: 40, scale: 0.96 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              exit={{ opacity: 0, y: 30, scale: 0.97 }}
+              transition={{ type: "spring", damping: 28, stiffness: 320 }}
+            >
+              {submitted ? (
+                <motion.div
+                  className={styles.successState}
+                  initial={{ opacity: 0, scale: 0.9 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{ duration: 0.4 }}
+                >
+                  <div className={styles.successIcon}>✅</div>
+                  <h3 className={styles.successTitle}>Review Submitted!</h3>
+                  <p className={styles.successDesc}>
+                    Your anonymous review has been submitted. Thank you for
+                    helping fellow students!
+                    <br />
+                    <br />
+                    AI moderation is now reviewing your submission. Approved
+                    reviews are typically published within 6 hours.
+                  </p>
+                  <Link className={`${styles.link}`} href="/">
+                    Go Back to Homepage
+                  </Link>
+                </motion.div>
+              ) : (
+                <>
+                  {/* Header */}
+                  <div className={styles.modalHeader}>
+                    <div>
+                      <div className={styles.anonBadge}>
+                        🔒 Anonymous Review
+                      </div>
+                      <h2 className={styles.modalTitle}>
+                        Rate {professorName}
+                      </h2>
                     </div>
-                  ))}
-                </div>
+                    <button
+                      className={styles.closeBtn}
+                      onClick={onClose}
+                      aria-label="Close"
+                    >
+                      ✕
+                    </button>
+                  </div>
 
-                <div className={styles.modalBody}>
-                  <AnimatePresence mode="wait">
-                    {step === 1 && (
-                      <motion.div
-                        key="step1"
-                        className={styles.stepContent}
-                        initial={{ opacity: 0, x: 20 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        exit={{ opacity: 0, x: -20 }}
-                        transition={{ duration: 0.25 }}
+                  {/* Step indicators */}
+                  <div className={styles.steps}>
+                    {[1, 2, 3].map((s) => (
+                      <div
+                        key={s}
+                        className={`${styles.step} ${step >= s ? styles.stepActive : ""} ${step > s ? styles.stepDone : ""}`}
                       >
-                        <StarPicker
-                          label="Overall Rating *"
-                          value={ratings.overall}
-                          onChange={(v) =>
-                            setRatings((r) => ({ ...r, overall: v }))
-                          }
-                        />
-                        <StarPicker
-                          label="Clarity of Teaching"
-                          value={ratings.clarity}
-                          onChange={(v) =>
-                            setRatings((r) => ({ ...r, clarity: v }))
-                          }
-                        />
-                        <StarPicker
-                          label="Helpfulness"
-                          value={ratings.helpfulness}
-                          onChange={(v) =>
-                            setRatings((r) => ({ ...r, helpfulness: v }))
-                          }
-                        />
-                        <StarPicker
-                          label="Grading Fairness"
-                          value={ratings.fairness}
-                          onChange={(v) =>
-                            setRatings((r) => ({ ...r, fairness: v }))
-                          }
-                        />
-                      </motion.div>
-                    )}
-                    {step === 2 && (
-                      <motion.div
-                        key="step2"
-                        className={styles.stepContent}
-                        initial={{ opacity: 0, x: 20 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        exit={{ opacity: 0, x: -20 }}
-                        transition={{ duration: 0.25 }}
-                      >
-                        <div className={styles.formGroup}>
-                          <label className={styles.label}>Your Review</label>
-                          <textarea
-                            className={styles.textarea}
-                            placeholder="Share your honest experience with this professor..."
-                            value={reviewText}
-                            onChange={(e) =>
-                              e.target.value.length <= MAX_CHARS &&
-                              setReviewText(e.target.value)
+                        <div className={styles.stepDot}>
+                          {step > s ? "✓" : s}
+                        </div>
+                        <span className={styles.stepLabel}>
+                          {["Ratings", "Review", "Details"][s - 1]}
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+
+                  <div className={styles.modalBody}>
+                    <AnimatePresence mode="wait">
+                      {step === 1 && (
+                        <motion.div
+                          key="step1"
+                          className={styles.stepContent}
+                          initial={{ opacity: 0, x: 20 }}
+                          animate={{ opacity: 1, x: 0 }}
+                          exit={{ opacity: 0, x: -20 }}
+                          transition={{ duration: 0.25 }}
+                        >
+                          <StarPicker
+                            label="Overall Rating *"
+                            value={ratings.overall}
+                            onChange={(v) =>
+                              setRatings((r) => ({ ...r, overall: v }))
                             }
-                            rows={5}
                           />
-                          <div className={styles.charCount}>
-                            <span
-                              className={
-                                reviewText.length < 20
-                                  ? styles.charWarn
-                                  : styles.charOk
+                          <StarPicker
+                            label="Clarity of Teaching"
+                            value={ratings.clarity}
+                            onChange={(v) =>
+                              setRatings((r) => ({ ...r, clarity: v }))
+                            }
+                          />
+                          <StarPicker
+                            label="Helpfulness"
+                            value={ratings.helpfulness}
+                            onChange={(v) =>
+                              setRatings((r) => ({ ...r, helpfulness: v }))
+                            }
+                          />
+                          <StarPicker
+                            label="Grading Fairness"
+                            value={ratings.fairness}
+                            onChange={(v) =>
+                              setRatings((r) => ({ ...r, fairness: v }))
+                            }
+                          />
+                        </motion.div>
+                      )}
+                      {step === 2 && (
+                        <motion.div
+                          key="step2"
+                          className={styles.stepContent}
+                          initial={{ opacity: 0, x: 20 }}
+                          animate={{ opacity: 1, x: 0 }}
+                          exit={{ opacity: 0, x: -20 }}
+                          transition={{ duration: 0.25 }}
+                        >
+                          <div className={styles.formGroup}>
+                            <label className={styles.label}>Your Review</label>
+                            <textarea
+                              className={styles.textarea}
+                              placeholder="Share your honest experience with this professor..."
+                              value={reviewText}
+                              onChange={(e) =>
+                                e.target.value.length <= MAX_CHARS &&
+                                setReviewText(e.target.value)
                               }
-                            >
-                              {reviewText.length > 20 && "Looks good!"}
-                            </span>
-                            <span className={styles.charNum}>
-                              {reviewText.length}/{MAX_CHARS}
-                            </span>
-                          </div>
-                        </div>
-                        <div className={styles.formGroup}>
-                          <label className={styles.label}>
-                            Select Tags (up to 5)
-                          </label>
-                          <div className={styles.tagGrid}>
-                            {ALL_TAGS.map((tag) => (
-                              <button
-                                key={tag}
-                                type="button"
-                                className={`${styles.tagBtn} ${selectedTags.includes(tag) ? styles.tagBtnActive : ""}`}
-                                onClick={() => toggleTag(tag)}
+                              rows={5}
+                            />
+                            <div className={styles.charCount}>
+                              <span
+                                className={
+                                  reviewText.length < 20
+                                    ? styles.charWarn
+                                    : styles.charOk
+                                }
                               >
-                                {tag}
+                                {reviewText.length > 20 && "Looks good!"}
+                              </span>
+                              <span className={styles.charNum}>
+                                {reviewText.length}/{MAX_CHARS}
+                              </span>
+                            </div>
+                          </div>
+                          <div className={styles.formGroup}>
+                            <label className={styles.label}>
+                              Select Tags (up to 5)
+                            </label>
+                            <div className={styles.tagGrid}>
+                              {ALL_TAGS.map((tag) => (
+                                <button
+                                  key={tag}
+                                  type="button"
+                                  className={`${styles.tagBtn} ${selectedTags.includes(tag) ? styles.tagBtnActive : ""}`}
+                                  onClick={() => toggleTag(tag)}
+                                >
+                                  {tag}
+                                </button>
+                              ))}
+                            </div>
+                          </div>
+                        </motion.div>
+                      )}
+                      {step === 3 && (
+                        <motion.div
+                          key="step3"
+                          className={styles.stepContent}
+                          initial={{ opacity: 0, x: 20 }}
+                          animate={{ opacity: 1, x: 0 }}
+                          exit={{ opacity: 0, x: -20 }}
+                          transition={{ duration: 0.25 }}
+                        >
+                          <div className={styles.formGroup}>
+                            <label className={styles.label}>
+                              Course Name (optional)
+                            </label>
+                            <input
+                              type="text"
+                              className={styles.input}
+                              placeholder="e.g. Data Structures & Algorithms"
+                              value={course}
+                              onChange={(e) => setCourse(e.target.value)}
+                            />
+                          </div>
+                          <div className={styles.formGroup}>
+                            <label className={styles.label}>
+                              Would you take this professor again?
+                            </label>
+                            <div className={styles.yesNo}>
+                              <button
+                                type="button"
+                                className={`${styles.yesNoBtn} ${wouldTakeAgain === true ? styles.yesActive : ""}`}
+                                onClick={() => setWouldTakeAgain(true)}
+                              >
+                                👍 Yes
                               </button>
-                            ))}
+                              <button
+                                type="button"
+                                className={`${styles.yesNoBtn} ${wouldTakeAgain === false ? styles.noActive : ""}`}
+                                onClick={() => setWouldTakeAgain(false)}
+                              >
+                                👎 No
+                              </button>
+                            </div>
                           </div>
-                        </div>
-                      </motion.div>
-                    )}
-                    {step === 3 && (
-                      <motion.div
-                        key="step3"
-                        className={styles.stepContent}
-                        initial={{ opacity: 0, x: 20 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        exit={{ opacity: 0, x: -20 }}
-                        transition={{ duration: 0.25 }}
-                      >
-                        <div className={styles.formGroup}>
-                          <label className={styles.label}>
-                            Course Name (optional)
-                          </label>
-                          <input
-                            type="text"
-                            className={styles.input}
-                            placeholder="e.g. Data Structures & Algorithms"
-                            value={course}
-                            onChange={(e) => setCourse(e.target.value)}
-                          />
-                        </div>
-                        <div className={styles.formGroup}>
-                          <label className={styles.label}>
-                            Would you take this professor again?
-                          </label>
-                          <div className={styles.yesNo}>
-                            <button
-                              type="button"
-                              className={`${styles.yesNoBtn} ${wouldTakeAgain === true ? styles.yesActive : ""}`}
-                              onClick={() => setWouldTakeAgain(true)}
-                            >
-                              👍 Yes
-                            </button>
-                            <button
-                              type="button"
-                              className={`${styles.yesNoBtn} ${wouldTakeAgain === false ? styles.noActive : ""}`}
-                              onClick={() => setWouldTakeAgain(false)}
-                            >
-                              👎 No
-                            </button>
+                          <div className={styles.formGroup}>
+                            <label className={styles.label}>
+                              Difficulty Level: <strong>{difficulty}/5</strong>
+                            </label>
+                            <input
+                              type="range"
+                              min="1"
+                              max="5"
+                              step="0.5"
+                              className={styles.slider}
+                              value={difficulty || 1}
+                              onChange={(e) =>
+                                setDifficulty(parseFloat(e.target.value))
+                              }
+                            />
+                            <div className={styles.sliderLabels}>
+                              <span>Easy</span>
+                              <span>Medium</span>
+                              <span>Hard</span>
+                            </div>
                           </div>
-                        </div>
-                        <div className={styles.formGroup}>
-                          <label className={styles.label}>
-                            Difficulty Level: <strong>{difficulty}/5</strong>
-                          </label>
-                          <input
-                            type="range"
-                            min="1"
-                            max="5"
-                            step="0.5"
-                            className={styles.slider}
-                            value={difficulty || 1}
-                            onChange={(e) =>
-                              setDifficulty(parseFloat(e.target.value))
-                            }
-                          />
-                          <div className={styles.sliderLabels}>
-                            <span>Easy</span>
-                            <span>Medium</span>
-                            <span>Hard</span>
+                          <div className={styles.anonNote}>
+                            🔒 Your identity will never be revealed. This review
+                            is completely anonymous.
                           </div>
-                        </div>
-                        <div className={styles.anonNote}>
-                          🔒 Your identity will never be revealed. This review
-                          is completely anonymous.
-                        </div>
-                      </motion.div>
-                    )}
-                  </AnimatePresence>
-                </div>
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
+                  </div>
 
-                {/* Footer nav */}
-                <div className={styles.modalFooter}>
-                  {step > 1 && (
-                    <button
-                      className={styles.backBtn}
-                      onClick={() => setStep((s) => s - 1)}
-                    >
-                      ← Back
-                    </button>
-                  )}
-                  <div style={{ flex: 1 }} />
-                  {step < 3 ? (
-                    <button
-                      className={styles.nextBtn}
-                      disabled={step === 1 && !canProceedStep1}
-                      onClick={() => setStep((s) => s + 1)}
-                    >
-                      Next →
-                    </button>
-                  ) : (
-                    <button className={styles.submitBtn} onClick={handleSubmit}>
-                      Submit Review ✓
-                    </button>
-                  )}
-                </div>
-              </>
-            )}
-          </motion.div>
+                  {/* Footer nav */}
+                  <div className={styles.modalFooter}>
+                    {step > 1 && (
+                      <button
+                        className={styles.backBtn}
+                        onClick={() => setStep((s) => s - 1)}
+                      >
+                        ← Back
+                      </button>
+                    )}
+                    <div style={{ flex: 1 }} />
+                    {step < 3 ? (
+                      <button
+                        className={styles.nextBtn}
+                        disabled={step === 1 && !canProceedStep1}
+                        onClick={() => setStep((s) => s + 1)}
+                      >
+                        Next →
+                      </button>
+                    ) : (
+                      <button
+                        className={styles.submitBtn}
+                        onClick={handleSubmit}
+                      >
+                        Submit Review ✓
+                      </button>
+                    )}
+                  </div>
+                </>
+              )}
+            </motion.div>
+          </div>
         </>
       )}
     </AnimatePresence>
