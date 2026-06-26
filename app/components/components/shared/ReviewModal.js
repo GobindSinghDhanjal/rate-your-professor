@@ -223,11 +223,7 @@ export default function ReviewModal({
                   <div className={styles.successIcon}>⏳</div>
                   <h3 className={styles.successTitle}>Daily limit reached</h3>
                   <p className={styles.successDesc}>
-                    You've submitted {DAILY_LIMIT} reviews today — that's the
-                    daily maximum to keep ratings fair.
-                    <br />
-                    <br />
-                    Come back tomorrow and your review will be waiting for you!
+                    You've reached today's review submission limit. Please try again tomorrow.
                   </p>
                   <button className={styles.link} onClick={onClose}>
                     Close
