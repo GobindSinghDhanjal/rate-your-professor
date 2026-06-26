@@ -70,7 +70,9 @@ function ProfCard({ prof, index }) {
   ];
   const snippet = profReviews[index % 3];
 
-  const { averageRating, numberOfRatings } = ProfessorAverageRating(prof?.feedbacks);
+  const { averageRating, numberOfRatings } = ProfessorAverageRating(
+    prof?.feedbacks,
+  );
   const router = useRouter();
 
   const { setLoadingScreen } = useLoader();
@@ -199,7 +201,7 @@ export default function SearchPage({ universities }) {
   );
 
   const [professors, setProfessors] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
   const filterParams = useMemo(
@@ -222,26 +224,50 @@ export default function SearchPage({ universities }) {
   useEffect(() => {
     let mounted = true;
     const fetchData = async () => {
+      const MAX_RETRIES = 5;
+
       try {
-        setLoading(true);
-        const res = await fetch(`/api/professors`);
-        const data = await res.json();
-        if (mounted) setProfessors(data || []);
+        setLoadingScreen(true);
+
+        for (let attempt = 1; attempt <= MAX_RETRIES; attempt++) {
+          try {
+            const res = await fetch("/api/professors");
+
+            if (!res.ok) {
+              throw new Error("Failed to fetch professors.");
+            }
+
+            const data = await res.json();
+
+            if (mounted) {
+              setProfessors(data || []);
+            }
+
+            return; // Success
+          } catch (err) {
+            if (attempt === MAX_RETRIES) {
+              throw err;
+            }
+
+            await new Promise((resolve) => setTimeout(resolve, 1000 * attempt));
+          }
+        }
       } catch (err) {
-        if (mounted) setError(err.message);
+        if (mounted) {
+          setError(err.message);
+        }
       } finally {
         if (mounted) {
-          setLoading(false);
           setLoadingScreen(false);
         }
       }
     };
+
     fetchData();
     return () => {
       mounted = false;
     };
   }, []);
-
   // 4. Update URL whenever filters change (Debounced)
   useEffect(() => {
     const params = new URLSearchParams();

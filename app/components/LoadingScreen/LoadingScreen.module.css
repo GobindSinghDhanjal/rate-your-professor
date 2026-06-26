@@ -1,0 +1,15 @@
+.loadingScreen {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  background: rgba(0, 0, 0, 0.707);
+  backdrop-filter: blur(8px);
+
+  z-index: 9999;
+}

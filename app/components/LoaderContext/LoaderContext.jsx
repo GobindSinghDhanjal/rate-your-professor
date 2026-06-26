@@ -1,8 +1,7 @@
 "use client";
 
 import { createContext, useContext, useState } from "react";
-import Loader from "../Loader/Loader";
-import styles from "./LoaderContext.module.css";
+import LoadingScreen from "../LoadingScreen/LoadingScreen";
 
 const LoaderContext = createContext();
 
@@ -16,11 +15,7 @@ export function LoaderProvider({ children }) {
         setLoadingScreen,
       }}
     >
-      {loadingScreen && (
-        <div className={styles.loadingScreen}>
-          <Loader />
-        </div>
-      )}
+      {loadingScreen && <LoadingScreen />}
       {children}
     </LoaderContext.Provider>
   );
