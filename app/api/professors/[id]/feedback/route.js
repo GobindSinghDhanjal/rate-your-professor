@@ -3,6 +3,7 @@ import Professor from "@/app/models/Professor";
 import College from "@/app/models/College";
 import University from "@/app/models/University";
 import { NextResponse } from "next/server";
+import { updateProfessorStats } from "@/app/utils/updateProfessorStats";
 
 export const POST = async (request, { params }) => {
   const { id } = params;
@@ -49,6 +50,8 @@ export const POST = async (request, { params }) => {
     //   difficulty,
     //   wouldTakeAgain,
     // });
+
+    updateProfessorStats(professor);
 
     await professor.save();
 

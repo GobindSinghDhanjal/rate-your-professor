@@ -8,6 +8,10 @@ export const getProfessorById = async (id) => {
 
   return Professor.findById(id).populate({
     path: "college",
-    populate: { path: "university" },
+    select: "name university -_id",
+    populate: {
+      path: "university",
+      select: "name slug",
+    },
   });
 };

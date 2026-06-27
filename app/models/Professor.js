@@ -8,7 +8,7 @@ const feedbackSchema = new mongoose.Schema({
     type: Date,
     default: () =>
       new Date(
-        new Date().toLocaleString("en-US", { timeZone: "Asia/Kolkata" })
+        new Date().toLocaleString("en-US", { timeZone: "Asia/Kolkata" }),
       ),
   },
 });
@@ -42,15 +42,35 @@ const professorSchema = new mongoose.Schema(
       type: Date,
       default: () =>
         new Date(
-          new Date().toLocaleString("en-US", { timeZone: "Asia/Kolkata" })
+          new Date().toLocaleString("en-US", { timeZone: "Asia/Kolkata" }),
         ),
     },
     subjects: [{ type: String }], // Array of subjects the professor teaches
+    averageRating: {
+      type: Number,
+      default: 0,
+    },
+    reviewCount: {
+      type: Number,
+      default: 0,
+    },
+    averageClarity: {
+      type: Number,
+      default: 0,
+    },
+    averageHelpfulness: {
+      type: Number,
+      default: 0,
+    },
+    averageFairness: {
+      type: Number,
+      default: 0,
+    },
     feedbacks: [feedbackSchema], // Array of feedback objects
   },
   {
     timestamps: true,
-  }
+  },
 );
 
 // module.exports = mongoose.model("Professor", professorSchema);
