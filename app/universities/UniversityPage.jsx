@@ -30,7 +30,9 @@ function UniCard({ uni, index }) {
       <div className={styles.cardBody}>
         <h3 className={styles.uniName}>{uni?.name}</h3>
         <p className={styles.uniLocation}>
-          📍 {uni?.state}, {uni?.country}
+          📍 {uni?.state || uni?.city}
+          {(uni?.state || uni?.city) && uni?.country ? ", " : ""}
+          {uni?.country}
         </p>
         <p className={styles.uniDesc}>
           {uni?.description?.slice(0, 60) + "..."}
@@ -114,7 +116,7 @@ export default function UniversitiesPage({ universities }) {
             <SectionHeader
               eyebrow="Browse Universities"
               title="Find Your University"
-              subtitle="Explore professor ratings and honest student reviews from India's top institutions."
+              subtitle="Explore professor ratings and honest student reviews from World's top institutions."
             />
           </motion.div>
           <motion.div

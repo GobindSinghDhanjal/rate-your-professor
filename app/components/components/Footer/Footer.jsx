@@ -72,7 +72,7 @@ export default function Footer() {
               <span className={styles.logoText}>RateYourProfessor</span>
             </a>
             <p className={styles.tagline}>
-              India&apos;s largest platform for honest, anonymous professor
+              Asia&apos;s largest platform for honest, anonymous professor
               ratings from real students.
             </p>
             <div className={styles.socials}>

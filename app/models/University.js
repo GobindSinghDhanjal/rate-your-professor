@@ -41,7 +41,6 @@ const universitySchema = new mongoose.Schema(
 
     country: {
       type: String,
-      default: "India",
       index: true,
     },
 

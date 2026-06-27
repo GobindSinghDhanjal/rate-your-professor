@@ -17,7 +17,7 @@ const stats = [
     suffix: "+",
     label: "Universities",
     icon: "🏛️",
-    desc: "Top Indian institutions",
+    desc: "Top Asian institutions",
   },
   {
     value: 10000,

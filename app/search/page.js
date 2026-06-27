@@ -3,7 +3,7 @@ import SearchPage from "../components/SearchPage/SearchPage";
 export const metadata = {
   title: "Search Professors — RateYourProfessor",
   description:
-    "Search and discover professors across India's top universities.",
+    "Search and discover professors across World's top universities.",
 };
 
 async function getUniversities() {

@@ -54,7 +54,7 @@ export default function Hero() {
           variants={fadeUp}
           custom={1}
         >
-          India&apos;s Largest{" "}
+          Asia&apos;s Largest{" "}
           <span className={styles.gradientText}>Professor Rating</span> Platform
         </motion.h1>
 
@@ -67,7 +67,7 @@ export default function Hero() {
           custom={2}
         >
           Discover honest and anonymous professor reviews from students across
-          India and worldwide. Make smarter academic decisions.
+          Asia and worldwide. Make smarter academic decisions.
         </motion.p>
 
         {/* CTAs */}

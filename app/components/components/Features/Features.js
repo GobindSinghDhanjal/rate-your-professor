@@ -42,7 +42,7 @@ const features = [
       </svg>
     ),
     title: 'Global Professor Database',
-    desc: 'Not just India — discover and rate professors from universities worldwide.',
+    desc: 'Not just Asia — discover and rate professors from universities worldwide.',
     color: '#8b5cf6',
   },
   {

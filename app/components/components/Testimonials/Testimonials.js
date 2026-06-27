@@ -100,7 +100,7 @@ export default function Testimonials() {
           transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
         >
           <span className={styles.eyebrow}>Student Stories</span>
-          <h2 className={styles.title}>Loved by Students Across India</h2>
+          <h2 className={styles.title}>Loved by Students Across Asia</h2>
           <p className={styles.subtitle}>
             Join thousands of students who make smarter academic decisions every
             day.

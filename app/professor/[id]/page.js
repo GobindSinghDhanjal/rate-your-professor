@@ -35,7 +35,7 @@ export async function generateMetadata({ params }) {
     return {
       title: `${professor.name} | ${professor.college.name}`,
       description: `Read reviews and ratings for ${professor.name}, a professor at ${professor.college.name}, ${professor.college.university.name}.`,
-      keywords: `${professor.name}, ${professor.college.name}, professor reviews, rate professors, rate my professor, student reviews, professor feedback, professor ratings India, university professors, college faculty reviews`,
+      keywords: `${professor.name}, ${professor.college.name}, professor reviews, rate professors, rate my professor, student reviews, professor feedback, professor ratings Asia, university professors, college faculty reviews`,
       metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL),
       openGraph: {
         title: `${professor.name} | ${professor.college.name}`,

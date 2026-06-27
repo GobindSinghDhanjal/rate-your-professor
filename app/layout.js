@@ -20,11 +20,11 @@ const dmSans = DM_Sans({
 
 export const metadata = {
   title: {
-    default: "RateYourProfessor — India's Largest Professor Rating Platform",
+    default: "RateYourProfessor — Asia's Largest Professor Rating Platform",
     template: "%s | RateYourProfessor",
   },
   description:
-    "Discover honest and anonymous professor reviews from students across India and worldwide.",
+    "Discover honest and anonymous professor reviews from students across Asia and worldwide.",
   metadataBase: new URL("https://www.rateyourprofessor.in/"),
   keywords: [
     "rate your professor",
@@ -32,6 +32,9 @@ export const metadata = {
     "student feedback",
     "college ratings",
     "university reviews",
+    "RateMyProfessor Asia",
+    "RateMyProfessor US",
+    "RateMyProfessor Germany",
     "RateMyProfessor India",
     "anonymous professor reviews",
     "student professor ratings",
