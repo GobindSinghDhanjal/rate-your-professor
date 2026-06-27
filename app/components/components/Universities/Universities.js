@@ -5,6 +5,7 @@ import { motion, useInView } from "framer-motion";
 import styles from "./Universities.module.css";
 import Image from "next/image";
 import Link from "next/link";
+import { useLoader } from "../../LoaderContext/LoaderContext";
 
 // const universities = [
 //   {
@@ -97,6 +98,8 @@ export default function Universities() {
   const ref = useRef(null);
   const inView = useInView(ref, { once: true, margin: "-60px" });
 
+  const { setLoadingScreen } = useLoader();
+
   const [universities, setUniversities] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -165,6 +168,7 @@ export default function Universities() {
                   key={university.slug}
                   className="plain-link"
                   href={`/university/${university.slug}`}
+                  onClick={() => setLoadingScreen(true)}
                 >
                   <motion
                     key={university.slug}

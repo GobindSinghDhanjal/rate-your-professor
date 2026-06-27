@@ -1,11 +1,12 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useLayoutEffect, useEffect } from "react";
 import { motion } from "framer-motion";
 import Link from "next/link";
 import StarRating from "../../components/components/shared/StarRating";
 import styles from "./UniversityDetailPage.module.css";
 import Image from "next/image";
+import { useLoader } from "@/app/components/LoaderContext/LoaderContext";
 
 const fadeUp = {
   hidden: { opacity: 0, y: 20 },
@@ -39,8 +40,15 @@ function RatingBar({ label, value, color }) {
 }
 
 function ProfMiniCard({ prof }) {
+  const { setLoadingScreen } = useLoader();
   return (
-    <Link href={`/professor/${prof?._id}`} className={styles.miniProfCard}>
+    <Link
+      href={`/professor/${prof?._id}`}
+      className={styles.miniProfCard}
+      onClick={() => {
+        setLoadingScreen(true);
+      }}
+    >
       <div className={styles.miniAvatar} style={{ background: prof?.avatarBg }}>
         <Image src={prof?.image} alt={prof?.name} width={40} height={40} />
       </div>
@@ -57,6 +65,17 @@ function ProfMiniCard({ prof }) {
 }
 
 export default function UniversityDetailPage({ university, professors }) {
+  const { setLoadingScreen } = useLoader();
+
+  useLayoutEffect(() => {
+    setLoadingScreen(true);
+    window.scrollTo(0, 0);
+  }, []);
+
+  useEffect(() => {
+    setLoadingScreen(false);
+  }, []);
+
   const displayProfs = professors || [];
   const uniReviews = [];
   const [activeDept, setActiveDept] = useState("All");

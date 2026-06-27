@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useLayoutEffect } from "react";
 import { motion, useInView } from "framer-motion";
 import Link from "next/link";
 import StarRating from "../../components/components/shared/StarRating";
@@ -132,9 +132,13 @@ function ReviewCard({ rev, index }) {
 }
 
 export default function ProfessorPage({ prof }) {
-  const { loadingScreen, setLoadingScreen } = useLoader();
+  const { setLoadingScreen } = useLoader();
 
   const [feedbacks, setFeedbacks] = useState(null);
+
+  useLayoutEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
 
   useEffect(() => {
     async function fetchFeedbacks() {
