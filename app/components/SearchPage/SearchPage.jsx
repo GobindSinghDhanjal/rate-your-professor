@@ -1,6 +1,13 @@
 "use client";
 
-import { useState, useMemo, useEffect, useLayoutEffect } from "react";
+import {
+  useState,
+  useMemo,
+  useEffect,
+  useLayoutEffect,
+  useRef,
+  useCallback,
+} from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import styles from "./SearchPage.module.css";
 import { ProfessorAverageRating } from "@/app/utils/ProfessorAverageRating";
@@ -9,6 +16,8 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { useDebounce } from "@/app/hooks/use-debounce";
 import { useLoader } from "../LoaderContext/LoaderContext";
 import Link from "next/link";
+
+const MIN_FILTERED_RESULTS = 20;
 
 const departments = [
   "All",
@@ -20,6 +29,7 @@ const departments = [
   "Information Technology",
   "Physics",
 ];
+
 const sortOptions = [
   { value: "rating-desc", label: "Highest Rated" },
   { value: "rating-asc", label: "Lowest Rated" },
@@ -59,7 +69,7 @@ function RatingBar({ label, value }) {
   );
 }
 
-function ProfCard({ prof, index }) {
+function ProfCard({ prof, index, cardRef }) {
   const profReviews = [
     {
       text: '"Absolutely brilliant professor. Changed the way I think."',
@@ -68,13 +78,11 @@ function ProfCard({ prof, index }) {
     { text: '"Best in the department. Highly recommend."', author: "Sneha K." },
     { text: '"Tough but fair. You\'ll learn a lot."', author: "Rahul T." },
   ];
-  const snippet = profReviews[index % 3];
 
   const { averageRating, numberOfRatings } = ProfessorAverageRating(
     prof?.feedbacks,
   );
   const router = useRouter();
-
   const { setLoadingScreen } = useLoader();
 
   const handleClick = () => {
@@ -84,13 +92,14 @@ function ProfCard({ prof, index }) {
 
   return (
     <motion.div
+      ref={cardRef}
       className={styles.profCard}
       onClick={handleClick}
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{
         duration: 0.4,
-        delay: index * 0.06,
+        delay: Math.min(index * 0.06, 0.3),
         ease: [0.16, 1, 0.3, 1],
       }}
     >
@@ -174,21 +183,58 @@ function ProfCard({ prof, index }) {
   );
 }
 
+// ─── Filtering helper (pure function, no hooks) ───────────────────────────────
+function applyFilters(professors, { query, dept, uni, sort }) {
+  const q = query.toLowerCase().trim();
+
+  return professors
+    .filter((p) => {
+      if (dept !== "All" && p.dept !== dept) return false;
+      if (uni !== "All" && p?.college?.university?._id !== uni) return false;
+      if (q) {
+        return (
+          p.name?.toLowerCase().includes(q) ||
+          p.dept?.toLowerCase().includes(q) ||
+          p.courses?.some((c) => c?.toLowerCase().includes(q)) ||
+          p.college?.name?.toLowerCase().includes(q) ||
+          p.college?.university?.name?.toLowerCase().includes(q)
+        );
+      }
+      return true;
+    })
+    .sort((a, b) => {
+      const ratingA = ProfessorAverageRating(a?.feedbacks);
+      const ratingB = ProfessorAverageRating(b?.feedbacks);
+      switch (sort) {
+        case "rating-desc":
+          return ratingB.averageRating - ratingA.averageRating;
+        case "rating-asc":
+          return ratingA.averageRating - ratingB.averageRating;
+        case "reviews-desc":
+          return ratingB.numberOfRatings - ratingA.numberOfRatings;
+        case "name-asc":
+          return a.name.localeCompare(b.name);
+        default:
+          return 0;
+      }
+    });
+}
+
+// ─── Main component ───────────────────────────────────────────────────────────
 export default function SearchPage({ universities }) {
-  const { setLoadingScreen } = useLoader();
+  const { loadingScreen, setLoadingScreen } = useLoader();
+  const router = useRouter();
+  const searchParams = useSearchParams();
 
   useLayoutEffect(() => {
     setLoadingScreen(true);
   }, []);
 
   useEffect(() => {
-    window.scrollTo(0, 0); // Scroll to the top of the page
+    window.scrollTo(0, 0);
   }, []);
 
-  const router = useRouter();
-  const searchParams = useSearchParams();
-
-  // 1. Initialize state from URL (so refreshing/sharing works)
+  // Filter state — initialised from URL
   const [query, setQuery] = useState(searchParams.get("q") || "");
   const [selectedDept, setSelectedDept] = useState(
     searchParams.get("dept") || "All",
@@ -200,15 +246,11 @@ export default function SearchPage({ universities }) {
     searchParams.get("sort") || "rating-desc",
   );
 
-  const [professors, setProfessors] = useState([]);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
-
+  // Debounce all filter params together
   const filterParams = useMemo(
     () => ({ q: query, dept: selectedDept, uni: selectedUni, sort: sortBy }),
     [query, selectedDept, selectedUni, sortBy],
   );
-
   const {
     q: debouncedQuery,
     dept: debouncedDept,
@@ -216,122 +258,257 @@ export default function SearchPage({ universities }) {
     sort: debouncedSort,
   } = useDebounce(filterParams, 800);
 
-  useEffect(() => {
-    setLoading(true);
-  }, [query, selectedDept, selectedUni, sortBy]);
+  // ── Data refs (stable across renders) ───────────────────────────────────────
+  // All professors fetched so far — never reset, only appended to
+  const allProfessors = useRef([]);
+  // Current page cursor
+  const currentPage = useRef(1);
+  // Whether the API has more pages
+  const hasMore = useRef(true);
+  // Guard against concurrent fetches
+  const isFetching = useRef(false);
 
-  // 3. Fetch Data (Keep this simple)
-  useEffect(() => {
-    let mounted = true;
-    const fetchData = async () => {
-      const MAX_RETRIES = 5;
+  // Derived state that actually triggers re-renders
+  const [filtered, setFiltered] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+
+  // ── Core fetch (one page) ────────────────────────────────────────────────────
+  const fetchOnePage = useCallback(async (page) => {
+    const res = await fetch(`/api/professors/v2?page=${page}`);
+    if (!res.ok) throw new Error("Failed to fetch professors.");
+    const result = await res.json();
+    if (!result.success) throw new Error(result.message);
+    return result; // { data: [...], meta: { hasMore: bool } }
+  }, []);
+
+  // ── "Fill to MIN_FILTERED_RESULTS" fetcher ───────────────────────────────────
+  // Keeps fetching pages until the filtered list has ≥ MIN_FILTERED_RESULTS
+  // entries, or we run out of data on the API.
+  const fillToMinResults = useCallback(
+    async (activeFilters) => {
+      if (isFetching.current) return;
+      isFetching.current = true;
+      setLoading(true);
 
       try {
-        setLoadingScreen(true);
+        // Work on a local snapshot so we don't fight React state mid-loop
+        let localAll = [...allProfessors.current];
+        let localPage = currentPage.current;
+        let localHasMore = hasMore.current;
 
-        for (let attempt = 1; attempt <= MAX_RETRIES; attempt++) {
-          try {
-            const res = await fetch("/api/professors");
+        let currentFiltered = applyFilters(localAll, activeFilters);
 
-            if (!res.ok) {
-              throw new Error("Failed to fetch professors.");
-            }
+        while (currentFiltered.length < MIN_FILTERED_RESULTS && localHasMore) {
+          const nextPage = localPage + 1;
+          const result = await fetchOnePage(nextPage);
 
-            const data = await res.json();
+          localAll = [...localAll, ...result.data];
+          localPage = nextPage;
+          localHasMore = result.meta.hasMore;
 
-            if (mounted) {
-              setProfessors(data || []);
-            }
-
-            return; // Success
-          } catch (err) {
-            if (attempt === MAX_RETRIES) {
-              throw err;
-            }
-
-            await new Promise((resolve) => setTimeout(resolve, 1000 * attempt));
-          }
+          currentFiltered = applyFilters(localAll, activeFilters);
         }
+
+        // Commit everything back to refs
+        allProfessors.current = localAll;
+        currentPage.current = localPage;
+        hasMore.current = localHasMore;
+
+        setFiltered(currentFiltered);
+        setError(null);
       } catch (err) {
-        if (mounted) {
-          setError(err.message);
-        }
+        setError(err.message);
       } finally {
-        if (mounted) {
+        isFetching.current = false;
+        setLoading(false);
+      }
+    },
+    [fetchOnePage],
+  );
+
+  // ── Initial load ─────────────────────────────────────────────────────────────
+  useEffect(() => {
+    let mounted = true;
+    const MAX_RETRIES = 5;
+
+    const initialLoad = async () => {
+      setLoadingScreen(true);
+      setLoading(true);
+
+      for (let attempt = 1; attempt <= MAX_RETRIES; attempt++) {
+        try {
+          const result = await fetchOnePage(1);
+
+          if (!mounted) return;
+
+          allProfessors.current = result.data || [];
+          currentPage.current = 1;
+          hasMore.current = result.meta.hasMore;
+
+          // After first page, immediately try to fill to MIN_FILTERED_RESULTS
+          // with whatever the current (un-debounced) filters are
+          const initialFilters = {
+            query: searchParams.get("q") || "",
+            dept: searchParams.get("dept") || "All",
+            uni: searchParams.get("uni") || "All",
+            sort: searchParams.get("sort") || "rating-desc",
+          };
+
+          const initialFiltered = applyFilters(
+            allProfessors.current,
+            initialFilters,
+          );
+
+          setFiltered(initialFiltered);
           setLoadingScreen(false);
+          setLoading(false);
+
+          // If first page didn't fill enough results, keep fetching
+          if (
+            initialFiltered.length < MIN_FILTERED_RESULTS &&
+            hasMore.current
+          ) {
+            fillToMinResults(initialFilters);
+          }
+
+          return;
+        } catch (err) {
+          if (attempt === MAX_RETRIES) {
+            if (mounted) {
+              setError(err.message);
+              setLoadingScreen(false);
+              setLoading(false);
+            }
+          } else {
+            await new Promise((r) => setTimeout(r, 1000 * attempt));
+          }
         }
       }
     };
 
-    fetchData();
+    initialLoad();
     return () => {
       mounted = false;
     };
-  }, []);
-  // 4. Update URL whenever filters change (Debounced)
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // ── Load next page (called by scroll observer) ────────────────────────────────
+  const loadNextPage = useCallback(
+    async (activeFilters) => {
+      if (isFetching.current || !hasMore.current) return;
+      isFetching.current = true;
+      setLoading(true);
+
+      try {
+        const nextPage = currentPage.current + 1;
+        const result = await fetchOnePage(nextPage);
+
+        allProfessors.current = [...allProfessors.current, ...result.data];
+        currentPage.current = nextPage;
+        hasMore.current = result.meta.hasMore;
+
+        // Apply filters to the full accumulated list and update UI
+        setFiltered(applyFilters(allProfessors.current, activeFilters));
+        setError(null);
+      } catch (err) {
+        setError(err.message);
+      } finally {
+        isFetching.current = false;
+        setLoading(false);
+      }
+    },
+    [fetchOnePage],
+  );
+
+  // ── Re-filter + auto-fill when debounced filters change ─────────────────────
+  // Runs whenever the user changes search/dept/uni/sort (after debounce)
+  useEffect(() => {
+    const activeFilters = {
+      query: debouncedQuery,
+      dept: debouncedDept,
+      uni: debouncedUni,
+      sort: debouncedSort,
+    };
+
+    // First: apply filters to what we already have
+    const immediate = applyFilters(allProfessors.current, activeFilters);
+    setFiltered(immediate);
+
+    // Then: if not enough results and API has more, keep fetching
+    if (immediate.length < MIN_FILTERED_RESULTS && hasMore.current) {
+      fillToMinResults(activeFilters);
+    }
+  }, [
+    debouncedQuery,
+    debouncedDept,
+    debouncedUni,
+    debouncedSort,
+    fillToMinResults,
+  ]);
+
+  // ── Show loading spinner while debounce is in-flight ────────────────────────
+  const isDebouncing =
+    query !== debouncedQuery ||
+    selectedDept !== debouncedDept ||
+    selectedUni !== debouncedUni ||
+    sortBy !== debouncedSort;
+
+  // ── Infinite scroll — load next page when last card is visible ───────────────
+  const observerRef = useRef();
+  const lastCardRef = useCallback(
+    (node) => {
+      if (loading) return;
+      if (observerRef.current) observerRef.current.disconnect();
+
+      observerRef.current = new IntersectionObserver(
+        (entries) => {
+          if (
+            entries[0].isIntersecting &&
+            hasMore.current &&
+            !isFetching.current
+          ) {
+            const activeFilters = {
+              query: debouncedQuery,
+              dept: debouncedDept,
+              uni: debouncedUni,
+              sort: debouncedSort,
+            };
+            loadNextPage(activeFilters); // ← was fillToMinResults
+          }
+        },
+        { rootMargin: "800px" },
+      );
+
+      if (node) observerRef.current.observe(node);
+    },
+    [
+      loading,
+      debouncedQuery,
+      debouncedDept,
+      debouncedUni,
+      debouncedSort,
+      loadNextPage,
+    ],
+  );
+
+  // ── Sync filters → URL ────────────────────────────────────────────────────────
   useEffect(() => {
     const params = new URLSearchParams();
     if (debouncedQuery) params.set("q", debouncedQuery);
     if (debouncedDept !== "All") params.set("dept", debouncedDept);
     if (debouncedUni !== "All") params.set("uni", debouncedUni);
     if (debouncedSort !== "rating-desc") params.set("sort", debouncedSort);
-
     router.replace(`?${params.toString()}`, { scroll: false });
   }, [debouncedQuery, debouncedDept, debouncedUni, debouncedSort, router]);
 
-  // 5. Optimized Filtering logic
-  const filtered = useMemo(() => {
-    if (!professors.length) return [];
+  // ── Render ────────────────────────────────────────────────────────────────────
+  const showLoader = (loading || isDebouncing) && !loadingScreen;
 
-    const q = debouncedQuery.toLowerCase().trim();
-
-    return professors
-      .filter((p) => {
-        if (debouncedDept !== "All" && p.dept !== debouncedDept) return false;
-
-        if (
-          debouncedUni !== "All" &&
-          p?.college?.university?._id !== debouncedUni
-        )
-          return false;
-
-        if (q) {
-          return (
-            p.name?.toLowerCase().includes(q) ||
-            p.dept?.toLowerCase().includes(q) ||
-            p.courses?.some((c) => c?.toLowerCase().includes(q)) ||
-            p.college?.name?.toLowerCase().includes(q) ||
-            p.college?.university?.name?.toLowerCase().includes(q)
-          );
-        }
-        return true;
-      })
-      .sort((a, b) => {
-        const ratingA = ProfessorAverageRating(a?.feedbacks);
-        const ratingB = ProfessorAverageRating(b?.feedbacks);
-        switch (debouncedSort) {
-          case "rating-desc":
-            return ratingB.averageRating - ratingA.averageRating;
-          case "rating-asc":
-            return ratingA.averageRating - ratingB.averageRating;
-          case "reviews-desc":
-            return ratingB.numberOfRatings - ratingA.numberOfRatings;
-          case "name-asc":
-            return a.name.localeCompare(b.name);
-          default:
-            return 0;
-        }
-      });
-  }, [professors, debouncedQuery, debouncedDept, debouncedUni, debouncedSort]);
-
-  // 2. Stop loading once the debounced filtering is complete
-  useEffect(() => {
-    setLoading(false);
-  }, [filtered]);
   return (
     <>
       {/* Hero search bar */}
-      <section className={` ${styles.searchHero} sub-container page-top`}>
+      <section className={`${styles.searchHero} sub-container page-top`}>
         <div className={styles.heroBlob} />
         <div className={styles.heroInner}>
           <motion.h1
@@ -400,7 +577,7 @@ export default function SearchPage({ universities }) {
       </section>
 
       {/* Body */}
-      <div className={` ${styles.body} sub-container`}>
+      <div className={`${styles.body} sub-container`}>
         <div className={styles.sidebar}>
           <div className={styles.filterBlock}>
             <h3 className={styles.filterTitle}>University</h3>
@@ -441,10 +618,6 @@ export default function SearchPage({ universities }) {
 
         <div className={styles.results}>
           <div className={styles.resultsHeader}>
-            {/* <p className={styles.resultsCount}>
-              <strong>{filtered.length}</strong> professor
-              {filtered.length !== 1 ? "s" : ""} found
-            </p> */}
             <select
               className={styles.sortSelect}
               value={sortBy}
@@ -458,7 +631,8 @@ export default function SearchPage({ universities }) {
             </select>
           </div>
 
-          {loading ? (
+          {showLoader && filtered.length === 0 ? (
+            // Full loader only on first load or when nothing is shown yet
             <div className={styles.loaderWrap}>
               <Loader />
             </div>
@@ -487,11 +661,29 @@ export default function SearchPage({ universities }) {
               ) : (
                 <div key="list" className={styles.list}>
                   {filtered.map((prof, i) => (
-                    <ProfCard key={prof?._id} prof={prof} index={i} />
+                    <ProfCard
+                      key={prof?._id}
+                      prof={prof}
+                      index={i}
+                      // Attach scroll observer only to the last card
+                      cardRef={i === filtered.length - 10 ? lastCardRef : null}
+                    />
                   ))}
+                  {/* Inline loader at bottom while fetching more */}
+                  {showLoader && (
+                    <div className={styles.loaderWrap}>
+                      <Loader />
+                    </div>
+                  )}
                 </div>
               )}
             </AnimatePresence>
+          )}
+
+          {error && (
+            <p style={{ color: "var(--text-danger)", textAlign: "center" }}>
+              {error}
+            </p>
           )}
         </div>
       </div>
