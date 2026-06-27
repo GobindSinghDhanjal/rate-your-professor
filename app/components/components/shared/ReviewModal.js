@@ -78,10 +78,11 @@ export default function ReviewModal({
   onClose,
   professorName = "Professor",
   id,
+  onReviewAdded,
 }) {
   const [step, setStep] = useState(1);
   const [ratings, setRatings] = useState({
-    overall: 0,
+    overallRating: 0,
     clarity: 0,
     helpfulness: 0,
     fairness: 0,
@@ -93,6 +94,7 @@ export default function ReviewModal({
   const [difficulty, setDifficulty] = useState(0);
   const [submitted, setSubmitted] = useState(false);
   const [profanityError, setProfanityError] = useState("");
+  const [submitting, setSubmitting] = useState(false);
 
   const MAX_CHARS = 500;
 
@@ -118,10 +120,11 @@ export default function ReviewModal({
     }
   };
 
-  const canProceedStep1 = ratings.overall > 0;
+  const canProceedStep1 = ratings.overallRating > 0;
   const canProceedStep2 = profanityError === "";
 
   const handleSubmit = async () => {
+    if (submitting) return;
     // Re-validate profanity on submit (in case paste bypassed onChange)
     if (leoProfanity.check(reviewText)) {
       setProfanityError("Please remove offensive language before submitting.");
@@ -136,13 +139,15 @@ export default function ReviewModal({
     }
 
     try {
+      setSubmitting(true);
+
       const response = await fetch(
         `${process.env.NEXT_PUBLIC_NEXT_BASE_URL}/professors/${id}/feedback`,
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
-            rating: ratings.overall,
+            ...ratings,
             comment: reviewText.trim(),
           }),
         },
@@ -152,16 +157,22 @@ export default function ReviewModal({
         throw new Error("Failed to submit rating: " + response.statusText);
       }
 
+      const data = await response.json();
+      onReviewAdded?.(data.feedback);
+
       recordSessionSubmission();
       setSubmitted("success");
     } catch (error) {
       console.error("Error submitting rating:", error.message);
+      setSubmitted("error");
+    } finally {
+      setSubmitting(false);
     }
   };
 
   const resetForm = () => {
     setStep(1);
-    setRatings({ overall: 0, clarity: 0, helpfulness: 0, fairness: 0 });
+    setRatings({ overallRating: 0, clarity: 0, helpfulness: 0, fairness: 0 });
     setSelectedTags([]);
     setCourse("");
     setReviewText("");
@@ -202,14 +213,35 @@ export default function ReviewModal({
                   <p className={styles.successDesc}>
                     Your anonymous review has been submitted. Thank you for
                     helping fellow students!
-                    <br />
-                    <br />
-                    AI moderation is now reviewing your submission. Approved
-                    reviews are typically published within 6 hours.
                   </p>
                   <Link className={styles.link} href="/">
                     Go back to homepage
                   </Link>
+                </motion.div>
+              )}
+              {submitted === "error" && (
+                <motion.div
+                  className={styles.successState}
+                  initial={{ opacity: 0, scale: 0.9 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{ duration: 0.4 }}
+                >
+                  <div className={styles.successIcon}>❌</div>
+
+                  <h3 className={styles.successTitle}>Submission failed</h3>
+
+                  <p className={styles.successDesc}>
+                    We couldn't submit your review at the moment. Please try
+                    again in a few moments.
+                  </p>
+                  <button
+                    className={styles.link}
+                    onClick={() => {
+                      setSubmitted(false);
+                    }}
+                  >
+                    Try again
+                  </button>
                 </motion.div>
               )}
 
@@ -223,7 +255,8 @@ export default function ReviewModal({
                   <div className={styles.successIcon}>⏳</div>
                   <h3 className={styles.successTitle}>Daily limit reached</h3>
                   <p className={styles.successDesc}>
-                    You've reached today's review submission limit. Please try again tomorrow.
+                    You've reached today's review submission limit. Please try
+                    again tomorrow.
                   </p>
                   <button className={styles.link} onClick={onClose}>
                     Close
@@ -280,9 +313,9 @@ export default function ReviewModal({
                         >
                           <StarPicker
                             label="Overall Rating *"
-                            value={ratings.overall}
+                            value={ratings.overallRating}
                             onChange={(v) =>
-                              setRatings((r) => ({ ...r, overall: v }))
+                              setRatings((r) => ({ ...r, overallRating: v }))
                             }
                           />
                           <StarPicker
@@ -451,6 +484,7 @@ export default function ReviewModal({
                     {step > 1 && (
                       <button
                         className={styles.backBtn}
+                        disabled={submitting}
                         onClick={() => setStep((s) => s - 1)}
                       >
                         ← Back
@@ -462,7 +496,8 @@ export default function ReviewModal({
                         className={styles.nextBtn}
                         disabled={
                           (step === 1 && !canProceedStep1) ||
-                          (step === 2 && !canProceedStep2)
+                          (step === 2 && !canProceedStep2) ||
+                          submitting
                         }
                         onClick={() => setStep((s) => s + 1)}
                       >
@@ -471,9 +506,17 @@ export default function ReviewModal({
                     ) : (
                       <button
                         className={styles.submitBtn}
+                        disabled={submitting}
                         onClick={handleSubmit}
                       >
-                        Submit review ✓
+                        {submitting ? (
+                          <>
+                            Submitting
+                            <span className={styles.blinkDots}>...</span>
+                          </>
+                        ) : (
+                          "Submit review ✓"
+                        )}
                       </button>
                     )}
                   </div>

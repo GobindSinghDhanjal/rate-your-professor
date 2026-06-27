@@ -228,6 +228,14 @@ export default function ProfessorPage({ prof }) {
           onClose={() => setModalOpen(false)}
           professorName={prof?.name}
           id={prof._id}
+          onReviewAdded={(review) => {
+            setFeedbacks((prev) => {
+              const updated = [review, ...(prev ?? [])];
+              return updated.sort(
+                (a, b) => new Date(b.date) - new Date(a.date),
+              );
+            });
+          }}
         />
       )}
 
