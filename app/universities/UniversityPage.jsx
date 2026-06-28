@@ -4,8 +4,9 @@ import { useState, useMemo } from "react";
 import { motion } from "framer-motion";
 import SectionHeader from "../components/components/shared/SectionHeader";
 import styles from "./UniversityPage.module.css";
+import Image from "next/image";
 
-const filters = ["All", "Public", "Private", "IIT", "Deemed"];
+const filters = ["All", "Public", "Private", "Deemed"];
 
 function UniCard({ uni, index }) {
   return (
@@ -19,7 +20,13 @@ function UniCard({ uni, index }) {
     >
       <div className={styles.cardGlow} />
       <div className={styles.cardTop}>
-        <img src={uni?.image} alt={uni?.name} className={styles.uniImg} />
+        <Image
+          src={uni?.image}
+          alt={uni?.name}
+          className={styles.uniImg}
+          width={64}
+          height={64}
+        />
         {uni?.rating && (
           <div className={styles.uniRatingBadge}>
             <span className={styles.uniRatingNum}>{uni?.rating}</span>
@@ -232,7 +239,7 @@ export default function UniversitiesPage({ universities }) {
                 <div className={styles.loadMore}>
                   <button
                     className={styles.loadMoreBtn}
-                    onClick={() => setVisible((v) => v + 4)}
+                    onClick={() => setVisible((v) => v + 8)}
                   >
                     Load More Universities
                   </button>

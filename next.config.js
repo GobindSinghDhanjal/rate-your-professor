@@ -1,15 +1,14 @@
-module.exports = {
-  // experimental: {
-  //   missingSuspenseWithCSRBailout: false,
-  // },
+/** @type {import('next').NextConfig} */
+const nextConfig = {
+  images: {
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "res.cloudinary.com",
+      },
+    ],
+    minimumCacheTTL: 60 * 60 * 24 * 2, // 2 days
+  },
 };
 
-// /** @type {import('next').NextConfig} */
-// const nextConfig = {
-//   experimental: {
-//     serverComponentsHmrCache: false, // defaults to true
-//     missingSuspenseWithCSRBailout: false, // Add both experimental options
-//   },
-// };
-
-// module.exports = nextConfig;
+module.exports = nextConfig;

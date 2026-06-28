@@ -146,8 +146,6 @@
   width: 28px;
 }
 .trendLogo {
-  width: 38px;
-  height: 38px;
   border-radius: 10px;
   flex-shrink: 0;
   background: color-mix(in srgb, var(--uni-color) 15%, transparent);
@@ -267,7 +265,11 @@
   justify-content: center;
 }
 .trendImg {
+  width: 38px;
+  height: 38px;
   border-radius: 50px;
+  object-fit: cover;
+  background: #ffffff;
 }
 .uniAbbr {
   font-family: var(--font-sora), sans-serif;
