@@ -6,7 +6,7 @@ import Link from "next/link";
 import StarRating from "../../components/components/shared/StarRating";
 import ReviewModal from "../../components/components/shared/ReviewModal";
 import styles from "./ProfessorPage.module.css";
-import { ProfessorAverageRating } from "@/app/utils/ProfessorAverageRating";
+// import { ProfessorAverageRating } from "@/app/utils/ProfessorAverageRating";
 import Image from "next/image";
 import Loader from "@/app/components/Loader/Loader";
 import { useLoader } from "@/app/components/LoaderContext/LoaderContext";
@@ -136,6 +136,14 @@ export default function ProfessorPage({ prof }) {
 
   const [feedbacks, setFeedbacks] = useState(null);
 
+  // Live stats derived from prof, updated in real time as reviews come in
+  const [stats, setStats] = useState({
+    averageRating: prof?.averageRating,
+    reviewCount: prof?.reviewCount,
+    wouldTakeAgain: prof?.wouldTakeAgain,
+    difficultyLevel: prof?.difficultyLevel,
+  });
+
   useLayoutEffect(() => {
     window.scrollTo(0, 0);
   }, []);
@@ -144,12 +152,21 @@ export default function ProfessorPage({ prof }) {
     async function fetchFeedbacks() {
       try {
         const res = await fetch(
-          `${process.env.NEXT_PUBLIC_NEXT_BASE_URL}/professors/${prof._id}`,
+          `${process.env.NEXT_PUBLIC_NEXT_BASE_URL}/v2/professors/${prof.slug}`,
           { next: { revalidate: 60 } },
         );
         if (!res.ok) throw new Error("Failed to fetch");
         const data = await res.json();
-        setFeedbacks(data?.feedbacks);
+        const professorData = data?.professor;
+        setFeedbacks(professorData?.feedbacks);
+
+        // Keep stats in sync with freshly fetched professor data too
+        setStats({
+          averageRating: professorData?.averageRating,
+          reviewCount: professorData?.reviewCount,
+          wouldTakeAgain: professorData?.wouldTakeAgain,
+          difficultyLevel: professorData?.difficultyLevel,
+        });
       } catch (err) {
         console.error(err);
         setFeedbacks([]); // fallback to empty
@@ -168,18 +185,6 @@ export default function ProfessorPage({ prof }) {
   const [activeTab, setActiveTab] = useState("reviews");
   const [modalOpen, setModalOpen] = useState(false);
   const [shareStatus, setShareStatus] = useState("");
-
-  const { averageRating, numberOfRatings } = ProfessorAverageRating(feedbacks);
-
-  // const avgRating =
-  //   displayReviews.reduce((a, r) => a + r.rating, 0) / displayReviews.length ||
-  //   prof?.rating;
-  const wouldTakeAgainPct =
-    Math.round(
-      (displayReviews.filter((r) => r.wouldTakeAgain).length /
-        displayReviews.length) *
-        100,
-    ) || prof?.wouldTakeAgain;
 
   const sharePage = async () => {
     const shareUrl = window.location.href;
@@ -235,6 +240,45 @@ export default function ProfessorPage({ prof }) {
                 (a, b) => new Date(b.date) - new Date(a.date),
               );
             });
+
+            // Recompute live stats using running averages
+            setStats((prev) => {
+              const oldCount = prev.reviewCount || 0;
+              const newCount = oldCount + 1;
+
+              // Running average rating
+              const newAvg =
+                review?.rating != null
+                  ? ((prev.averageRating || 0) * oldCount + review.rating) /
+                    newCount
+                  : prev.averageRating;
+
+              // Running % would-take-again
+              const oldYesCount = Math.round(
+                ((prev.wouldTakeAgain || 0) / 100) * oldCount,
+              );
+              const newYesCount =
+                oldYesCount + (review?.wouldTakeAgain ? 1 : 0);
+              const newWouldTakeAgain =
+                newCount > 0
+                  ? Math.round((newYesCount / newCount) * 100)
+                  : prev.wouldTakeAgain;
+
+              // Running average difficulty
+              const newDifficulty =
+                review?.difficulty != null
+                  ? ((prev.difficultyLevel || 0) * oldCount +
+                      review.difficulty) /
+                    newCount
+                  : prev.difficultyLevel;
+
+              return {
+                averageRating: newAvg,
+                reviewCount: newCount,
+                wouldTakeAgain: newWouldTakeAgain,
+                difficultyLevel: newDifficulty,
+              };
+            });
           }}
         />
       )}
@@ -288,9 +332,12 @@ export default function ProfessorPage({ prof }) {
                 <div className={styles.heroRatingRow}>
                   <span className={styles.heroRatingBig}>{prof?.rating}</span>
                   <div className={styles.heroRatingRight}>
-                    <StarRating rating={averageRating} size="lg" />
+                    <StarRating
+                      rating={stats?.averageRating?.toFixed(1)}
+                      size="lg"
+                    />
                     <span className={styles.heroRatingCount}>
-                      Based on {numberOfRatings} reviews
+                      Based on {stats?.reviewCount} reviews
                     </span>
                   </div>
                 </div>
@@ -328,21 +375,24 @@ export default function ProfessorPage({ prof }) {
       <div className={styles.statsStrip}>
         {[
           {
-            val: averageRating !== 0 ? `${averageRating}/5` : "NA",
+            val:
+              stats?.averageRating !== 0
+                ? `${stats?.averageRating?.toFixed(1)}/5`
+                : "NA",
             label: "Overall Rating",
             icon: "⭐",
           },
           {
-            val: `${prof?.wouldTakeAgain != null ? `${prof.wouldTakeAgain}%` : "NA"}`,
+            val: `${stats?.wouldTakeAgain != null ? `${stats.wouldTakeAgain}%` : "NA"}`,
             label: "Would Take Again",
             icon: "🔄",
           },
           {
-            val: `${prof?.difficultyLevel != null ? `${prof.difficultyLevel}/5` : "NA"}`,
+            val: `${stats?.difficultyLevel != null ? `${stats.difficultyLevel}/5` : "NA"}`,
             label: "Difficulty",
             icon: "🎯",
           },
-          { val: numberOfRatings, label: "Total Reviews", icon: "📝" },
+          { val: stats?.reviewCount, label: "Total Reviews", icon: "📝" },
         ].map((s, i) => (
           <motion.div
             key={s.label}
@@ -479,15 +529,15 @@ export default function ProfessorPage({ prof }) {
                 <div className={styles.statGlassCard}>
                   <div className={styles.statGlassIcon}>🔄</div>
                   <div className={styles.statGlassVal}>
-                    {prof?.wouldTakeAgain != null
-                      ? `${prof.wouldTakeAgain}%`
+                    {stats?.wouldTakeAgain != null
+                      ? `${stats.wouldTakeAgain}%`
                       : "NA"}
                   </div>
                   <div className={styles.statGlassLabel}>Would Take Again</div>
                   <div className={styles.statGlassBar}>
                     <div
                       style={{
-                        width: `${prof?.wouldTakeAgain}%`,
+                        width: `${stats?.wouldTakeAgain}%`,
                         background: "#10b981",
                       }}
                     />
@@ -496,15 +546,15 @@ export default function ProfessorPage({ prof }) {
                 <div className={styles.statGlassCard}>
                   <div className={styles.statGlassIcon}>🎯</div>
                   <div className={styles.statGlassVal}>
-                    {prof?.difficultyLevel != null
-                      ? `${prof.difficultyLevel}/5`
+                    {stats?.difficultyLevel != null
+                      ? `${stats.difficultyLevel}/5`
                       : "NA"}
                   </div>
                   <div className={styles.statGlassLabel}>Difficulty Level</div>
                   <div className={styles.statGlassBar}>
                     <div
                       style={{
-                        width: `${(prof?.difficultyLevel / 5) * 100}%`,
+                        width: `${(stats?.difficultyLevel / 5) * 100}%`,
                         background: "#f59e0b",
                       }}
                     />
@@ -512,7 +562,9 @@ export default function ProfessorPage({ prof }) {
                 </div>
                 <div className={styles.statGlassCard}>
                   <div className={styles.statGlassIcon}>📝</div>
-                  <div className={styles.statGlassVal}>{numberOfRatings}</div>
+                  <div className={styles.statGlassVal}>
+                    {stats?.reviewCount}
+                  </div>
                   <div className={styles.statGlassLabel}>Total Reviews</div>
                 </div>
                 <div className={styles.statGlassCard}>
@@ -546,10 +598,12 @@ export default function ProfessorPage({ prof }) {
                   height={80}
                 />
               </div>
-              <div className={styles.sideRatingBig}>{averageRating}</div>
-              <StarRating rating={averageRating} size="md" />
+              <div className={styles.sideRatingBig}>
+                {stats?.averageRating?.toFixed(1)}
+              </div>
+              <StarRating rating={stats?.averageRating?.toFixed(1)} size="md" />
               <p className={styles.sideReviewCount}>
-                {numberOfRatings} student reviews
+                {stats?.reviewCount} student reviews
               </p>
             </div>
             <button

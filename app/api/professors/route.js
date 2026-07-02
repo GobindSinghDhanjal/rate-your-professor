@@ -23,7 +23,7 @@ export async function GET(req, res) {
         },
       })
       .select(
-        "name slug title image department createdAt updatedAt college university feedbacks",
+        "name slug title image department createdAt updatedAt college university averageRating reviewCount",
       );
 
     // Increment the count by 1

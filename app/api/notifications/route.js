@@ -22,11 +22,15 @@ export async function GET(req) {
       ? notifications[notifications.length - 1]._id.toString()
       : null;
 
-    return new Response(JSON.stringify({ data: notifications, nextCursor }), {
-      status: 200,
-    });
+    return NextResponse.json(
+      {
+        data: notifications,
+        nextCursor,
+      },
+      { status: 200 },
+    );
   } catch (error) {
-    return new Response(error.message, { status: 500 });
+    return NextResponse.json({ error: error.message }, { status: 500 });
   }
 }
 
@@ -39,7 +43,7 @@ export async function POST(req) {
     if (!message) {
       return NextResponse.json(
         { error: "Missing title or message" },
-        { status: 400 }
+        { status: 400 },
       );
     }
 

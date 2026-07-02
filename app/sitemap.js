@@ -87,7 +87,7 @@ export default async function sitemap() {
       priority: 0.8,
     },
     ...professors.map((professor) => ({
-      url: `${baseUrl}/professor/${professor._id}`,
+      url: `${baseUrl}/professor/${professor.slug}`,
       lastModified: professor.updatedAt || professor.createdAt || new Date(),
       changeFrequency: "daily",
       priority: 0.9,

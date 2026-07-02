@@ -43,7 +43,7 @@ function ProfMiniCard({ prof }) {
   const { setLoadingScreen } = useLoader();
   return (
     <Link
-      href={`/professor/${prof?._id}`}
+      href={`/professor/${prof?.slug}`}
       className={styles.miniProfCard}
       onClick={() => {
         setLoadingScreen(true);

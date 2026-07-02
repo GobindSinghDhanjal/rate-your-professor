@@ -70,16 +70,17 @@ function ProfCard({ prof, index }) {
   ];
   const snippet = profReviews[index % 3];
 
-  const { averageRating, numberOfRatings } = ProfessorAverageRating(
-    prof?.feedbacks,
-  );
+  // const { averageRating, numberOfRatings } = ProfessorAverageRating(
+  //   prof?.feedbacks,
+  // );
+
   const router = useRouter();
 
   const { setLoadingScreen } = useLoader();
 
   const handleClick = () => {
     setLoadingScreen(true);
-    router.push(`/professor/${prof._id}`);
+    router.push(`/professor/${prof?.slug}`);
   };
 
   return (
@@ -116,12 +117,12 @@ function ProfCard({ prof, index }) {
             </p>
           </div>
           <div className={styles.profCardRating}>
-            {averageRating !== 0 && (
-              <span className={styles.bigRating}>{averageRating}</span>
+            {prof?.averageRating !== 0 && (
+              <span className={styles.bigRating}>{prof?.averageRating?.toFixed(1)}</span>
             )}
-            <StarRow rating={averageRating} />
+            <StarRow rating={prof?.averageRating?.toFixed(1)} />
             <span className={styles.reviewCount}>
-              {numberOfRatings} reviews
+              {prof?.reviewCount} reviews
             </span>
           </div>
         </div>
@@ -307,15 +308,15 @@ export default function SearchPage({ universities }) {
         return true;
       })
       .sort((a, b) => {
-        const ratingA = ProfessorAverageRating(a?.feedbacks);
-        const ratingB = ProfessorAverageRating(b?.feedbacks);
+        // const ratingA = ProfessorAverageRating(a?.feedbacks);
+        // const ratingB = ProfessorAverageRating(b?.feedbacks);
         switch (debouncedSort) {
           case "rating-desc":
-            return ratingB.averageRating - ratingA.averageRating;
+            return b?.averageRating - a?.averageRating;
           case "rating-asc":
-            return ratingA.averageRating - ratingB.averageRating;
+            return a?.averageRating - b?.averageRating;
           case "reviews-desc":
-            return ratingB.numberOfRatings - ratingA.numberOfRatings;
+            return b?.reviewCount - a?.reviewCount;
           case "name-asc":
             return a.name.localeCompare(b.name);
           default:
