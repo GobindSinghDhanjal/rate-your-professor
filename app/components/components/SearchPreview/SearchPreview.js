@@ -7,11 +7,12 @@ import { useRouter } from "next/navigation";
 import { useLoader } from "../../LoaderContext/LoaderContext";
 
 const trending = [
-  "Rajesh",
+  "Peking University",
+  "University of Tokyo",
+  "KAIST",
   "IIT",
-  "Indraprastha University",
-  "University",
-  "Calcutta",
+  "Tsinghua University",
+  "Fudan University",
 ];
 
 const professors = [

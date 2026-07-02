@@ -1,5 +1,4 @@
 "use client";
-
 import { useEffect, useRef, useState } from "react";
 import { motion, useInView } from "framer-motion";
 import styles from "./Stats.module.css";
@@ -13,7 +12,7 @@ const stats = [
     desc: "Across all disciplines",
   },
   {
-    value: 20,
+    value: 40,
     suffix: "+",
     label: "Universities",
     icon: "🏛️",
@@ -35,15 +34,22 @@ const stats = [
   },
 ];
 
-function CountUp({ target, suffix, active }) {
-  const [count, setCount] = useState(0);
+function CountUp({ target, suffix, trigger }) {
+  // Real value on first render — correct for SSR / no-JS crawlers
+  const [count, setCount] = useState(target);
+  const hasAnimated = useRef(false);
 
   useEffect(() => {
-    if (!active) return;
+    if (!trigger || hasAnimated.current) return;
+
+    hasAnimated.current = true;
+
+    setCount(0);
     const duration = 1800;
     const steps = 60;
     const increment = target / steps;
     let current = 0;
+
     const timer = setInterval(() => {
       current += increment;
       if (current >= target) {
@@ -53,8 +59,9 @@ function CountUp({ target, suffix, active }) {
         setCount(Math.floor(current));
       }
     }, duration / steps);
+
     return () => clearInterval(timer);
-  }, [active, target]);
+  }, [trigger, target]);
 
   return (
     <span className={styles.statValue}>
@@ -75,11 +82,9 @@ export default function Stats() {
           className={styles.grid}
           initial="hidden"
           animate={inView ? "visible" : "hidden"}
-          variants={{
-            visible: { transition: { staggerChildren: 0.1 } },
-          }}
+          variants={{ visible: { transition: { staggerChildren: 0.1 } } }}
         >
-          {stats.map((s, i) => (
+          {stats.map((s) => (
             <motion.div
               key={s.label}
               className={styles.card}
@@ -94,7 +99,7 @@ export default function Stats() {
             >
               <div className={styles.cardInner}>
                 <span className={styles.icon}>{s.icon}</span>
-                <CountUp target={s.value} suffix={s.suffix} active={inView} />
+                <CountUp target={s.value} suffix={s.suffix} trigger={inView} />
                 <p className={styles.label}>{s.label}</p>
                 <p className={styles.desc}>{s.desc}</p>
               </div>

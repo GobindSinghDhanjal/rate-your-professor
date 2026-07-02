@@ -167,17 +167,17 @@ export default function UniversityDetailPage({ university, professors }) {
         {[
           {
             icon: "👨‍🏫",
-            val: university?.totalProfessors?.toLocaleString() + "+",
+            val: 100 + "+",
             label: "Professors",
           },
           {
             icon: "📝",
-            val: 100 + "+",
+            val: 500 + "+",
             label: "Student Reviews",
           },
           {
             icon: "🏛",
-            val: university?.departments.length,
+            val: university?.departments.length || "NA",
             label: "Departments",
           },
           {

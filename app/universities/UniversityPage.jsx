@@ -2,15 +2,22 @@
 
 import { useState, useMemo } from "react";
 import { motion } from "framer-motion";
+import Link from "next/link";
 import SectionHeader from "../components/components/shared/SectionHeader";
 import styles from "./UniversityPage.module.css";
 import Image from "next/image";
 
 const filters = ["All", "Public", "Private", "Deemed"];
 
+const MotionLink = motion(Link);
+
 function UniCard({ uni, index }) {
+  const location = [uni?.state || uni?.city, uni?.country]
+    .filter(Boolean)
+    .join(", ");
+
   return (
-    <motion.a
+    <MotionLink
       href={`/university/${uni?.slug}`}
       className={styles.uniCard}
       style={{ "--uni-color": uni?.color }}
@@ -36,11 +43,7 @@ function UniCard({ uni, index }) {
       </div>
       <div className={styles.cardBody}>
         <h3 className={styles.uniName}>{uni?.name}</h3>
-        <p className={styles.uniLocation}>
-          📍 {uni?.state || uni?.city}
-          {(uni?.state || uni?.city) && uni?.country ? ", " : ""}
-          {uni?.country}
-        </p>
+        <p className={styles.uniLocation}>{location && `📍 ${location}`}</p>
         <p className={styles.uniDesc}>
           {uni?.description?.slice(0, 60) + "..."}
         </p>
@@ -73,7 +76,7 @@ function UniCard({ uni, index }) {
           <span className={styles.nirfBadge}>NIRF #{uni?.nirfRank}</span>
         )}
       </div>
-    </motion.a>
+    </MotionLink>
   );
 }
 
@@ -108,6 +111,8 @@ export default function UniversitiesPage({ universities }) {
   const trending = [...universities]
     .sort((a, b) => b.reviews - a.reviews)
     .slice(0, 3);
+
+  const MotionLink = motion(Link);
 
   return (
     <>
@@ -180,7 +185,7 @@ export default function UniversitiesPage({ universities }) {
             <h2 className={styles.sectionLabel}>🔥 Trending This Week</h2>
             <div className={styles.trendingGrid}>
               {trending.map((uni, i) => (
-                <motion.a
+                <MotionLink
                   key={uni?.slug}
                   href={`/university/${uni?.slug}`}
                   className={styles.trendCard}
@@ -207,7 +212,7 @@ export default function UniversitiesPage({ universities }) {
                     )}
                   </div>
                   <span className={styles.trendArrow}>→</span>
-                </motion.a>
+                </MotionLink>
               ))}
             </div>
           </div>
