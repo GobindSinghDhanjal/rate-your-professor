@@ -22,13 +22,15 @@ export async function GET(req, res) {
           select: "name", // Selecting only the name field from the University document
         },
       })
-      .select("name title image department createdAt updatedAt college university feedbacks");
+      .select(
+        "name slug title image department createdAt updatedAt college university feedbacks",
+      );
 
     // Increment the count by 1
     await Count.findOneAndUpdate(
       {}, // Find any document
       { $inc: { count: 1 } }, // Increment the `count` field by 1
-      { new: true, upsert: true } // Create the document if it doesn't exist
+      { new: true, upsert: true }, // Create the document if it doesn't exist
     );
 
     // Return the professors data as JSON
@@ -76,10 +78,15 @@ export async function POST(req, res) {
 
     if (!university) {
       if (!universityImageUrl) {
-        return new Response(JSON.stringify({ msg: "Missing universityImageUrl for new university" }), {
-          status: 400,
-          headers: { "Content-Type": "application/json" },
-        });
+        return new Response(
+          JSON.stringify({
+            msg: "Missing universityImageUrl for new university",
+          }),
+          {
+            status: 400,
+            headers: { "Content-Type": "application/json" },
+          },
+        );
       }
 
       university = new University({

@@ -3,7 +3,6 @@ import Professor from "@/app/models/Professor";
 import College from "@/app/models/College";
 import University from "@/app/models/University";
 import { NextResponse } from "next/server";
-import { updateProfessorStats } from "@/app/utils/updateProfessorStats";
 
 export const POST = async (request, { params }) => {
   const { id } = params;
@@ -41,7 +40,6 @@ export const POST = async (request, { params }) => {
     const submitFeedback = { rating: overallRating, comment };
 
     professor.feedbacks.push(submitFeedback);
-    // Create new feedback
     // professor.feedbacks.push({
     //   overallRating,
     //   comment,
@@ -51,14 +49,10 @@ export const POST = async (request, { params }) => {
     //   wouldTakeAgain,
     // });
 
-    updateProfessorStats(professor);
+    await professor.save(); // pre-save hook recalculates stats automatically
 
-    await professor.save();
-
-    // Newly inserted review
     const feedback = professor.feedbacks[professor.feedbacks.length - 1];
 
-    // return new Response(JSON.stringify(professor), { status: 201 });
     return NextResponse.json(
       {
         success: true,
