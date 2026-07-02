@@ -44,11 +44,13 @@ function CountUp({ target, suffix, trigger }) {
 
     hasAnimated.current = true;
 
-    setCount(0);
+    const startValue = target / 2;
+    setCount(Math.floor(startValue));
+
     const duration = 1800;
     const steps = 60;
-    const increment = target / steps;
-    let current = 0;
+    const increment = (target - startValue) / steps;
+    let current = startValue;
 
     const timer = setInterval(() => {
       current += increment;
