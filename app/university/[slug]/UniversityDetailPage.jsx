@@ -95,6 +95,10 @@ export default function UniversityDetailPage({ university, professors }) {
 
   const depts = ["All", ...new Set(displayProfs.map((p) => p?.college?.name))];
 
+  const location = [university?.city, university?.state, university?.country]
+    .filter(Boolean)
+    .join(", ");
+
   return (
     <>
       {/* Hero Banner */}
@@ -142,8 +146,10 @@ export default function UniversityDetailPage({ university, professors }) {
                 </div>
                 <h1 className={styles.heroTitle}>{university?.name}</h1>
                 <p className={styles.heroLocation}>
-                  📍 {university?.city}, {university?.state},{" "}
-                  {university?.country} · Est. {university?.establishedYear}
+                  {location && <>📍 {location}</>}
+                  {location && university?.establishedYear && " · "}
+                  {university?.establishedYear &&
+                    `Est. ${university.establishedYear}`}
                 </p>
                 {university?.rating && (
                   <div className={styles.heroRating}>
